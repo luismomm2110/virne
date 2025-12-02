@@ -1,0 +1,58 @@
+# Scenario 4: Stress Test - High Load, Large VNRs
+# Characteristics that stress the system:
+# - Larger VNRs (5-10 nodes)
+# - High arrival rate
+# - Moderate-high demands
+# - Tests algorithm robustness under pressure
+
+num_v_nets: 300  # For ML training
+
+topology:
+  type: random
+  random_prob: 0.5
+
+v_net_size:
+  distribution: uniform
+  dtype: int
+  low: 5                 # Larger VNRs
+  high: 10
+
+arrival_rate:
+  distribution: poisson
+  dtype: float
+  lam: 0.12              # Very high arrival rate
+  reciprocal: true
+
+lifetime:
+  distribution: exponential
+  dtype: float
+  scale: 500
+
+node_attrs_setting:
+  - name: cpu
+    type: resource
+    owner: node
+    distribution: uniform
+    dtype: int
+    generative: true
+    low: 20              # Moderate-high demand
+    high: 60
+
+link_attrs_setting:
+  - name: bw
+    type: resource
+    owner: link
+    distribution: uniform
+    dtype: int
+    generative: true
+    low: 40              # Moderate-high demand
+    high: 120
+
+graph_attrs_setting:
+
+output:
+  save_dir: dataset/v_nets
+  v_nets_save_dir: v_nets
+  v_nets_file_name: v_net.gml
+  events_file_name: events.yaml
+  setting_file_name: v_sim_setting.yaml
