@@ -19,12 +19,34 @@ def main():
 
     # Define features (must match training)
     feature_cols = [
+        # VNR characteristics
         'v_net_num_nodes', 'v_net_num_edges', 'v_net_size_ratio',
         'v_net_demand_per_node', 'v_net_demand_per_link', 'v_net_connectivity',
         'v_net_total_demand', 'v_net_node_to_link_demand_ratio', 'v_net_lifetime',
+
+        # Physical network state
         'p_net_available_resource', 'p_net_node_util', 'p_net_link_util',
-        'p_net_overall_util', 'inservice_count', 'system_load',
-        'num_running_p_net_nodes', 'solving_time', 'topology_encoded'
+        'p_net_overall_util',
+
+        # System state
+        'inservice_count', 'system_load',
+        'num_running_p_net_nodes',
+
+        # Algorithm characteristics (computational effort)
+        'solving_time',
+
+        # Topology
+        'topology_encoded',
+
+        # Engineered features for better discrimination
+        'network_stress_index',
+        'problem_complexity',
+        'resource_bottleneck_ratio',
+        'vnr_size_category',
+        'cpu_intensive_flag',
+        'bandwidth_intensive_flag',
+        'utilization_pressure',
+        'resource_efficiency'
     ]
 
     # Get feature importance
@@ -46,6 +68,7 @@ def main():
     # Reorder to match feature_cols order
     importance_df['Feature'] = pd.Categorical(importance_df['Feature'], categories=feature_cols, ordered=True)
     importance_df = importance_df.sort_values('Feature').reset_index(drop=True)
+    importance_df['Feature'] = importance_df['Feature'].astype(str)
 
     print("\n" + "="*80)
     print("FEATURE IMPORTANCE ANALYSIS")
@@ -171,6 +194,11 @@ def main():
         ],
         'Algorithm & Topology': [
             'solving_time', 'topology_encoded'
+        ],
+        'Engineered Features': [
+            'network_stress_index', 'problem_complexity', 'resource_bottleneck_ratio',
+            'vnr_size_category', 'cpu_intensive_flag', 'bandwidth_intensive_flag',
+            'utilization_pressure', 'resource_efficiency'
         ]
     }
 

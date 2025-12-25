@@ -34,7 +34,7 @@ def run_experiment(seed):
 
     cmd = [
         "python",
-        "main_tree_drounding.py",
+        "main_tree_d_round.py",
         "solver.solver_name=d_round",
         f"experiment.seed={seed}",
         f"experiment.run_id=drounding_tree_seed_{seed}"
@@ -72,7 +72,7 @@ def main():
 
     # Check if we're in the correct directory
     if not Path("main_tree_drounding.py").exists():
-        print("Error: main_tree_drounding.py not found!")
+        print("Error: main_tree_d_round.py not found!")
         print("Please run this script from the project root directory.")
         sys.exit(1)
 

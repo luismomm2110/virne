@@ -1,7 +1,7 @@
 defaults:
   - _self_
   - learning
-  - v_sim_setting/v_sim_200_requests
+  - v_sim_setting/v_sim_ga_meta_favoring
   - p_net_setting/fat_tree_p_net_setting
 
 hydra:
@@ -15,7 +15,7 @@ experiment:
   seed: 0
   run_id: auto
   num_simulations: 1
-  save_root_dir: apresentacao/simulacoes/
+  save_root_dir: virne/
   if_save_config: true
   if_save_p_net: false
   if_save_v_nets: false
@@ -52,7 +52,7 @@ recorder:
 logger:
   log_dir_name: logs
   project_name: 'virne'
-  experiment_name: mip_fat_tree_experiment
+  experiment_name: fat_tree_mip_comparison
   level: INFO
   verbose: 1
   backends: ['console', 'file', 'tensorboard']

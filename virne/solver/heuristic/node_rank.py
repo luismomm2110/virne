@@ -3,6 +3,7 @@
 # ==============================================================================
 
 
+import time
 import networkx as nx
 
 from virne.core import Controller, Recorder, Counter, Solution, Logger
@@ -37,6 +38,9 @@ class BaseNodeRankSolver(Solver):
     def solve(self, instance: dict) -> Solution:
         v_net, p_net  = instance['v_net'], instance['p_net']
 
+        # START TIMER
+        solve_start_time = time.perf_counter()
+
         solution = Solution.from_v_net(v_net)
         node_mapping_result = self.node_mapping(v_net, p_net, solution)
         if node_mapping_result:
@@ -44,14 +48,17 @@ class BaseNodeRankSolver(Solver):
             if link_mapping_result:
                 # SUCCESS
                 solution['result'] = True
-                return solution
             else:
                 # FAILURE
                 solution['route_result'] = False
+                solution['result'] = False
         else:
             # FAILURE
             solution['place_result'] = False
-        solution['result'] = False
+            solution['result'] = False
+
+        # RECORD TIME IN MILLISECONDS
+        solution['v_net_solve_time'] = (time.perf_counter() - solve_start_time) * 1000
         return solution
 
     def node_mapping(self, v_net: VirtualNetwork, p_net: PhysicalNetwork, solution: Solution) -> bool:

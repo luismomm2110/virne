@@ -267,6 +267,9 @@ class Recorder:
         """Save the records to a csv file."""
         save_path = os.path.join(self.record_dir, fname)
         pd_records = pd.DataFrame(self.memory)
+        # Add seed column from config
+        if hasattr(self.config, 'experiment') and hasattr(self.config.experiment, 'seed'):
+            pd_records['seed'] = self.config.experiment.seed
         pd_records.to_csv(save_path, index=False)
         try:
             os.remove(self.temp_save_path)

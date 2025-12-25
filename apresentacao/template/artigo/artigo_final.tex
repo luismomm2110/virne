@@ -22,7 +22,7 @@
 \renewcommand{\refname}{REFERÊNCIAS}
 
 \begin{document}
-
+t
 \title{Seleção Dinâmica de Algoritmos de Virtual Network Embedding usando XGBoost}
 
 \author{\IEEEauthorblockN{Luis Antonio Momm Duarte}
@@ -32,8 +32,8 @@ Joinville, Brasil \\
 luis.duarte@edu.udesc.br}
 \and
 \IEEEauthorblockN{Adriano Fiorese}
-\IEEEauthorblockA{\textit{Department of Computer Science} \\
-\textit{Santa Catarina State University}\\
+\IEEEauthorblockA{\textit{Programa de Pós-Graduação em Computação Aplicada} \\
+\textit{Universidade do Estado de Santa Catarina}\\
 Joinville, Brazil \\
 adriano.fiorese@udesc.br}
 }
@@ -230,6 +230,28 @@ O modelo \textit{XGBoost} treinado prediz qual algoritmo deve ser utilizado. O a
 
 \subsection{Geração de dados de simulações}
 
+A metodologia proposta utiliza um \textit{pipeline} de aprendizado de máquina composto por cinco etapas sequenciais (Figura~\ref{fig:pipeline}):
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[node distance=2.5cm]
+        \node (step1) [draw, rectangle, minimum width=2cm, minimum height=0.8cm] {\textbf{1. Extrair}};
+        \node (step2) [draw, rectangle, right of=step1, minimum width=2cm, minimum height=0.8cm] {\textbf{2. Preparar}};
+        \node (step3) [draw, rectangle, right of=step2, minimum width=2cm, minimum height=0.8cm] {\textbf{3. Treinar}};
+        \node (step4) [draw, rectangle, right of=step3, minimum width=2cm, minimum height=0.8cm] {\textbf{4. Analisar}};
+        \node (step5) [draw, rectangle, right of=step4, minimum width=2cm, minimum height=0.8cm] {\textbf{5. Avaliar}};
+
+        \draw [->, thick] (step1) -- (step2);
+        \draw [->, thick] (step2) -- (step3);
+        \draw [->, thick] (step3) -- (step4);
+        \draw [->, thick] (step4) -- (step5);
+    \end{tikzpicture}
+    \caption{\textit{Pipeline} de Aprendizado de Máquina para Seleção de Algoritmos VNE}
+    \label{fig:pipeline}
+\end{figure}
+
+\textbf{Etapa 1 - Extração de Dados de Simulações}:
+
 Os dados foram coletados utilizando a plataforma \textit{ViRNE}, executando simulações de VNE com sete diferentes algoritmos em duas topologias de \textit{datacenter}: árvore binária e \textit{fat-tree}. Os algoritmos avaliados incluem:
 
 \begin{itemize}
@@ -252,7 +274,14 @@ As topologias utilizadas foram:
 
 \textbf{Pré-processamento das Topologias:} As topologias físicas foram pré-processadas para distinguir nós de roteamento (\textit{switches}) de nós computacionais (\textit{hosts}). Todos os \textit{switches} internos receberam CPU=0, representando sua função exclusiva de roteamento, enquanto os \textit{hosts} (nós folha na \textit{Tree} e servidores na \textit{Fat-Tree}) mantiveram recursos computacionais normais (CPU entre 50-100 unidades). Este pré-processamento garante que as VNRs sejam mapeadas apenas em nós com capacidade computacional real.
 
-Para cada combinação de algoritmo e topologia, foram executadas dez repetições com diferentes sementes aleatórias para garantir significância estatística. Cada simulação gerou aproximadamente cem VNRs, totalizando 11.672 execuções de algoritmos. Após deduplicação (removendo múltiplas execuções da mesma VNR), foram obtidas oito mil VNRs únicas para treino.
+Para cada combinação de algoritmo e topologia, foram executadas dez repetições com diferentes sementes aleatórias para garantir significância estatística. Cada simulação gerou aproximadamente cem VNRs, totalizando 11.672 execuções de algoritmos. Após deduplicação (removendo múltiplas execuções da mesma VNR), foram obtidas oito mil VNRs únicas para treino. Os registros de cada simulação foram extraídos em formato CSV, contendo:
+
+\begin{itemize}
+    \item Identificadores de VNR: ID único, topologia, semente aleatória
+    \item Características da VNR: número de nós, número de enlaces, demandas de recursos
+    \item Estado da rede: utilização de nós, utilização de enlaces, recursos disponíveis
+    \item Resultado da execução: aceita/rejeitada, tempo de processamento, receita gerada
+\end{itemize}
 
 Os parâmetros de geração de VNRs foram:
 
@@ -271,6 +300,8 @@ A rede física possui, distribuída de maneira uniforme:
     \item Capacidade de nós: [50, 100] unidades de CPU
     \item Capacidade de enlaces: [50, 100] unidades de banda
 \end{itemize}
+
+\textbf{Saída da Etapa 1}: arquivo CSV com aproximadamente 14.000 registros brutos (1.000 VNRs × 8 algoritmos × 1-2 sementes).
 
 \subsection{Engenharia de \textit{Features}}
 

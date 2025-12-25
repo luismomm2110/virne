@@ -38,11 +38,20 @@ def select_features():
         'system_load',
         'num_running_p_net_nodes',
 
-        # Algorithm characteristics (computational effort)
-        'solving_time',
+        # Topology (explicit topology to force model to learn topology-specific patterns)
+        'topology_encoded',
 
-        # Topology
-        'topology_encoded'
+        # Engineered features for better discrimination
+        'network_stress_index',
+        'problem_complexity',
+        'resource_bottleneck_ratio',
+        'vnr_size_category',
+        'cpu_intensive_flag',
+        'bandwidth_intensive_flag',
+        'utilization_pressure',
+        'resource_efficiency'
+        # NOTE: solving_time removed - DATA LEAKAGE (you don't know solve time before choosing algorithm!)
+        # NOTE: p_net_num_nodes removed - it was creating data leakage by perfectly encoding topology
     ]
 
 
@@ -153,14 +162,14 @@ def plot_confusion_matrix(cm, classes, output_path='results/confusion_matrix.png
     plt.figure(figsize=(10, 8))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
                 xticklabels=classes, yticklabels=classes)
-    plt.title('Confusion Matrix - XGBoost Selector', fontsize=14, fontweight='bold')
-    plt.xlabel('Predicted Algorithm', fontsize=12)
-    plt.ylabel('True Best Algorithm', fontsize=12)
+    plt.title('Matriz de Confusão - Seletor XGBoost', fontsize=14, fontweight='bold')
+    plt.xlabel('Algoritmo Predito', fontsize=12)
+    plt.ylabel('Melhor Algoritmo Real', fontsize=12)
     plt.tight_layout()
 
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
-    print(f"\n✓ Confusion matrix saved: {output_path}")
+    print(f"\n✓ Matriz de confusão salva: {output_path}")
     plt.close()
 
 
@@ -186,8 +195,8 @@ def plot_feature_importance(model, feature_names, output_path='results/feature_i
     plt.figure(figsize=(10, 8))
     plt.barh(range(top_n), importances[top_indices], align='center')
     plt.yticks(range(top_n), [feature_names[i] for i in top_indices])
-    plt.xlabel('Feature Importance (Weight)', fontsize=12)
-    plt.title('Top Feature Importances - XGBoost', fontsize=14, fontweight='bold')
+    plt.xlabel('Importância da Característica (Peso)', fontsize=12)
+    plt.title('Top Importâncias de Características - XGBoost', fontsize=14, fontweight='bold')
     plt.gca().invert_yaxis()
     plt.tight_layout()
 
@@ -304,13 +313,42 @@ if __name__ == '__main__':
     X_val, y_val = prepare_data(val_df, feature_cols, target_col)
     X_test, y_test = prepare_data(test_df, feature_cols, target_col)
 
+    # Remove rare classes (less than 5% of training data)
+    # Keep only: pl_rank, rw_rank_bfs, mip, ga_meta
+    classes_to_keep = ['pl_rank', 'rw_rank_bfs', 'mip', 'ga_meta']
+
+    print(f"\n🔍 Filtering rare classes...")
+    print(f"  Before: {len(y_train)} train samples, {len(y_test)} test samples")
+
+    # Filter training data
+    train_mask = y_train.isin(classes_to_keep)
+    X_train = X_train[train_mask]
+    y_train = y_train[train_mask]
+
+    # Filter validation data
+    val_mask = y_val.isin(classes_to_keep)
+    X_val = X_val[val_mask]
+    y_val = y_val[val_mask]
+
+    # Filter test data
+    test_mask = y_test.isin(classes_to_keep)
+    X_test = X_test[test_mask]
+    y_test = y_test[test_mask]
+
+    print(f"  After:  {len(y_train)} train samples, {len(y_test)} test samples")
+    print(f"\n✓ Kept classes: {classes_to_keep}")
+    print(f"✓ Removed classes: d_round, mcts, pso_meta, sa_meta")
+
     # Create label encoder with only classes present in training data
     # This ensures XGBoost gets consecutive class labels 0,1,2,...,n-1
     unique_train_classes = sorted(y_train.unique())
     label_encoder = LabelEncoder()
     label_encoder.fit(unique_train_classes)
+    print(f"\n📊 Class distribution after filtering:")
     for idx, label in enumerate(label_encoder.classes_):
-        print(f"    {idx}: {label}")
+        count_train = (y_train == label).sum()
+        count_test = (y_test == label).sum()
+        print(f"    {idx}: {label:15s} | train: {count_train:4d} | test: {count_test:3d}")
 
     # Train model with grid search
     model, grid_search = train_with_grid_search(X_train, y_train, X_val, y_val, label_encoder)
@@ -326,3 +364,123 @@ if __name__ == '__main__':
 
     # Save model
     save_model(model, label_encoder, f'models/xgb_{target_col}_model.pkl')
+
+    # ============================================================================
+    # TRAIN TOPOLOGY-SPECIFIC MODELS
+    # ============================================================================
+    print(f"\n\n{'='*80}")
+    print("TRAINING TOPOLOGY-SPECIFIC MODELS")
+    print(f"{'='*80}")
+
+    # Features without topology_encoded (since we split by topology)
+    feature_cols_no_topo = [f for f in feature_cols if f != 'topology_encoded']
+
+    # Split data by topology
+    train_tree = train_df[train_df['topology_encoded'] == 0].copy()
+    train_fat = train_df[train_df['topology_encoded'] == 1].copy()
+
+    val_tree = val_df[val_df['topology_encoded'] == 0].copy()
+    val_fat = val_df[val_df['topology_encoded'] == 1].copy()
+
+    test_tree = test_df[test_df['topology_encoded'] == 0].copy()
+    test_fat = test_df[test_df['topology_encoded'] == 1].copy()
+
+    print(f"\nData split by topology:")
+    print(f"  Tree:     Train: {len(train_tree):4d} | Val: {len(val_tree):3d} | Test: {len(test_tree):3d}")
+    print(f"  Fat-tree: Train: {len(train_fat):4d} | Val: {len(val_fat):3d} | Test: {len(test_fat):3d}")
+
+    # Prepare data for tree topology
+    X_train_tree, y_train_tree = prepare_data(train_tree, feature_cols_no_topo, target_col)
+    X_val_tree, y_val_tree = prepare_data(val_tree, feature_cols_no_topo, target_col)
+    X_test_tree, y_test_tree = prepare_data(test_tree, feature_cols_no_topo, target_col)
+
+    # Prepare data for fat-tree topology
+    X_train_fat, y_train_fat = prepare_data(train_fat, feature_cols_no_topo, target_col)
+    X_val_fat, y_val_fat = prepare_data(val_fat, feature_cols_no_topo, target_col)
+    X_test_fat, y_test_fat = prepare_data(test_fat, feature_cols_no_topo, target_col)
+
+    # Filter to same classes
+    print(f"\n🔍 Filtering to common classes for topology-specific models...")
+
+    for name, y_train_topo, y_test_topo in [
+        ('Tree', y_train_tree, y_test_tree),
+        ('Fat-tree', y_train_fat, y_test_fat),
+    ]:
+        mask_train = y_train_topo.isin(classes_to_keep)
+        mask_test = y_test_topo.isin(classes_to_keep)
+        print(f"  {name:10s}: {mask_train.sum():3d} train samples, {mask_test.sum():3d} test samples")
+
+    # Apply filters
+    train_mask_tree = y_train_tree.isin(classes_to_keep)
+    X_train_tree = X_train_tree[train_mask_tree]
+    y_train_tree = y_train_tree[train_mask_tree]
+
+    val_mask_tree = y_val_tree.isin(classes_to_keep)
+    X_val_tree = X_val_tree[val_mask_tree]
+    y_val_tree = y_val_tree[val_mask_tree]
+
+    test_mask_tree = y_test_tree.isin(classes_to_keep)
+    X_test_tree = X_test_tree[test_mask_tree]
+    y_test_tree = y_test_tree[test_mask_tree]
+
+    train_mask_fat = y_train_fat.isin(classes_to_keep)
+    X_train_fat = X_train_fat[train_mask_fat]
+    y_train_fat = y_train_fat[train_mask_fat]
+
+    val_mask_fat = y_val_fat.isin(classes_to_keep)
+    X_val_fat = X_val_fat[val_mask_fat]
+    y_val_fat = y_val_fat[val_mask_fat]
+
+    test_mask_fat = y_test_fat.isin(classes_to_keep)
+    X_test_fat = X_test_fat[test_mask_fat]
+    y_test_fat = y_test_fat[test_mask_fat]
+
+    # Train TREE topology model
+    print(f"\n{'='*80}")
+    print("TREE TOPOLOGY MODEL")
+    print(f"{'='*80}")
+
+    unique_train_classes_tree = sorted(y_train_tree.unique())
+    label_encoder_tree = LabelEncoder()
+    label_encoder_tree.fit(unique_train_classes_tree)
+
+    print(f"\n📊 Class distribution (Tree):")
+    for idx, label in enumerate(label_encoder_tree.classes_):
+        count_train = (y_train_tree == label).sum()
+        count_test = (y_test_tree == label).sum()
+        print(f"    {idx}: {label:15s} | train: {count_train:4d} | test: {count_test:3d}")
+
+    print(f"\nTraining Tree model...")
+    model_tree, grid_search_tree = train_with_grid_search(X_train_tree, y_train_tree, X_val_tree, y_val_tree, label_encoder_tree)
+
+    print(f"\nEvaluating Tree model on test set:")
+    y_test_pred_tree, cm_tree = evaluate_model(model_tree, X_test_tree, y_test_tree, label_encoder_tree, dataset_name='Test (Tree)')
+
+    # Train FAT-TREE topology model
+    print(f"\n{'='*80}")
+    print("FAT-TREE TOPOLOGY MODEL")
+    print(f"{'='*80}")
+
+    unique_train_classes_fat = sorted(y_train_fat.unique())
+    label_encoder_fat = LabelEncoder()
+    label_encoder_fat.fit(unique_train_classes_fat)
+
+    print(f"\n📊 Class distribution (Fat-tree):")
+    for idx, label in enumerate(label_encoder_fat.classes_):
+        count_train = (y_train_fat == label).sum()
+        count_test = (y_test_fat == label).sum()
+        print(f"    {idx}: {label:15s} | train: {count_train:4d} | test: {count_test:3d}")
+
+    print(f"\nTraining Fat-tree model...")
+    model_fat, grid_search_fat = train_with_grid_search(X_train_fat, y_train_fat, X_val_fat, y_val_fat, label_encoder_fat)
+
+    print(f"\nEvaluating Fat-tree model on test set:")
+    y_test_pred_fat, cm_fat = evaluate_model(model_fat, X_test_fat, y_test_fat, label_encoder_fat, dataset_name='Test (Fat-tree)')
+
+    # Save topology-specific models
+    save_model(model_tree, label_encoder_tree, 'models/xgb_tree_topology_model.pkl')
+    save_model(model_fat, label_encoder_fat, 'models/xgb_fat_tree_topology_model.pkl')
+
+    print(f"\n{'='*80}")
+    print("TOPOLOGY-SPECIFIC TRAINING COMPLETE!")
+    print(f"{'='*80}")

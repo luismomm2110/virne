@@ -47,4 +47,5 @@ for hyperparameter settings on neural networks and meta-RL.O
   - Solution time (time to embed the virtual network)
 - Save results to CSV files
 - Use multiple random seeds for statistical significance
-
+- > what I want as final objective is the tree select the best algo for the current state (PN and VN). How can i do this? with this rperesentation i think its just best to select the 
+winner who is overrepresented. what can I do?

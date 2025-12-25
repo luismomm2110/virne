@@ -165,6 +165,8 @@ def extract_vnr_data():
                         'v_net_r2c_ratio': row.get('v_net_r2c_ratio', None),
                         'v_net_revenue': row.get('v_net_revenue', None),
                         'v_net_cost': row.get('v_net_cost', None),
+                        'v_net_time_cost': row.get('v_net_time_cost', 0.0),
+                        'v_net_time_revenue': row.get('v_net_time_revenue', None),
                     }
 
                     all_records.append(record)

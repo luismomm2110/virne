@@ -8,7 +8,7 @@ This script extends the standard main.py to:
 4. Run the D-Rounding solver with the specified configuration
 
 Usage:
-    python main_tree_drounding.py p_net_setting=tree_p_net_setting \
+    python main_tree_d_round.py p_net_setting=tree_p_net_setting \
                                    v_sim_setting=v_sim_200_requests \
                                    solver.solver_name=d_round \
                                    experiment.seed=0

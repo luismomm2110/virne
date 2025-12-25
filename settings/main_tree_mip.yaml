@@ -1,7 +1,7 @@
 defaults:
   - _self_
   - learning
-  - v_sim_setting/v_sim_200_requests
+  - v_sim_setting/v_sim_ga_meta_favoring
   - p_net_setting/tree_p_net_setting
 
 hydra:
@@ -16,9 +16,9 @@ output_subdir: null
 # For Experiment
 experiment:
   seed: 0
-  run_id: auto  # if auto: hostname-datatime
+  run_id: auto
   num_simulations: 1
-  save_root_dir: apresentacao/simulacoes/
+  save_root_dir: virne/
   if_save_config: true
   if_save_p_net: false
   if_save_v_nets: false
@@ -60,10 +60,9 @@ recorder:
   summary_file_name: summary.csv
 
 logger:
-  # actual log dir: <save_root_dir>/<solver_name>/<generated_run_id>/<log_dir>
   log_dir_name: logs
   project_name: 'virne'
-  experiment_name: mip_tree_experiment
+  experiment_name: tree_mip_comparison
   level: INFO
   verbose: 1
   backends: ['console', 'file', 'tensorboard']

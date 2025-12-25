@@ -166,6 +166,8 @@ We implemented 10 new engineered features across 3 categories:
 - The problem is **not feature quantity but feature quality/selection**
 - Alternative approaches needed for LRC/LAR objectives
 
+**IMPORTANT: Acurácia sozinha é enganosa - veja análise com Oracle abaixo**
+
 **2. Overfitting Diagnosis**
 
 | Objective | Train-Val Gap | Assessment | Root Cause |
