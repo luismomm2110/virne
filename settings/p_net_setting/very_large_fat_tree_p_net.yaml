@@ -1,0 +1,43 @@
+# Physical Network Configuration - Very Large Fat-Tree (k=10)
+# Very large datacenter topology
+# k=10 creates 250 hosts + 125 switches = 375 total nodes
+
+topology:
+  num_nodes: 250             # Number of HOST nodes (k^3/4 where k=10)
+  type: fat_tree             # Fat-Tree datacenter topology
+  k: 10                      # Number of ports per switch (must be even)
+                             # This creates 250 host nodes (10^3/4 = 250)
+  wm_alpha: 0.5              # Not used for fat_tree
+  wm_beta: 0.2               # Not used for fat_tree
+
+node_attrs_setting:
+  - name: cpu
+    type: resource
+    owner: node
+    distribution: uniform
+    dtype: int
+    generative: true
+    high: 100
+    low: 50
+  - name: max_cpu
+    type: extrema
+    owner: node
+    originator: cpu
+
+link_attrs_setting:
+  - name: bw
+    type: resource
+    owner: link
+    distribution: uniform
+    dtype: int
+    generative: true
+    high: 400
+    low: 200
+  - name: max_bw
+    type: extrema
+    owner: link
+    originator: bw
+
+output:
+  save_dir: dataset/p_net
+  file_name: very_large_fat_tree_p_net.gml

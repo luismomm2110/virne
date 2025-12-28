@@ -1,0 +1,117 @@
+{
+  "rac": {
+    "tree": {
+      "oracle_value": 26.429163214581607,
+      "matches_found": 1207,
+      "not_found": 0,
+      "no_best_algo": 293,
+      "total_vnrs": 1500
+    },
+    "fat_tree": {
+      "oracle_value": 48.8,
+      "matches_found": 1500,
+      "not_found": 0,
+      "no_best_algo": 0,
+      "total_vnrs": 1500
+    },
+    "waxman_16": {
+      "oracle_value": 42.84697508896797,
+      "matches_found": 1405,
+      "not_found": 0,
+      "no_best_algo": 95,
+      "total_vnrs": 1500
+    }
+  },
+  "lrc": {
+    "tree": {
+      "oracle_value": 0.8604741812290447,
+      "matches_found": 1500,
+      "not_found": 0,
+      "no_best_algo": 0,
+      "total_vnrs": 1500
+    },
+    "fat_tree": {
+      "oracle_value": 0.803345324348097,
+      "matches_found": 1500,
+      "not_found": 0,
+      "no_best_algo": 0,
+      "total_vnrs": 1500
+    },
+    "waxman_16": {
+      "oracle_value": 0.7106890662045617,
+      "matches_found": 1500,
+      "not_found": 0,
+      "no_best_algo": 0,
+      "total_vnrs": 1500
+    }
+  },
+  "lar": {
+    "tree": {
+      "oracle_value": 13.912666666666667,
+      "matches_found": 1500,
+      "not_found": 0,
+      "no_best_algo": 0,
+      "total_vnrs": 1500
+    },
+    "fat_tree": {
+      "oracle_value": 165.28133333333332,
+      "matches_found": 1500,
+      "not_found": 0,
+      "no_best_algo": 0,
+      "total_vnrs": 1500
+    },
+    "waxman_16": {
+      "oracle_value": 95.018,
+      "matches_found": 1500,
+      "not_found": 0,
+      "no_best_algo": 0,
+      "total_vnrs": 1500
+    }
+  },
+  "ast": {
+    "tree": {
+      "oracle_value": 0.0,
+      "matches_found": 1500,
+      "not_found": 0,
+      "no_best_algo": 0,
+      "total_vnrs": 1500
+    },
+    "fat_tree": {
+      "oracle_value": 0.0,
+      "matches_found": 1500,
+      "not_found": 0,
+      "no_best_algo": 0,
+      "total_vnrs": 1500
+    },
+    "waxman_16": {
+      "oracle_value": 0.0,
+      "matches_found": 1500,
+      "not_found": 0,
+      "no_best_algo": 0,
+      "total_vnrs": 1500
+    }
+  },
+  "balanced": {
+    "tree": {
+      "oracle_value": 52.93207547169812,
+      "matches_found": 1207,
+      "not_found": 0,
+      "no_best_algo": 293,
+      "total_vnrs": 1500
+    },
+    "fat_tree": {
+      "oracle_value": 193.25625606207566,
+      "matches_found": 1500,
+      "not_found": 0,
+      "no_best_algo": 0,
+      "total_vnrs": 1500
+    },
+    "waxman_16": {
+      "oracle_value": 169.9277108433735,
+      "matches_found": 1405,
+      "not_found": 0,
+      "no_best_algo": 95,
+      "total_vnrs": 1500
+    }
+  }
+}

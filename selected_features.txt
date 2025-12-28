@@ -1,0 +1,12 @@
+num_nodes
+num_edges
+density
+avg_node_demand
+avg_link_demand
+node_link_demand_ratio
+p_net_available
+p_net_node_available
+lifetime
+arrival_time
+inservice_count
+is_fat_tree

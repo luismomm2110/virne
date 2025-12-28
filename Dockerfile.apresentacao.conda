@@ -1,0 +1,74 @@
+# Dockerfile with Conda for complete VNE pipeline
+# Includes PyTorch Geometric via conda-forge for better compatibility
+
+FROM continuumio/miniconda3:latest
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    git \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy project files
+COPY pyproject.toml /app/
+COPY virne/ /app/virne/
+COPY apresentacao/ /app/apresentacao/
+
+# Create conda environment and install dependencies
+RUN conda create -n virne python=3.10 -y && \
+    echo "source activate virne" > ~/.bashrc
+
+# Install PyTorch and PyTorch Geometric via conda
+RUN /bin/bash -c "source activate virne && \
+    conda install -y pytorch==2.0.0 cpuonly -c pytorch && \
+    conda install -y pyg -c pyg && \
+    conda install -y -c conda-forge \
+    numpy \
+    pandas \
+    matplotlib \
+    scipy \
+    networkx \
+    tqdm \
+    scikit-learn \
+    xgboost \
+    jupyter \
+    jupyterlab \
+    seaborn \
+    pyyaml"
+
+# Install remaining dependencies via pip
+RUN /bin/bash -c "source activate virne && \
+    pip install --no-cache-dir \
+    gym==0.22.0 \
+    tensorboard \
+    wandb \
+    higher \
+    ortools \
+    colorama \
+    hydra-core \
+    colorlog"
+
+# Install ViRNE
+RUN /bin/bash -c "source activate virne && \
+    pip install --no-cache-dir --no-deps -e ."
+
+# Create necessary directories
+RUN mkdir -p /app/apresentacao/machine_learning/datasets \
+    /app/apresentacao/machine_learning/models \
+    /app/apresentacao/machine_learning/results \
+    /app/apresentacao/simulacoes
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/app
+ENV PATH=/opt/conda/envs/virne/bin:$PATH
+
+# Expose Jupyter port
+EXPOSE 8888
+
+# Activate conda environment and run Jupyter Lab
+CMD ["/bin/bash", "-c", "source activate virne && jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password=''"]

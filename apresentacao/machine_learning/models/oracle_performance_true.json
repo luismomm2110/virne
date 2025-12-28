@@ -1,0 +1,132 @@
+{
+  "rac": {
+    "tree": {
+      "oracle_metric": 0.0,
+      "success_count": 0,
+      "total_vnrs": 186,
+      "found_results": 0,
+      "not_found": 186,
+      "no_best_algo": 0
+    },
+    "fat_tree": {
+      "oracle_metric": 0.0,
+      "success_count": 0,
+      "total_vnrs": 224,
+      "found_results": 0,
+      "not_found": 224,
+      "no_best_algo": 0
+    },
+    "waxman_16": {
+      "oracle_metric": 0.0,
+      "success_count": 0,
+      "total_vnrs": 207,
+      "found_results": 0,
+      "not_found": 207,
+      "no_best_algo": 0
+    }
+  },
+  "lrc": {
+    "tree": {
+      "oracle_metric": 0.0,
+      "success_count": 0,
+      "total_vnrs": 186,
+      "found_results": 0,
+      "not_found": 186,
+      "no_best_algo": 0
+    },
+    "fat_tree": {
+      "oracle_metric": 0.0,
+      "success_count": 0,
+      "total_vnrs": 224,
+      "found_results": 0,
+      "not_found": 224,
+      "no_best_algo": 0
+    },
+    "waxman_16": {
+      "oracle_metric": 0.0,
+      "success_count": 0,
+      "total_vnrs": 207,
+      "found_results": 0,
+      "not_found": 207,
+      "no_best_algo": 0
+    }
+  },
+  "lar": {
+    "tree": {
+      "oracle_metric": 0.0,
+      "success_count": 0,
+      "total_vnrs": 186,
+      "found_results": 0,
+      "not_found": 186,
+      "no_best_algo": 0
+    },
+    "fat_tree": {
+      "oracle_metric": 0.0,
+      "success_count": 0,
+      "total_vnrs": 224,
+      "found_results": 0,
+      "not_found": 224,
+      "no_best_algo": 0
+    },
+    "waxman_16": {
+      "oracle_metric": 0.0,
+      "success_count": 0,
+      "total_vnrs": 207,
+      "found_results": 0,
+      "not_found": 207,
+      "no_best_algo": 0
+    }
+  },
+  "ast": {
+    "tree": {
+      "oracle_metric": 0.0,
+      "success_count": 0,
+      "total_vnrs": 186,
+      "found_results": 0,
+      "not_found": 186,
+      "no_best_algo": 0
+    },
+    "fat_tree": {
+      "oracle_metric": 0.0,
+      "success_count": 0,
+      "total_vnrs": 224,
+      "found_results": 0,
+      "not_found": 224,
+      "no_best_algo": 0
+    },
+    "waxman_16": {
+      "oracle_metric": 0.0,
+      "success_count": 0,
+      "total_vnrs": 207,
+      "found_results": 0,
+      "not_found": 207,
+      "no_best_algo": 0
+    }
+  },
+  "balanced": {
+    "tree": {
+      "oracle_metric": 0.0,
+      "success_count": 0,
+      "total_vnrs": 186,
+      "found_results": 0,
+      "not_found": 186,
+      "no_best_algo": 0
+    },
+    "fat_tree": {
+      "oracle_metric": 0.0,
+      "success_count": 0,
+      "total_vnrs": 224,
+      "found_results": 0,
+      "not_found": 224,
+      "no_best_algo": 0
+    },
+    "waxman_16": {
+      "oracle_metric": 0.0,
+      "success_count": 0,
+      "total_vnrs": 207,
+      "found_results": 0,
+      "not_found": 207,
+      "no_best_algo": 0
+    }
+  }
+}

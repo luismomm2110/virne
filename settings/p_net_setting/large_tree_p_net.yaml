@@ -1,0 +1,43 @@
+# Physical Network Configuration - Large Tree Topology
+# Binary tree with 128 HOST nodes (leaf nodes)
+# Total nodes: 128 hosts + 127 switches = 255 nodes
+# Much larger than current tree (16 hosts)
+
+topology:
+  num_nodes: 128             # Number of HOST nodes (leaf nodes)
+  type: tree                 # Tree topology
+  branching_factor: 2        # Binary tree (2 children per switch)
+  wm_alpha: 0.5              # Not used for tree
+  wm_beta: 0.2               # Not used for tree
+
+node_attrs_setting:
+  - name: cpu
+    type: resource
+    owner: node
+    distribution: uniform
+    dtype: int
+    generative: true
+    high: 100
+    low: 50
+  - name: max_cpu
+    type: extrema
+    owner: node
+    originator: cpu
+
+link_attrs_setting:
+  - name: bw
+    type: resource
+    owner: link
+    distribution: uniform
+    dtype: int
+    generative: true
+    high: 400
+    low: 200
+  - name: max_bw
+    type: extrema
+    owner: link
+    originator: bw
+
+output:
+  save_dir: dataset/p_net
+  file_name: large_tree_p_net.gml

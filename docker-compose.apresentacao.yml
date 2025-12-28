@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  vne-ml-apresentacao:
+    build:
+      context: .
+      dockerfile: Dockerfile.apresentacao
+    container_name: vne-ml-apresentacao
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./apresentacao:/app/apresentacao
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+    command: jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password=''
+    restart: unless-stopped
+
+  # Opcional: Container para executar scripts em background
+  vne-ml-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.apresentacao
+    container_name: vne-ml-worker
+    volumes:
+      - ./apresentacao:/app/apresentacao
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+    # Executa um script específico ou mantém container ativo
+    command: tail -f /dev/null
+    restart: unless-stopped
+    profiles:
+      - worker

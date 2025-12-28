@@ -1,0 +1,119 @@
+═══════════════════════════════════════════════════════════════════════════════
+                         TIME METRIC CLARIFICATION
+═══════════════════════════════════════════════════════════════════════════════
+
+YOUR QUESTION: "MIP is an exact algorithm, should be slower. Why does it appear
+             fastest in our metrics?"
+
+THE ANSWER:   "It's not actually faster - we're measuring the wrong thing."
+
+───────────────────────────────────────────────────────────────────────────────
+WHAT WE MEASURED:
+───────────────────────────────────────────────────────────────────────────────
+
+  total_simulation_time = last VNR arrival time in simulator
+
+  This is:
+    ✓ The timestamp of the 200th VNR arriving in the simulation
+    ✓ ~4684 seconds (simulated time units)
+    ✗ NOT algorithm CPU time
+    ✗ NOT wall-clock execution time
+    ✗ NOT computational complexity measurement
+
+───────────────────────────────────────────────────────────────────────────────
+THE REAL DATA:
+───────────────────────────────────────────────────────────────────────────────
+
+Algorithm         | Acceptance | Success    | "Time per Success" | What This Means
+                  | Rate       | Count (avg)| (4684 / successes) |
+──────────────────┼────────────┼────────────┼────────────────────┼─────────────────
+MIP               | 65.2%      | 130.4      | 35.9 seconds       | ✓ Most effective
+PL-RANK           | 53.4%      | 106.8      | 43.8 seconds       | -
+GA-Meta           | 50.0%      | 102.4      | 45.7 seconds       | -
+MCTS              | 47.7%      | 95.4       | 49.0 seconds       | -
+RW-RANK-BFS       | 47.5%      | 95.0       | 49.3 seconds       | -
+SA-Meta           | 46.1%      | 92.2       | 50.8 seconds       | -
+D-Round           | 33.2%      | 66.4       | 70.5 seconds       | ✗ Least effective
+
+───────────────────────────────────────────────────────────────────────────────
+HOW WE MISINTERPRETED THIS:
+───────────────────────────────────────────────────────────────────────────────
+
+The metric 35.9 seconds per success looks like "MIP solves 35.9 seconds faster."
+
+But it actually means:
+  "MIP successfully embeds 1 VNR per 35.9 seconds of SIMULATED TIME"
+  = "MIP achieves 130.4 successes / 4684 simulated seconds"
+  = "MIP's success rate is high"
+  ≠ "MIP's CPU execution time is fast"
+
+───────────────────────────────────────────────────────────────────────────────
+WHY THIS HAPPENED:
+───────────────────────────────────────────────────────────────────────────────
+
+1. All algorithms process identical VNR streams
+2. All algorithms see ~4684 simulated seconds (fixed by arrival process)
+3. MIP accepts MORE VNRs (130.4 vs 66.4 for D-Round)
+4. When we divide: 4684 / successes, MIP gets smaller number
+5. Smaller number = "appears faster"
+6. But it's actually showing: "more effective", not "faster"
+
+───────────────────────────────────────────────────────────────────────────────
+CORRECT INTERPRETATION:
+───────────────────────────────────────────────────────────────────────────────
+
+✓ MIP is MORE EFFECTIVE      (65.2% acceptance vs 33.2% D-Round)
+✓ MIP is BETTER QUALITY      (finds optimal solutions)
+✓ MIP achieves more SUCCESS  (130.4 vs 66.4)
+
+✗ We DON'T KNOW if MIP is faster
+✗ We HAVEN'T MEASURED CPU time
+✗ We HAVEN'T MEASURED wall-clock time
+✗ We HAVEN'T COMPARED computational complexity
+
+───────────────────────────────────────────────────────────────────────────────
+ACTUAL EXPECTATIONS:
+───────────────────────────────────────────────────────────────────────────────
+
+Theoretical Speed (per VNR):
+  D-Round         → O(n log n)          → SHOULD be fastest
+  Heuristics      → O(n²) to O(n³)      → SHOULD be medium
+  MIP (exact)     → Exponential worst-case → SHOULD be slowest
+
+Our Metrics:
+  ✗ Don't measure per-VNR time
+  ✗ Only measure simulation timeline
+  ✗ Confuse quality with speed
+
+───────────────────────────────────────────────────────────────────────────────
+WHAT SHOULD BE MEASURED FOR SPEED:
+───────────────────────────────────────────────────────────────────────────────
+
+Option 1 - Wall-Clock Time:
+  import time
+  start = time.time()
+  solution = algorithm.solve(v_net, p_net)
+  elapsed = time.time() - start
+
+Option 2 - Per-VNR Time:
+  total_wall_time / number_of_vnrs_attempted
+  (Not successes, but ALL attempts)
+
+Option 3 - Solver Metrics:
+  - MIP iterations/nodes explored
+  - GA generations needed
+  - MCTS tree depth
+  - Compare relative effort
+
+═══════════════════════════════════════════════════════════════════════════════
+                            BOTTOM LINE
+═══════════════════════════════════════════════════════════════════════════════
+
+The data correctly shows MIP is EFFECTIVE (65.2% acceptance).
+
+The data DOES NOT show MIP is FAST.
+
+Your skepticism was correct: exact solvers should theoretically be slower,
+and we have no evidence they're not. The metric was just misleading.
+
+═══════════════════════════════════════════════════════════════════════════════

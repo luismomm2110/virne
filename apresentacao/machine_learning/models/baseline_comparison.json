@@ -1,0 +1,42 @@
+{
+  "RAC": {
+    "baseline_algorithm": "ga_meta",
+    "baseline_accuracy": 34.36,
+    "tree_accuracy": 86.1,
+    "improvement_pp": 51.74,
+    "improvement_relative": 150.59,
+    "tree_better": true
+  },
+  "LRC": {
+    "baseline_algorithm": "pl_rank",
+    "baseline_accuracy": 27.23,
+    "tree_accuracy": 83.12,
+    "improvement_pp": 55.89,
+    "improvement_relative": 205.28,
+    "tree_better": true
+  },
+  "LAR": {
+    "baseline_algorithm": "ga_meta",
+    "baseline_accuracy": 22.85,
+    "tree_accuracy": 76.61,
+    "improvement_pp": 53.76,
+    "improvement_relative": 235.25,
+    "tree_better": true
+  },
+  "AST": {
+    "baseline_algorithm": "pl_rank",
+    "baseline_accuracy": 59.16,
+    "tree_accuracy": 100.0,
+    "improvement_pp": 40.84,
+    "improvement_relative": 69.04,
+    "tree_better": true
+  },
+  "BALANCED": {
+    "baseline_algorithm": "pl_rank",
+    "baseline_accuracy": 30.47,
+    "tree_accuracy": 75.3,
+    "improvement_pp": 44.83,
+    "improvement_relative": 147.12,
+    "tree_better": true
+  }
+}

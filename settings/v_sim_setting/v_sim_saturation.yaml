@@ -1,0 +1,56 @@
+# Virtual Network Simulation Configuration - SATURATION Scenario
+# Very large VNRs with high resource demands to saturate the physical network
+# This creates extreme contention and should test algorithm limits
+# Expected: Very low acceptance rates (<5%) across all algorithms
+
+num_v_nets: 200  # Number of virtual networks to generate
+
+topology:
+  type: random           # Topology type: random, waxman, etc.
+  random_prob: 0.6       # Higher connectivity = more link demands
+
+v_net_size:
+  distribution: uniform  # Distribution type for virtual network size
+  dtype: int
+  low: 15                # VERY LARGE minimum (was 8 in complex)
+  high: 30               # VERY LARGE maximum (was 20 in complex)
+
+arrival_rate:
+  distribution: poisson
+  dtype: float
+  lam: 0.06              # Moderate-high arrival rate for sustained pressure
+  reciprocal: true
+
+lifetime:
+  distribution: exponential
+  dtype: float
+  scale: 800             # Long lifetime = resources stay allocated longer
+
+node_attrs_setting:
+  - name: cpu
+    type: resource
+    owner: node
+    distribution: uniform
+    dtype: int
+    generative: true
+    low: 20              # VERY HIGH minimum (was 10 in complex)
+    high: 60             # VERY HIGH maximum (was 40 in complex)
+
+link_attrs_setting:
+  - name: bw
+    type: resource
+    owner: link
+    distribution: uniform
+    dtype: int
+    generative: true
+    low: 40              # VERY HIGH minimum (was 20 in complex)
+    high: 150            # VERY HIGH maximum (was 100 in complex)
+
+graph_attrs_setting:
+
+output:
+  save_dir: dataset/v_nets
+  v_nets_save_dir: v_nets
+  v_nets_file_name: v_net.gml
+  events_file_name: events.yaml
+  setting_file_name: v_sim_setting.yaml

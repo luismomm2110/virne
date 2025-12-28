@@ -1,0 +1,32 @@
+{
+  "rac": {
+    "accuracy": 0.5299837925445705,
+    "train_accuracy": 0.5826963168867269,
+    "f1_score": 0.5171703812253015,
+    "report": "              precision    recall  f1-score   support\n\n     d_round       0.43      0.67      0.52        95\n     ga_meta       0.91      0.34      0.50       211\n        mcts       0.50      0.69      0.58       156\n         mip       0.29      0.09      0.14        54\n     pl_rank       0.72      0.89      0.80        55\n    pso_meta       0.10      0.75      0.18         4\n rw_rank_bfs       0.50      0.75      0.60         8\n     sa_meta       0.44      0.59      0.51        34\n\n    accuracy                           0.53       617\n   macro avg       0.49      0.60      0.48       617\nweighted avg       0.63      0.53      0.52       617\n"
+  },
+  "lrc": {
+    "accuracy": 0.4651539708265802,
+    "train_accuracy": 0.4829742876997915,
+    "f1_score": 0.47653672147029896,
+    "report": "              precision    recall  f1-score   support\n\n     d_round       0.16      0.67      0.26         9\n     ga_meta       0.70      0.47      0.56        85\n        mcts       0.68      0.25      0.37        76\n         mip       0.75      0.06      0.11        99\n     pl_rank       0.83      0.58      0.69       170\n    pso_meta       0.44      0.80      0.57        25\n rw_rank_bfs       0.14      0.90      0.25        30\n     sa_meta       0.52      0.57      0.54       123\n\n    accuracy                           0.47       617\n   macro avg       0.53      0.54      0.42       617\nweighted avg       0.66      0.47      0.48       617\n"
+  },
+  "lar": {
+    "accuracy": 0.47974068071312803,
+    "train_accuracy": 0.5059068797776234,
+    "f1_score": 0.48342709246369164,
+    "report": "              precision    recall  f1-score   support\n\n     d_round       0.56      0.31      0.40        65\n     ga_meta       0.46      0.72      0.56       139\n        mcts       0.53      0.36      0.43       115\n         mip       0.69      0.33      0.45       121\n     pl_rank       1.00      0.51      0.67        79\n    pso_meta       0.20      0.60      0.31        15\n rw_rank_bfs       0.44      0.44      0.44        18\n     sa_meta       0.30      0.58      0.40        65\n\n    accuracy                           0.48       617\n   macro avg       0.52      0.48      0.46       617\nweighted avg       0.57      0.48      0.48       617\n"
+  },
+  "ast": {
+    "accuracy": 0.8476499189627229,
+    "train_accuracy": 0.8603196664350243,
+    "f1_score": 0.8480393367620938,
+    "report": "              precision    recall  f1-score   support\n\n     pl_rank       0.88      0.86      0.87       361\n rw_rank_bfs       0.80      0.84      0.82       256\n\n    accuracy                           0.85       617\n   macro avg       0.84      0.85      0.84       617\nweighted avg       0.85      0.85      0.85       617\n"
+  },
+  "balanced": {
+    "accuracy": 0.5721231766612642,
+    "train_accuracy": 0.563238359972203,
+    "f1_score": 0.5700854310679633,
+    "report": "              precision    recall  f1-score   support\n\n     d_round       0.50      0.55      0.52        31\n     ga_meta       0.54      0.62      0.57        73\n        mcts       0.35      0.61      0.45        64\n         mip       0.55      0.39      0.45       103\n     pl_rank       0.93      0.65      0.76       180\n    pso_meta       0.57      0.80      0.67        30\n rw_rank_bfs       0.78      0.14      0.23        51\n     sa_meta       0.46      0.75      0.57        85\n\n    accuracy                           0.57       617\n   macro avg       0.58      0.56      0.53       617\nweighted avg       0.64      0.57      0.57       617\n"
+  }
+}

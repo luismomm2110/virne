@@ -1,0 +1,41 @@
+# Physical Network Configuration - Fat-Tree with Tight Resources
+# Reduced capacity (50% less than normal) to test resource-constrained scenarios
+
+topology:
+  num_nodes: 16               # Number of HOST nodes (k^3/4 where k=4)
+  type: fat_tree              # Fat-Tree datacenter topology
+  k: 4                        # Number of ports per switch
+  wm_alpha: 0.5               # Not used for fat_tree, but required by config
+  wm_beta: 0.2                # Not used for fat_tree, but required by config
+
+node_attrs_setting:
+  - name: cpu
+    type: resource
+    owner: node
+    distribution: uniform
+    dtype: int
+    generative: true
+    high: 60                  # Reduced from 100
+    low: 30                   # Reduced from 50
+  - name: max_cpu
+    type: extrema
+    owner: node
+    originator: cpu
+
+link_attrs_setting:
+  - name: bw
+    type: resource
+    owner: link
+    distribution: uniform
+    dtype: int
+    generative: true
+    high: 200                 # Reduced from 400
+    low: 100                  # Reduced from 200
+  - name: max_bw
+    type: extrema
+    owner: link
+    originator: bw
+
+output:
+  save_dir: dataset/p_net
+  file_name: fat_tree_p_net_tight.gml

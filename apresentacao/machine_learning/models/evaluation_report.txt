@@ -1,0 +1,63 @@
+================================================================================
+DECISION TREE EVALUATION REPORT
+================================================================================
+
+Test Set Size: 449 samples
+
+Algorithms in Test Set:
+  rw_rank_bfs    :  298 samples ( 66.4%)
+  pl_rank        :   71 samples ( 15.8%)
+  mip            :   46 samples ( 10.2%)
+  ga_meta        :   13 samples (  2.9%)
+  sa_meta        :   13 samples (  2.9%)
+  pso_meta       :    8 samples (  1.8%)
+
+
+PERFORMANCE METRICS:
+  Accuracy:           0.3408 (34.08%)
+  Weighted F1-Score:  0.4192
+  Top-2 Accuracy:     0.7617 (76.17%)
+  Top-3 Accuracy:     0.8641 (86.41%)
+
+
+INTERPRETATION:
+  • Overall accuracy: 34.1% of predictions match oracle
+  • Top-3 accuracy: 86.4% of oracle algorithms are in top-3 predictions
+  • This suggests: Decision tree captures general algorithm patterns
+    but cannot always select the exact oracle algorithm
+
+
+CLASS-WISE PERFORMANCE:
+
+              precision    recall  f1-score   support
+
+     ga_meta       0.21      0.77      0.33        13
+         mip       0.41      0.46      0.43        46
+     pl_rank       0.17      0.01      0.03        71
+    pso_meta       0.02      0.38      0.04         8
+ rw_rank_bfs       0.89      0.39      0.54       298
+     sa_meta       0.03      0.15      0.05        13
+
+    accuracy                           0.34       449
+   macro avg       0.29      0.36      0.24       449
+weighted avg       0.66      0.34      0.42       449
+
+
+
+KEY INSIGHTS:
+  1. Class Imbalance Challenge:
+     - rw_rank_bfs dominates training set (66.3%)
+     - Minority classes (ga_meta, pso_meta) harder to predict
+
+  2. Top-K Accuracy Better Than Strict Match:
+     - Strict matching: 34.1%
+     - Predicted algo usually in top-3: 86.4%
+     - Suggests tree learns good algorithm families
+
+  3. Use Cases:
+     - If decision trees are combined with other heuristics,
+       top-3 ranking can guide algorithm selection
+     - As tie-breaker in ensemble methods
+
+
+================================================================================

@@ -1,0 +1,56 @@
+# EDGE CASE: Tiny VNRs requiring optimal solutions
+# Small VNRs where MIP can find optimal solution quickly
+# High resource demands relative to VNR size (quality critical)
+# Expected to favor: mip (exact method)
+
+num_v_nets: 700
+
+topology:
+  type: random
+  random_prob: 0.4       # Moderate connectivity
+
+v_net_size:
+  distribution: uniform
+  dtype: int
+  low: 2                 # TINY VNRs
+  high: 5                # Maximum 5 nodes
+
+arrival_rate:
+  distribution: poisson
+  dtype: float
+  lam: 0.04
+  reciprocal: true
+
+lifetime:
+  distribution: exponential
+  dtype: float
+  scale: 800             # Long lifetime (quality matters)
+
+node_attrs_setting:
+  - name: cpu
+    type: resource
+    owner: node
+    distribution: uniform
+    dtype: int
+    generative: true
+    low: 15               # HIGH demands relative to small size
+    high: 35              # (makes optimal placement critical)
+
+link_attrs_setting:
+  - name: bw
+    type: resource
+    owner: link
+    distribution: uniform
+    dtype: int
+    generative: true
+    low: 30               # HIGH bandwidth demands
+    high: 80
+
+graph_attrs_setting:
+
+output:
+  save_dir: dataset/v_nets
+  v_nets_save_dir: v_nets
+  v_nets_file_name: v_net.gml
+  events_file_name: events.yaml
+  setting_file_name: v_sim_setting.yaml

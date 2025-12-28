@@ -1,0 +1,55 @@
+# EDGE CASE: Massive VNRs
+# Extremely large VNRs that cause MIP/MCTS to timeout
+# Expected to favor: rw_rank_bfs, r_round (fast heuristics)
+
+num_v_nets: 700
+
+topology:
+  type: random
+  random_prob: 0.6       # Dense graphs (more edges = harder problem)
+
+v_net_size:
+  distribution: uniform
+  dtype: int
+  low: 25                # HUGE minimum (was 15 in saturation)
+  high: 40               # HUGE maximum (was 30 in saturation)
+
+arrival_rate:
+  distribution: poisson
+  dtype: float
+  lam: 0.03              # Slower arrival (each VNR takes time)
+  reciprocal: true
+
+lifetime:
+  distribution: exponential
+  dtype: float
+  scale: 300             # Shorter lifetime (resources freed faster)
+
+node_attrs_setting:
+  - name: cpu
+    type: resource
+    owner: node
+    distribution: uniform
+    dtype: int
+    generative: true
+    low: 5                # Moderate demands
+    high: 15              # (size is the challenge, not demand)
+
+link_attrs_setting:
+  - name: bw
+    type: resource
+    owner: link
+    distribution: uniform
+    dtype: int
+    generative: true
+    low: 10
+    high: 30
+
+graph_attrs_setting:
+
+output:
+  save_dir: dataset/v_nets
+  v_nets_save_dir: v_nets
+  v_nets_file_name: v_net.gml
+  events_file_name: events.yaml
+  setting_file_name: v_sim_setting.yaml

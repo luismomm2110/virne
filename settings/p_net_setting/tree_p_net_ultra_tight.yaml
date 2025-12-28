@@ -1,0 +1,42 @@
+# Physical Network - Ultra Tight Resources
+# Severely constrained to create resource scarcity
+# Paired with v_sim_ultra_tight.yaml
+
+topology:
+  num_nodes: 16
+  type: tree
+  branching_factor: 2
+  wm_alpha: 0.5
+  wm_beta: 0.2
+
+node_attrs_setting:
+  - name: cpu
+    type: resource
+    owner: node
+    distribution: uniform
+    dtype: int
+    generative: true
+    high: 25              # VERY LOW (was 60 in tight, 100 in normal)
+    low: 10               # VERY LOW (was 30 in tight, 50 in normal)
+  - name: max_cpu
+    type: extrema
+    owner: node
+    originator: cpu
+
+link_attrs_setting:
+  - name: bw
+    type: resource
+    owner: link
+    distribution: uniform
+    dtype: int
+    generative: true
+    high: 80              # VERY LOW (was 200 in tight, 400 in normal)
+    low: 40               # VERY LOW (was 100 in tight, 200 in normal)
+  - name: max_bw
+    type: extrema
+    owner: link
+    originator: bw
+
+output:
+  save_dir: dataset/p_net
+  file_name: tree_p_net_ultra_tight.gml

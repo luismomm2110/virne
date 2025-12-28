@@ -1,0 +1,16 @@
+{
+  "rac": {
+    "tree": {
+      "oracle_metric": 97.85,
+      "num_vnrs": 186
+    },
+    "fat_tree": {
+      "oracle_metric": 100.0,
+      "num_vnrs": 224
+    },
+    "waxman_16": {
+      "oracle_metric": 99.52,
+      "num_vnrs": 207
+    }
+  }
+}

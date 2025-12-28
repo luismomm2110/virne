@@ -1,0 +1,56 @@
+# EDGE CASE: Sparse VNRs on Congested Network
+# Low connectivity VNRs (few edges) but congested physical network
+# PageRank-based selection should excel (find well-connected p_nodes)
+# Expected to favor: pl_rank
+
+num_v_nets: 700
+
+topology:
+  type: random
+  random_prob: 0.25      # SPARSE VNRs (few edges)
+
+v_net_size:
+  distribution: uniform
+  dtype: int
+  low: 5
+  high: 15
+
+arrival_rate:
+  distribution: poisson
+  dtype: float
+  lam: 0.06              # High arrival (create congestion)
+  reciprocal: true
+
+lifetime:
+  distribution: exponential
+  dtype: float
+  scale: 1000            # Long lifetime (sustained congestion)
+
+node_attrs_setting:
+  - name: cpu
+    type: resource
+    owner: node
+    distribution: uniform
+    dtype: int
+    generative: true
+    low: 10
+    high: 30
+
+link_attrs_setting:
+  - name: bw
+    type: resource
+    owner: link
+    distribution: uniform
+    dtype: int
+    generative: true
+    low: 20               # Higher BW (links easier than nodes)
+    high: 60              # (emphasizes node placement quality)
+
+graph_attrs_setting:
+
+output:
+  save_dir: dataset/v_nets
+  v_nets_save_dir: v_nets
+  v_nets_file_name: v_net.gml
+  events_file_name: events.yaml
+  setting_file_name: v_sim_setting.yaml

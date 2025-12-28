@@ -1,0 +1,66 @@
+# Dockerfile for VNE ML Complete Pipeline
+# Includes ViRNE core + presentation materials for full workflow:
+# 1. Run simulations with different algorithms
+# 2. Extract VNR data
+# 3. Train XGBoost model
+# 4. Evaluate and compare results
+
+FROM python:3.10-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    git \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy project files
+COPY pyproject.toml /app/
+COPY virne/ /app/virne/
+COPY apresentacao/ /app/apresentacao/
+
+# Install core dependencies first (without PyG which we don't need for algorithms)
+RUN pip install --no-cache-dir \
+    "torch==2.6.0" \
+    "gym==0.22.0" \
+    "numpy>=1.20.0" \
+    "pandas>=1.5.3" \
+    "matplotlib>=3.7.1" \
+    "scipy>=1.9.0" \
+    "pyyaml>=6.0" \
+    "tensorboard>=2.8.0" \
+    "wandb>=0.12.0" \
+    "higher>=0.2.1" \
+    "networkx>=2.6.0" \
+    "tqdm>=4.62.0" \
+    "ortools>=9.1.9490" \
+    "scikit-learn>=1.0.0" \
+    "colorama>=0.4.0" \
+    "hydra-core>=1.0.0" \
+    "colorlog>=6.0.0" \
+    xgboost \
+    jupyter \
+    jupyterlab \
+    seaborn
+
+# Install ViRNE without PyG dependencies (we don't need them for basic algorithms)
+RUN pip install --no-cache-dir --no-deps -e .
+
+# Create necessary directories
+RUN mkdir -p /app/apresentacao/machine_learning/datasets \
+    /app/apresentacao/machine_learning/models \
+    /app/apresentacao/machine_learning/results \
+    /app/apresentacao/simulacoes
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/app
+
+# Expose Jupyter port
+EXPOSE 8888
+
+# Default command: Run Jupyter Lab
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--NotebookApp.token=''", "--NotebookApp.password=''"]

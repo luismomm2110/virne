@@ -1,0 +1,57 @@
+# EDGE CASE: Meta-Heuristic Sweet Spot
+# Medium-sized VNRs with variable demands
+# Too large/complex for MIP to solve efficiently
+# Greedy heuristics give poor results due to demand variation
+# Expected to favor: ga_meta, sa_meta
+
+num_v_nets: 700
+
+topology:
+  type: random
+  random_prob: 0.55      # Moderate-high connectivity
+
+v_net_size:
+  distribution: uniform
+  dtype: int
+  low: 12                # Medium-large VNRs
+  high: 22               # (MIP struggles, MCTS gets stuck)
+
+arrival_rate:
+  distribution: poisson
+  dtype: float
+  lam: 0.04
+  reciprocal: true
+
+lifetime:
+  distribution: exponential
+  dtype: float
+  scale: 600
+
+node_attrs_setting:
+  - name: cpu
+    type: resource
+    owner: node
+    distribution: uniform
+    dtype: int
+    generative: true
+    low: 5                # WIDE range (creates heterogeneity)
+    high: 50              # Some nodes very demanding, some light
+
+link_attrs_setting:
+  - name: bw
+    type: resource
+    owner: link
+    distribution: uniform
+    dtype: int
+    generative: true
+    low: 10               # WIDE range
+    high: 120             # (forces careful optimization)
+
+graph_attrs_setting:
+
+output:
+  save_dir: dataset/v_nets
+  v_nets_save_dir: v_nets
+  v_nets_file_name: v_net.gml
+  events_file_name: events.yaml
+  setting_file_name: v_sim_setting.yaml

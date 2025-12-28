@@ -1,0 +1,56 @@
+# EDGE CASE: Ultra-Tight Resources
+# Physical network nearly saturated - fast heuristics only viable option
+# MIP/MCTS will timeout or fail, GA/SA too slow to explore
+# Expected to favor: pl_rank, rw_rank_bfs
+
+num_v_nets: 700
+
+topology:
+  type: random
+  random_prob: 0.3       # Sparser VNRs (easier to embed theoretically)
+
+v_net_size:
+  distribution: uniform
+  dtype: int
+  low: 2                 # Small VNRs
+  high: 6                # Keep them small
+
+arrival_rate:
+  distribution: poisson
+  dtype: float
+  lam: 0.02              # Slow arrival (let network saturate gradually)
+  reciprocal: true
+
+lifetime:
+  distribution: exponential
+  dtype: float
+  scale: 1500            # VERY LONG lifetime - resources stay allocated
+
+node_attrs_setting:
+  - name: cpu
+    type: resource
+    owner: node
+    distribution: uniform
+    dtype: int
+    generative: true
+    low: 1               # TINY demands
+    high: 5              # But physical network is also tight
+
+link_attrs_setting:
+  - name: bw
+    type: resource
+    owner: link
+    distribution: uniform
+    dtype: int
+    generative: true
+    low: 1               # TINY demands
+    high: 10
+
+graph_attrs_setting:
+
+output:
+  save_dir: dataset/v_nets
+  v_nets_save_dir: v_nets
+  v_nets_file_name: v_net.gml
+  events_file_name: events.yaml
+  setting_file_name: v_sim_setting.yaml

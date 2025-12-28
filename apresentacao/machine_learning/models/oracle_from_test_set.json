@@ -1,0 +1,72 @@
+{
+  "rac": {
+    "tree": {
+      "oracle_metric": 15.75513101864493,
+      "num_vnrs": 1500
+    },
+    "fat_tree": {
+      "oracle_metric": 33.81739212765957,
+      "num_vnrs": 1500
+    },
+    "waxman_16": {
+      "oracle_metric": 26.856455615517138,
+      "num_vnrs": 1500
+    }
+  },
+  "lrc": {
+    "tree": {
+      "oracle_metric": 0.16354853133990527,
+      "num_vnrs": 1500
+    },
+    "fat_tree": {
+      "oracle_metric": 0.34225960975177305,
+      "num_vnrs": 1500
+    },
+    "waxman_16": {
+      "oracle_metric": 0.2925553567935248,
+      "num_vnrs": 1500
+    }
+  },
+  "lar": {
+    "tree": {
+      "oracle_metric": 0.14523539677456287,
+      "num_vnrs": 1500
+    },
+    "fat_tree": {
+      "oracle_metric": 0.3423264311465721,
+      "num_vnrs": 1500
+    },
+    "waxman_16": {
+      "oracle_metric": 0.2852088979337256,
+      "num_vnrs": 1500
+    }
+  },
+  "ast": {
+    "tree": {
+      "oracle_metric": 0.19362681159420286,
+      "num_vnrs": 1500
+    },
+    "fat_tree": {
+      "oracle_metric": 0.3310133333333333,
+      "num_vnrs": 1500
+    },
+    "waxman_16": {
+      "oracle_metric": 0.3035842720815096,
+      "num_vnrs": 1500
+    }
+  },
+  "balanced": {
+    "tree": {
+      "oracle_metric": 0.1736581624242475,
+      "num_vnrs": 1500
+    },
+    "fat_tree": {
+      "oracle_metric": 0.33808258327423174,
+      "num_vnrs": 1500
+    },
+    "waxman_16": {
+      "oracle_metric": 0.29826485239331385,
+      "num_vnrs": 1500
+    }
+  }
+}

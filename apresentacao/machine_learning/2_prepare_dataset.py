@@ -71,10 +71,11 @@ def create_features(df):
         axis=1
     )
 
-    # Physical network sizes (hardcoded for tree topology)
+    # Physical network sizes (hardcoded for each topology)
     # Tree: 15 switches + 16 hosts = 31 nodes
     # Fat-Tree k=4: 20 nodes (4 core + 8 aggregation + 8 edge switches)
-    df['p_net_num_nodes'] = df['topology'].map({'tree': 31, 'fat_tree': 20})
+    # Waxman_16: 16 nodes (Waxman-generated topology)
+    df['p_net_num_nodes'] = df['topology'].map({'tree': 31, 'fat_tree': 20, 'waxman_16': 16})
 
     # VNR size features
     df['v_net_size_ratio'] = df['v_net_num_nodes'] / df['p_net_num_nodes']
@@ -99,8 +100,8 @@ def create_features(df):
     df['system_load'] = df['inservice_count'] / (max_inservice + 1e-9)
 
 
-    # Categorical encoding
-    df['topology_encoded'] = df['topology'].map({'tree': 0, 'fat_tree': 1})
+    # Categorical encoding (NOW WITH WAXMAN_16 SUPPORT!)
+    df['topology_encoded'] = df['topology'].map({'tree': 0, 'fat_tree': 1, 'waxman_16': 2})
 
     print(f"  ✓ Created {df.shape[1]} total features")
 
@@ -194,10 +195,17 @@ def create_labels(df):
     labels_list = []
 
     for (topo, seed, vnr_id), group in vnr_groups:
+        # FIX: When there are multiple events per algorithm (from raw data),
+        # we need to aggregate by algorithm FIRST to get one row per algorithm
+        # This fixes num_algos_accepted which should count algorithms (1-8), not events (1-220)
+
+        # Aggregate multiple events per algorithm (take first event per algo)
+        group_per_algo = group.groupby('algorithm').first().reset_index()
+
         # For each objective, find the best algorithm
 
         # Objective 1: RAC - Request Acceptance Rate (maximize success)
-        accepted = group[group['success'] == True]
+        accepted = group_per_algo[group_per_algo['success'] == True]
         if len(accepted) > 0:
             # All accepted ones are equally good for RAC, pick first
             best_for_rac = accepted.iloc[0]['algorithm']
@@ -205,7 +213,7 @@ def create_labels(df):
             best_for_rac = None
 
         # Objective 2: LRC - Long-Term Revenue-to-Cost (maximize r2c_ratio)
-        valid_r2c = group[group['v_net_r2c_ratio'].notna()]
+        valid_r2c = group_per_algo[group_per_algo['v_net_r2c_ratio'].notna()]
         if len(valid_r2c) > 0:
             best_lrc_idx = valid_r2c['v_net_r2c_ratio'].idxmax()
             best_for_lrc = valid_r2c.loc[best_lrc_idx, 'algorithm']
@@ -213,7 +221,7 @@ def create_labels(df):
             best_for_lrc = None
 
         # Objective 3: LAR - Long-Term Average Revenue (maximize revenue)
-        valid_revenue = group[group['v_net_revenue'].notna()]
+        valid_revenue = group_per_algo[group_per_algo['v_net_revenue'].notna()]
         if len(valid_revenue) > 0:
             best_lar_idx = valid_revenue['v_net_revenue'].idxmax()
             best_for_lar = valid_revenue.loc[best_lar_idx, 'algorithm']
@@ -222,8 +230,8 @@ def create_labels(df):
 
         # Objective 4: AST - Average Solving Time (minimize time)
         # Use solving_time if available, otherwise use clock_time_per_vnr
-        time_column = 'solving_time' if 'solving_time' in group.columns else 'clock_time_per_vnr'
-        valid_time = group[group[time_column].notna()]
+        time_column = 'solving_time' if 'solving_time' in group_per_algo.columns else 'clock_time_per_vnr'
+        valid_time = group_per_algo[group_per_algo[time_column].notna()]
         if len(valid_time) > 0:
             best_ast_idx = valid_time[time_column].idxmin()
             best_for_ast = valid_time.loc[best_ast_idx, 'algorithm']
@@ -235,10 +243,10 @@ def create_labels(df):
         # score = 0.8 * v_net_revenue - 0.2 * solving_time
         # Maximize revenue, minimize time
         # If not accepted: score = 0 (disqualified)
-        valid_balanced = group[
-            (group['success'] == True) &  # MUST be accepted
-            (group['v_net_revenue'].notna()) &
-            (group[time_column].notna())
+        valid_balanced = group_per_algo[
+            (group_per_algo['success'] == True) &  # MUST be accepted
+            (group_per_algo['v_net_revenue'].notna()) &
+            (group_per_algo[time_column].notna())
         ].copy()
         if len(valid_balanced) > 0:
             valid_balanced['balanced_score'] = (

@@ -1,0 +1,42 @@
+# Physical Network Configuration - WX100 (Waxman 100 nodes)
+# Large topology to test algorithm scalability
+# Based on original paper requirements (100 nodes, 500 links)
+
+topology:
+  num_nodes: 100
+  type: waxman
+  wm_alpha: 0.5          # Probability scaling factor
+  wm_beta: 0.2           # Distance scaling factor
+  # Higher alpha = more edges (targets ~500 edges for 100 nodes)
+
+node_attrs_setting:
+  - name: cpu
+    type: resource
+    owner: node
+    distribution: uniform
+    dtype: int
+    generative: true
+    high: 100
+    low: 50
+  - name: max_cpu
+    type: extrema
+    owner: node
+    originator: cpu
+
+link_attrs_setting:
+  - name: bw
+    type: resource
+    owner: link
+    distribution: uniform
+    dtype: int
+    generative: true
+    high: 400             # Same as tree/fat-tree for consistency
+    low: 200
+  - name: max_bw
+    type: extrema
+    owner: link
+    originator: bw
+
+output:
+  save_dir: dataset/p_net
+  file_name: wx100_p_net.gml

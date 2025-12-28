@@ -1,0 +1,252 @@
+{
+  "rac": {
+    "fixed": {
+      "d_round": {
+        "accuracy": 15.39708265802269,
+        "correct": 95,
+        "total": 617
+      },
+      "ga_meta": {
+        "accuracy": 34.35980551053485,
+        "correct": 212,
+        "total": 617
+      },
+      "mcts": {
+        "accuracy": 25.121555915721235,
+        "correct": 155,
+        "total": 617
+      },
+      "mip": {
+        "accuracy": 8.752025931928689,
+        "correct": 54,
+        "total": 617
+      },
+      "pl_rank": {
+        "accuracy": 9.076175040518638,
+        "correct": 56,
+        "total": 617
+      },
+      "pso_meta": {
+        "accuracy": 0.48622366288492713,
+        "correct": 3,
+        "total": 617
+      },
+      "rw_rank_bfs": {
+        "accuracy": 1.2965964343598055,
+        "correct": 8,
+        "total": 617
+      },
+      "sa_meta": {
+        "accuracy": 5.510534846029174,
+        "correct": 34,
+        "total": 617
+      }
+    },
+    "dynamic_classification": 0.0,
+    "dynamic_ranking": 88.33063209076175,
+    "best_fixed": "ga_meta",
+    "best_fixed_accuracy": 34.35980551053485,
+    "worst_fixed": "pso_meta",
+    "worst_fixed_accuracy": 0.48622366288492713
+  },
+  "lrc": {
+    "fixed": {
+      "d_round": {
+        "accuracy": 2.2690437601296596,
+        "correct": 14,
+        "total": 617
+      },
+      "ga_meta": {
+        "accuracy": 11.66936790923825,
+        "correct": 72,
+        "total": 617
+      },
+      "mcts": {
+        "accuracy": 12.641815235008103,
+        "correct": 78,
+        "total": 617
+      },
+      "mip": {
+        "accuracy": 17.828200972447323,
+        "correct": 110,
+        "total": 617
+      },
+      "pl_rank": {
+        "accuracy": 27.22852512155591,
+        "correct": 168,
+        "total": 617
+      },
+      "pso_meta": {
+        "accuracy": 3.565640194489465,
+        "correct": 22,
+        "total": 617
+      },
+      "rw_rank_bfs": {
+        "accuracy": 4.538087520259319,
+        "correct": 28,
+        "total": 617
+      },
+      "sa_meta": {
+        "accuracy": 20.25931928687196,
+        "correct": 125,
+        "total": 617
+      }
+    },
+    "dynamic_classification": 0.0,
+    "dynamic_ranking": 85.41329011345219,
+    "best_fixed": "pl_rank",
+    "best_fixed_accuracy": 27.22852512155591,
+    "worst_fixed": "d_round",
+    "worst_fixed_accuracy": 2.2690437601296596
+  },
+  "lar": {
+    "fixed": {
+      "d_round": {
+        "accuracy": 10.85899513776337,
+        "correct": 67,
+        "total": 617
+      },
+      "ga_meta": {
+        "accuracy": 22.852512155591572,
+        "correct": 141,
+        "total": 617
+      },
+      "mcts": {
+        "accuracy": 16.53160453808752,
+        "correct": 102,
+        "total": 617
+      },
+      "mip": {
+        "accuracy": 18.962722852512158,
+        "correct": 117,
+        "total": 617
+      },
+      "pl_rank": {
+        "accuracy": 12.965964343598054,
+        "correct": 80,
+        "total": 617
+      },
+      "pso_meta": {
+        "accuracy": 3.2414910858995136,
+        "correct": 20,
+        "total": 617
+      },
+      "rw_rank_bfs": {
+        "accuracy": 2.9173419773095626,
+        "correct": 18,
+        "total": 617
+      },
+      "sa_meta": {
+        "accuracy": 11.66936790923825,
+        "correct": 72,
+        "total": 617
+      }
+    },
+    "dynamic_classification": 0.0,
+    "dynamic_ranking": 81.03727714748784,
+    "best_fixed": "ga_meta",
+    "best_fixed_accuracy": 22.852512155591572,
+    "worst_fixed": "rw_rank_bfs",
+    "worst_fixed_accuracy": 2.9173419773095626
+  },
+  "ast": {
+    "fixed": {
+      "d_round": {
+        "accuracy": 0.0,
+        "correct": 0,
+        "total": 617
+      },
+      "ga_meta": {
+        "accuracy": 0.0,
+        "correct": 0,
+        "total": 617
+      },
+      "mcts": {
+        "accuracy": 0.0,
+        "correct": 0,
+        "total": 617
+      },
+      "mip": {
+        "accuracy": 0.0,
+        "correct": 0,
+        "total": 617
+      },
+      "pl_rank": {
+        "accuracy": 59.15721231766613,
+        "correct": 365,
+        "total": 617
+      },
+      "pso_meta": {
+        "accuracy": 0.0,
+        "correct": 0,
+        "total": 617
+      },
+      "rw_rank_bfs": {
+        "accuracy": 40.84278768233388,
+        "correct": 252,
+        "total": 617
+      },
+      "sa_meta": {
+        "accuracy": 0.0,
+        "correct": 0,
+        "total": 617
+      }
+    },
+    "dynamic_classification": 0.0,
+    "dynamic_ranking": 100.0,
+    "best_fixed": "pl_rank",
+    "best_fixed_accuracy": 59.15721231766613,
+    "worst_fixed": "sa_meta",
+    "worst_fixed_accuracy": 0.0
+  },
+  "balanced": {
+    "fixed": {
+      "d_round": {
+        "accuracy": 5.510534846029174,
+        "correct": 34,
+        "total": 617
+      },
+      "ga_meta": {
+        "accuracy": 12.155591572123177,
+        "correct": 75,
+        "total": 617
+      },
+      "mcts": {
+        "accuracy": 9.724473257698541,
+        "correct": 60,
+        "total": 617
+      },
+      "mip": {
+        "accuracy": 15.883306320907616,
+        "correct": 98,
+        "total": 617
+      },
+      "pl_rank": {
+        "accuracy": 30.47001620745543,
+        "correct": 188,
+        "total": 617
+      },
+      "pso_meta": {
+        "accuracy": 3.727714748784441,
+        "correct": 23,
+        "total": 617
+      },
+      "rw_rank_bfs": {
+        "accuracy": 7.779578606158834,
+        "correct": 48,
+        "total": 617
+      },
+      "sa_meta": {
+        "accuracy": 14.748784440842789,
+        "correct": 91,
+        "total": 617
+      }
+    },
+    "dynamic_classification": 0.0,
+    "dynamic_ranking": 80.22690437601297,
+    "best_fixed": "pl_rank",
+    "best_fixed_accuracy": 30.47001620745543,
+    "worst_fixed": "pso_meta",
+    "worst_fixed_accuracy": 3.727714748784441
+  }
+}

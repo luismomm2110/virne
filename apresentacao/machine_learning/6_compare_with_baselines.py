@@ -313,5 +313,200 @@ def main():
     print("  - results/comparison_summary.csv")
 
 
+def adaptive_ranking_evaluation(val_df, trees, label_encoder, feature_cols, threshold=0.10):
+    """
+    Evaluate models with adaptive ranking.
+
+    Strategy:
+    - Use classification when confident (high difference between top-1 and top-2)
+    - Use ranking when uncertain (low difference = desprezível)
+
+    Args:
+        val_df: Validation dataframe
+        trees: Dictionary of trained decision trees
+        label_encoder: Label encoder for algorithms
+        feature_cols: List of feature columns
+        threshold: Confidence threshold (default 10%)
+                   If (prob_top1 - prob_top2) / prob_top1 > threshold
+                   → Use classification (strict)
+                   else → Use ranking (top-3)
+    """
+
+    print("\n" + "="*90)
+    print("ADAPTIVE RANKING EVALUATION")
+    print("="*90)
+    print(f"Strategy: Use classification when confident (diff > {threshold:.0%})")
+    print(f"          Use ranking when uncertain (diff <= {threshold:.0%})")
+
+    # Prepare validation data
+    X_val = val_df[feature_cols].fillna(val_df[feature_cols].mean())
+
+    objectives = ['rac', 'lrc', 'lar', 'ast', 'balanced']
+    results = {}
+
+    for obj in objectives:
+        # Get data for this objective
+        y_true = val_df[f'best_for_{obj}'].dropna().values
+        valid_mask = val_df[f'best_for_{obj}'].notna().values
+        X_data = X_val[valid_mask]
+
+        if len(y_true) == 0:
+            continue
+
+        # Get model
+        tree = trees[obj]
+
+        # Predictions and probabilities
+        y_pred = tree.predict(X_data)
+        y_proba = tree.predict_proba(X_data)
+        y_true_encoded = label_encoder.transform(y_true)
+
+        # Classification accuracy (strict)
+        classification_acc = (y_pred == y_true_encoded).mean()
+
+        # Top-3 ranking accuracy (pragmatic)
+        top_k_pred = np.argsort(-y_proba, axis=1)
+        top3_acc = sum(y_true_encoded[i] in top_k_pred[i, :3]
+                      for i in range(len(y_true_encoded))) / len(y_true_encoded)
+
+        # Adaptive evaluation
+        adaptive_correct = 0
+        classification_used = 0
+        ranking_used = 0
+        confidences = []
+
+        for i in range(len(y_true)):
+            # Top-2 probabilities
+            top2_probs = np.sort(y_proba[i])[-2:][::-1]
+            prob_top1 = top2_probs[0]
+            prob_top2 = top2_probs[1]
+
+            # Confidence score
+            confidence = (prob_top1 - prob_top2) / prob_top1 if prob_top1 > 0 else 0
+            confidences.append(confidence)
+
+            # Adaptive decision
+            if confidence >= threshold:
+                # High confidence: use classification
+                if y_true_encoded[i] == y_pred[i]:
+                    adaptive_correct += 1
+                classification_used += 1
+            else:
+                # Low confidence: use ranking (top-3)
+                if y_true_encoded[i] in top_k_pred[i, :3]:
+                    adaptive_correct += 1
+                ranking_used += 1
+
+        adaptive_acc = adaptive_correct / len(y_true)
+
+        results[obj] = {
+            'classification_accuracy': classification_acc,
+            'top3_accuracy': top3_acc,
+            'adaptive_accuracy': adaptive_acc,
+            'classification_used': classification_used,
+            'ranking_used': ranking_used,
+            'avg_confidence': np.mean(confidences),
+            'confidence_std': np.std(confidences)
+        }
+
+        # Print results
+        print(f"\n{obj.upper()}:")
+        print(f"  Samples: {len(y_true)}")
+        print(f"  Classification (strict):    {classification_acc:.1%}")
+        print(f"  Top-3 Ranking (pragmatic):  {top3_acc:.1%}")
+        print(f"  Adaptive (hybrid):          {adaptive_acc:.1%}")
+        print(f"  Strategy used:")
+        print(f"    - Classification: {classification_used} ({classification_used/len(y_true):.0%})")
+        print(f"    - Ranking: {ranking_used} ({ranking_used/len(y_true):.0%})")
+        print(f"  Confidence: {np.mean(confidences):.1%} ± {np.std(confidences):.1%}")
+
+    # Summary table
+    print("\n" + "="*90)
+    print("SUMMARY TABLE")
+    print("="*90)
+    print("\n┌────────────┬──────────────┬──────────────┬──────────────┐")
+    print("│ Objective  │ Classification│ Top-3 Ranking│ Adaptive   │")
+    print("├────────────┼──────────────┼──────────────┼──────────────┤")
+
+    for obj in objectives:
+        if obj in results:
+            m = results[obj]
+            print(f"│ {obj:10s} │ {m['classification_accuracy']:12.1%} │ {m['top3_accuracy']:12.1%} │ {m['adaptive_accuracy']:12.1%} │")
+
+    print("└────────────┴──────────────┴──────────────┴──────────────┘")
+
+    print("\nKEY INSIGHT:")
+    print("  • Classification: Rigoroso, exige acertar exatamente qual é o 1º")
+    print("  • Top-3 Ranking: Pragmático, aceita estar entre os 3 melhores")
+    print("  • Adaptive: Combina os dois - rigoroso quando apropriado, pragmático quando necessário")
+    print("  • Sem gerar novos dados, sem treinar novos modelos!")
+
+    return results
+
+
 if __name__ == '__main__':
     main()
+
+    # ADAPTIVE RANKING EVALUATION (NEW)
+    print("\n" + "="*90)
+    print("RUNNING ADAPTIVE RANKING EVALUATION")
+    print("="*90)
+
+    # Load trained models for adaptive evaluation
+    import pickle
+
+    try:
+        with open('models/decision_trees.pkl', 'rb') as f:
+            trees = pickle.load(f)
+
+        with open('models/algorithm_label_encoder.pkl', 'rb') as f:
+            label_encoder = pickle.load(f)
+
+        # Load validation data (using enhanced dataset with 10 new features)
+        val_df = pd.read_csv('datasets/val_enhanced.csv')
+
+        # Feature columns (35 features: 25 original + 10 new)
+        feature_cols = [
+            # VNR characteristics
+            'v_net_num_nodes', 'v_net_num_edges', 'v_net_size_ratio',
+            'v_net_demand_per_node', 'v_net_demand_per_link', 'v_net_connectivity',
+            'v_net_total_demand', 'v_net_node_to_link_demand_ratio', 'v_net_lifetime',
+            # Physical network state
+            'p_net_available_resource', 'p_net_node_util', 'p_net_link_util', 'p_net_overall_util',
+            # System state
+            'inservice_count', 'system_load', 'num_running_p_net_nodes',
+            # Topology
+            'topology_encoded',
+            # Original engineered features
+            'network_stress_index', 'problem_complexity', 'resource_bottleneck_ratio',
+            'vnr_size_category', 'cpu_intensive_flag', 'bandwidth_intensive_flag',
+            'utilization_pressure', 'resource_efficiency',
+            # NEW: Heterogeneidade de Recursos (3 features)
+            'p_net_node_link_resource_ratio', 'p_net_util_imbalance', 'p_net_resource_heterogeneity',
+            # NEW: Fragmentação e Saúde (3 features)
+            'p_net_fragmentation_estimate', 'p_net_uneven_utilization', 'p_net_health_score',
+            # NEW: Características VNR (4 features)
+            'vnr_node_link_demand_ratio', 'vnr_demand_intensity', 'vnr_structural_complexity', 'vnr_density_adjusted'
+        ]
+
+        # Run adaptive ranking evaluation
+        adaptive_results = adaptive_ranking_evaluation(val_df, trees, label_encoder, feature_cols, threshold=0.10)
+
+        # Save results
+        import json
+
+        results_serializable = {}
+        for obj, metrics in adaptive_results.items():
+            results_serializable[obj] = {
+                k: float(v) if isinstance(v, (np.floating, np.integer)) else v
+                for k, v in metrics.items()
+            }
+
+        with open('models/adaptive_ranking_results.json', 'w') as f:
+            json.dump(results_serializable, f, indent=2)
+
+        print("\n✓ Adaptive ranking results saved to models/adaptive_ranking_results.json")
+
+    except FileNotFoundError as e:
+        print(f"\nNote: Could not load trained models for adaptive evaluation: {e}")
+        print("Run 3_train_decision_trees.py first to train the models")

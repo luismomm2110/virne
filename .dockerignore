@@ -1,0 +1,64 @@
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# Python cache
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+.swo
+*~
+.DS_Store
+
+# Documentation build
+docs/_build/
+docs/_static/
+docs/_templates/
+
+# Logs (keep but exclude large ones)
+*.out
+
+# Data files
+*.pkl.bak
+*.csv.bak
+
+# Test files
+tests/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Keep only what we need
+# Include: virne/, apresentacao/, pyproject.toml

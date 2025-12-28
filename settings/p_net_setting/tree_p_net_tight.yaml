@@ -1,0 +1,42 @@
+# Physical Network Configuration - Tree Topology with Tight Resources
+# Lower resources to create more competition for placement
+# This should favor algorithms that optimize carefully (GA, SA, MIP)
+
+topology:
+  num_nodes: 16           # Number of HOST nodes (leaf nodes) - same as before
+  type: tree              # Tree topology - same as before
+  branching_factor: 2     # Binary tree (2 children per switch)
+  wm_alpha: 0.5           # Not used for tree, but required by config
+  wm_beta: 0.2            # Not used for tree, but required by config
+
+node_attrs_setting:
+  - name: cpu
+    type: resource
+    owner: node
+    distribution: uniform
+    dtype: int
+    generative: true
+    high: 60              # Lower maximum (was 100)
+    low: 30               # Lower minimum (was 50)
+  - name: max_cpu
+    type: extrema
+    owner: node
+    originator: cpu
+
+link_attrs_setting:
+  - name: bw
+    type: resource
+    owner: link
+    distribution: uniform
+    dtype: int
+    generative: true
+    high: 200             # Lower maximum (was 400)
+    low: 100              # Lower minimum (was 200)
+  - name: max_bw
+    type: extrema
+    owner: link
+    originator: bw
+
+output:
+  save_dir: dataset/p_net
+  file_name: tree_p_net_tight.gml

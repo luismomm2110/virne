@@ -1,0 +1,43 @@
+{
+  "feature_names": [
+    "v_net_num_nodes",
+    "v_net_num_egdes",
+    "v_net_demand",
+    "v_net_node_demand",
+    "v_net_link_demand",
+    "p_net_available_resource",
+    "p_net_node_available_resource",
+    "p_net_link_available_resource",
+    "p_net_node_resource_utilization",
+    "p_net_link_resource_utilization",
+    "v_net_lifetime",
+    "v_net_arrival_time",
+    "inservice_count"
+  ],
+  "classes": [
+    "ga_meta",
+    "mcts",
+    "mip",
+    "pl_rank",
+    "r_round",
+    "rw_rank_bfs",
+    "sa_meta"
+  ],
+  "n_features": 13,
+  "n_classes": 7,
+  "xgboost_config": {
+    "max_depth": 6,
+    "learning_rate": 0.1,
+    "n_estimators": 100,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "min_child_weight": 1,
+    "gamma": 0,
+    "reg_alpha": 0,
+    "reg_lambda": 1,
+    "n_jobs": -1,
+    "random_state": 42,
+    "objective": "multi:softprob",
+    "eval_metric": "mlogloss"
+  }
+}
