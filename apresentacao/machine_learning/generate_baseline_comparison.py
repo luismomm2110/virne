@@ -90,7 +90,7 @@ ax2.axvline(x=5.65, color='#9b59b6', linestyle=':', linewidth=2, alpha=0.5, labe
 # ============ SUBPLOT 3: Scatter Plot - Trade-off ============
 ax3 = plt.subplot(3, 2, 5)
 
-# Plot dos pontos
+# Plot dos pontos.md
 for i, (algo, acc, time, cat) in enumerate(zip(algorithms, acceptance_rate, avg_time, categories)):
     if algo == 'XGBoost':
         ax3.scatter(time, acc, s=500, color=color_map[cat], edgecolor='black',

@@ -1,0 +1,550 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{balance}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{graphicx,url}
+\usepackage{soulutf8,color}
+\usepackage{stfloats}
+\usepackage{verbatim}
+\usepackage[utf8]{inputenc}
+\usepackage[inline]{enumitem}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{tikz}
+\usepackage{hyperref}
+
+\begin{document}
+
+\title{Zero-Touch Selection of Virtual Network Embedding Algorithms using Multi-Objective Decision Trees}
+
+\author{\IEEEauthorblockN{Luis Antonio Momm Duarte}
+\IEEEauthorblockA{\textit{Graduate Program in Applied Computing} \\
+\textit{State University of Santa Catarina}\\
+Joinville, Brazil \\
+luis.duarte@edu.udesc.br}
+}
+
+\maketitle
+
+\begin{abstract}
+The \textit{Virtual Network Embedding} (VNE) problem is fundamental in cloud infrastructures where multiple providers share physical resources. Mapping virtual network requests onto the physical infrastructure, satisfying capacity constraints and optimizing objectives such as acceptance rate and resource consumption, is NP-hard, motivating the development of various algorithms ranging from exact methods based on Mixed Integer Programming (MIP) to heuristics and meta-heuristics. However, no algorithm presents superior performance in all scenarios. This work proposes an approach based on multi-objective decision trees to automatically select the most appropriate VNE algorithm for each request, considering the physical network state and request characteristics. The method employs three specialized models, each optimized for a specific objective (acceptance rate, revenue-cost ratio, and average revenue), allowing adaptation to operational priorities at runtime. Experimental validation on three \textit{datacenter} topologies with 8,000 requests presents \textit{top-3 accuracy} between 79.1\% and 85.9\% in predicting the best algorithm, with an improvement of +32.9 percentage points in acceptance rate compared to the fixed algorithm \textit{baseline}. The approach offers interpretability through explicit decision paths, inference latency below 1\,ms enabling \textit{online} operation, and autonomous operation capability aligned with \textit{zero-touch} administration requirements.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Virtual Network Embedding, Decision Trees, Multi-Objective Optimization, Zero-Touch Administration, Interpretable Machine Learning
+\end{IEEEkeywords}
+
+%===================================================================
+
+\section{Introduction}
+\label{sec:Intro}
+
+The \textit{Virtual Network Embedding} (VNE) problem has emerged as an essential enabler for modern networks, including cloud \textit{datacenters}, edge computing, and 5G networks, due to its flexibility and scalability. VNE has become critical in infrastructures where multiple service providers share physical network resources. The problem addresses the challenge of mapping virtual network requests (VNRs) onto the physical infrastructure, satisfying capacity constraints and optimizing objectives such as acceptance rate, processing time, and energy consumption.
+
+Over the past two decades, numerous VNE algorithms have been proposed, ranging from exact methods based on Mixed Integer Programming (MIP) to heuristics and meta-heuristics.
+A fundamental challenge remains: \textbf{no single algorithm presents consistently superior performance in all scenarios}~\cite{fischer2013vne-survey}.
+Different VNR characteristics (size, topology, demands) and physical network states (utilization, resource fragmentation) require distinct algorithms.
+
+Traditional VNE deployment approaches typically select a single algorithm for all requests, regardless of their characteristics or the current network state. This strategy fails to exploit the strengths of different algorithms for specific scenarios.
+
+Additionally, \textit{zero-touch} administration of virtualized networks has become a critical requirement in modern infrastructures.
+The concept of \textit{Zero-Touch Network and Service Management} (ZSM), formalized by the ETSI standard since 2017~\cite{etsi-zsm}, refers to the ability of systems to operate autonomously through programmable control mechanisms, virtualization, and closed-loop feedback, with minimal human intervention.
+Industry research indicates that autonomous networks can significantly reduce operational costs.
+However, the gap between research and deployment remains: while deep \textit{Reinforcement Learning} (RL) and optimization systems achieve high performance, they lack interpretability and suffer from decision latency inadequate for real-time systems~\cite{white2024zerotough}.
+Therefore, systems that perform automatic VNE algorithm selection without operator intervention are fundamental to achieving truly autonomous operation.
+
+In this context, the present work proposes an approach based on \textbf{multi-objective decision trees} to automatically select the most appropriate VNE algorithm for each request, considering the network state and request characteristics.
+Unlike a single model, the method employs three specialized models, each optimized for a specific objective (acceptance rate, revenue-cost ratio, average revenue), allowing adaptation to operational priorities at runtime, with inference latency below 1\,ms enabling \textit{online} operation.
+
+The manuscript is organized as follows: Section~\ref{sec:RefTeo} presents the theoretical background; Section~\ref{sec:RelatedWork} discusses related work; Section~\ref{sec:Proposal} describes the proposed methodology; Section~\ref{sec:Results} presents experimental results; and Section~\ref{sec:Conclusion} concludes the article.
+
+\section{Background and Motivation}
+\label{sec:RefTeo}
+
+This section presents the fundamental concepts for understanding the VNE problem and the \textit{machine learning} techniques employed.
+Subsection~\ref{subsec:vne} describes the VNE problem and its algorithm classes.
+Subsection~\ref{subsec:trees} introduces decision trees as a selection mechanism.
+Subsection~\ref{subsec:multiobj} discusses multi-objective optimization.
+
+\subsection{\textit{Virtual Network Embedding}}
+\label{subsec:vne}
+
+\textit{Virtual Network Embedding} (VNE) is the process of mapping virtual network requests onto a shared physical network infrastructure.
+A virtual network request $G_v = (N_v, L_v)$ consists of a set of virtual nodes $N_v$ and virtual links $L_v$, where each node and link has specific resource demands (CPU, memory, bandwidth).
+The physical network $G_p = (N_p, L_p)$ provides the computational and network substrate.
+
+The VNE problem can be decomposed into two subproblems: (i) mapping virtual nodes to physical nodes; and (ii) mapping virtual links to paths in the physical network. The objective is to maximize metrics such as VNR acceptance rate, minimize processing time, and optimize physical resource consumption.
+
+The VNE problem is NP-hard~\cite{fischer2013vne-survey}, motivating the development of various algorithm classes:
+
+\begin{itemize}
+    \item \textbf{Exact Algorithms}: Methods such as Mixed Integer Programming (MIP) guarantee optimal solutions, but have exponential complexity.
+    \item \textbf{Heuristics}: Greedy algorithms that make local decisions based on node \textit{rankings}, offering reduced execution time with variable solution quality.
+    \item \textbf{Meta-heuristics}: Techniques such as genetic algorithms (GA), particle swarm optimization (PSO), and Monte Carlo tree search (MCTS) employ stochastic search that balances exploration and quality.
+\end{itemize}
+
+Given that different VNE algorithms present variable performance depending on context, a mechanism becomes necessary to automatically select the most appropriate algorithm. The next subsection presents decision trees as a \textit{machine learning} technique suitable for this contextual selection.
+
+\subsection{Decision Trees for Classification}
+\label{subsec:trees}
+
+Given that various VNE algorithms exist and each is appropriate for different contexts, a mechanism becomes necessary to learn which algorithm to select in each scenario. This subsection describes decision trees, the \textit{machine learning} technique employed to perform this selection.
+
+Decision trees are supervised learning models that recursively partition the \textit{feature} space to create homogeneous prediction regions.
+Figure~\ref{fig:tree-structure} illustrates the general structure of a decision tree.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\columnwidth]{tree_structure}
+    \caption{Structure of a decision tree: recursive partitioning of the \textit{feature} space.}
+    \label{fig:tree-structure}
+\end{figure}
+
+As illustrated in Figure~\ref{fig:tree-structure}, the tree starts at a root node containing all training data.
+Progressively, at each level, the tree subdivides the \textit{feature} space using binary decisions, creating specialized branches.
+Each leaf (terminal node) represents a final prediction---in this context, which VNE algorithm is most appropriate.
+
+At each internal node, the tree selects a \textit{feature} and a \textit{threshold}, dividing data into two subsets. The splitting criterion uses Gini index or information gain, maximizing class isolation. Each path from root to leaf represents an interpretable decision rule.
+
+Figure~\ref{fig:tree-example-path} illustrates an example of a decision path, showing how each intermediate decision in the tree progressively reduces the solution space until reaching a final recommendation.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\columnwidth]{tree_example_path}
+    \caption{Example of decision path (root to leaf) in tree for VNE algorithm selection.}
+    \label{fig:tree-example-path}
+\end{figure}
+
+Unlike deep neural networks or \textit{reinforcement learning} models, each step is comprehensible and auditable by human operators.
+Decision trees are particularly suitable for the VNE algorithm selection problem due to the following characteristics:
+
+\begin{itemize}
+    \item \textbf{Interpretability}: Each decision can be traced through an explicit logical path in the tree.
+    \item \textbf{Scale Invariance}: Work adequately with \textit{features} at different scales (CPU in units, utilization in percentage).
+    \item \textbf{Low Latency}: Inference has $O(\log n)$ complexity in depth, typically below 1\,ms.
+    \item \textbf{Explainability}: Operators understand exactly which \textit{features} determined the decision.
+\end{itemize}
+
+\subsection{Multi-Objective Optimization}
+\label{subsec:multiobj}
+
+The selection of which algorithm to use should not consider only a single performance metric. In real production environments, multiple objectives compete simultaneously: VNR acceptance rate, resolution time, and resource consumption. Approaches that optimize a single objective frequently neglect others, causing system imbalance. The proposed strategy employs multiple specialized trees, each optimized for a specific objective, allowing the system to adapt priorities at runtime according to operational requirements.
+
+The following section positions this work in relation to existing literature, analyzing related work in algorithm selection, multi-objective optimization, and network automation.
+
+\section{Related Work}
+\label{sec:RelatedWork}
+
+This section positions the work in relation to existing literature in VNE, algorithm selection, and network automation.
+Table~\ref{tab:related-work} synthesizes the comparative analysis between related work and the proposed approach.
+
+\subsection{Algorithm Selection}
+\label{subsec:alg-selection}
+
+The algorithm selection problem was formalized by Rice~\cite{rice1976algorithm}, who established the conceptual \textit{framework}: given a problem space, a set of algorithms, a descriptive \textit{feature} space, and performance metrics, determine which algorithm is most appropriate for each problem. This \textit{framework} underlies the approach proposed in this work.
+
+Xu et al.~\cite{xu2012satzilla} develop SATzilla, a portfolio-based selector for satisfiability (SAT) problems, showing that dynamic selection produces significant gains over single algorithms. Similarly, Koslowski et al.~\cite{koslowski2025knowledge-based} apply \textit{machine learning} techniques for adaptive selection of scheduling policies in high-performance computing (HPC) infrastructures, showing that consolidation of multiple strategies offers superior adaptability. This paradigm applies equally to the VNE domain. The next subsection discusses how multi-objective optimization has been addressed in related work on virtualized networks.
+
+\subsection{Multi-Objective Optimization in Networks}
+\label{subsec:multiobj-networks}
+
+Operational realities of modern networks demand simultaneous optimization of multiple objectives: acceptance rate, revenue-cost ratio, average revenue, and processing time. Classical approaches in VNE typically optimize a single objective, neglecting \textit{trade-offs} with others.
+
+Song et al.~\cite{song2020multiobjective} and Belgacem et al.~\cite{belgacem2016multiobjective} explore multi-objective optimization for VNE and resource allocation in virtualized networks. However, these approaches frequently use evolutionary algorithms or dynamic integer programming, which suffer from computational complexity during \textit{online} operation. The proposed approach differentiates itself by employing independent models for each objective, allowing operators to select at runtime which priority to optimize.
+
+\subsection{\textit{Machine Learning} and Reinforcement Learning in Networks}
+\label{subsec:ml-networks}
+
+\textit{Machine learning} has become an important tool for network automation.
+Cao et al.~\cite{cao2018nfv-deeprl} apply \textit{Deep Reinforcement Learning} (DRL) for dynamic resource allocation in NFV (\textit{Network Function Virtualization}).
+Wang et al.~\cite{ijcai-2024-flagvne} propose FlagVNE, a flexible RL \textit{framework} for VNE with multiple policies.
+
+Although DRL offers adaptability, it faces critical challenges for production: long training time (millions of episodes for convergence), lack of interpretability (decisions function as ``black box''), unstable convergence in dynamic environments, and high inference latency (inadequate for real-time decisions).
+Recent work on autonomous network systems recognizes that interpretability is a critical requirement for regulated environments~\cite{white2024zerotough}. The next subsection discusses related work specifically on \textit{zero-touch} automation.
+
+\subsection{\textit{Zero-Touch} Automation}
+\label{subsec:zerotouchj}
+
+The concept of \textit{Zero-Touch Network and Service Management} (ZSM) was formalized by ETSI since 2017, referring to the operation of network systems with minimal human intervention, through programmable control, virtualization, and closed-loop feedback.
+
+Industry research indicates that reducing manual intervention can decrease operational costs by up to 40\%.
+However, the gap between research and production remains: RL systems achieve high performance, but lack adequate interpretability for critical operations.
+
+RSCAT~\cite{diel2023rscat} proposes \textit{zero-touch} automation for congestion control in networks using \textit{actor-critic} reinforcement learning and SDN.
+RSCAT shows that combining \textit{machine learning} and classical techniques can enable autonomous operation, similarly to the approach proposed in this work for contextual selection of VNE algorithms. The following subsection synthesizes the comparative analysis between related work and the proposed approach.
+
+\subsection{Discussion}
+
+Table~\ref{tab:related-work} synthesizes a comparative analysis between related work and the proposed approach according to six critical dimensions for production systems:
+
+\begin{table*}[t]
+\centering
+\caption{Comparative Analysis: Related Work vs Proposed Approach (six critical dimensions)}
+\label{tab:related-work}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Work} & \textbf{ML Type} & \textbf{Adaptive per VNR} & \textbf{Multiple Objectives} & \textbf{Interpretable} & \textbf{Inference Latency} & \textbf{Production Ready} \\
+\midrule
+Fischer (VNE Survey) & Comparison & No & No & Yes & - & No \\
+Rice (Portfolio) & Algorithm & Yes & No & Yes & - & Conceptual \\
+SATzilla & Trees & Yes & No & Yes & Low & Yes \\
+Cao et al. (DRL) & Deep RL & Yes & No & No & High (50ms+) & No \\
+FlagVNE (DRL) & Deep RL & Yes & No & No & Very High (100ms+) & No \\
+\midrule
+\textbf{This Work} & \textbf{Multi-Obj. Trees} & \textbf{Yes} & \textbf{Yes (3 objectives)} & \textbf{Yes} & \textbf{Very Low <1ms} & \textbf{Yes} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+This work differentiates itself by combining established concepts---algorithm selection, decision trees, and multi-objective optimization---applied to VNE to create a practical and operational solution. The main distinctive contributions include:
+\begin{itemize}
+    \item \textbf{Multi-Objectivity}: Three specialized models, not just acceptance optimization. Operators can adapt priorities at runtime as operational conditions change.
+
+    \item \textbf{Contextual Adaptability}: Selection based on real network state (utilization, fragmentation) and request characteristics (size, connectivity), not just VNR characteristics.
+
+    \item \textbf{Complete Interpretability}: Unlike RL/DL approaches (black box), each decision can be explained to operators through explicit paths in the decision tree.
+
+    \item \textbf{Computational Efficiency}: Training in seconds (not millions of episodes), inference in sub-milliseconds ($<$1ms), enabling real-time \textit{online} operation.
+
+    \item \textbf{Practical Validation}: Presents real improvement in acceptance rate (+5.73pp) in a realistic simulated environment with 8,000 virtual network requests in three topologies.
+\end{itemize}
+
+The following section details the proposed methodology, describing the steps of data collection, \textit{feature} engineering, model training, and \textit{online} prediction.
+
+\section{Methodology}
+\label{sec:Proposal}
+
+\subsection{Approach Overview}
+
+The methodology consists of four main steps:
+
+\begin{enumerate}
+    \item \textbf{Data Collection}: Execute eight VNE algorithms---\textit{MIP, GA-Meta, PSO-Meta, SA-Meta, MCTS, PL-Rank, RW-Rank-BFS, D-Round}---on three distinct topologies---\textit{Tree, Fat-Tree (k=4) and Waxman-16}---and collect detailed performance data in each scenario for model training, validation, and testing.
+    \item \textbf{Feature Engineering}: Extract 27 relevant characteristics from VNRs, network state, and topological context.
+    \item \textbf{Multi-Objective Training}: Create three specialized models---RAC (\textit{Request Acceptance Rate}), LRC (\textit{Long-term Revenue-to-Cost Ratio}) and LAR (\textit{Long-term Average Revenue})---, each optimizing specific performance criteria.
+    \item \textbf{Online Prediction}: For each new VNR, use the extracted context to dynamically select the most appropriate VNE algorithm through the model that optimizes the desired criterion.
+\end{enumerate}
+
+\subsection{Simulation Data Generation}
+
+Data were collected using the \textbf{Virne}~\cite{wang2024virne} platform, a comprehensive \textit{benchmarking} \textit{framework} for Network Function Virtualization Resource Allocation (NFV-RA) problems. Virne offers highly customizable simulations for various network scenarios, including cloud \textit{datacenters}, edge computing, and 5G networks. The platform implements more than 30 NFV-RA algorithms in a modular and extensible architecture, providing an \textit{event-driven} simulation environment that models the physical network (PN) infrastructure and sequential virtual network requests (VNRs). Each VNR arrival is treated as a discrete event, creating an instance that the NFV-RA algorithm must solve, evaluating solution feasibility and updating network resources.
+
+Simulations were executed with eight VNE algorithms on three distinct topologies, commonly used in \textit{datacenters}:
+
+\textbf{Topologies}:
+\begin{itemize}
+    \item \textbf{Tree}: Binary hierarchical with 32 hosts and 31 switches (63 nodes)
+    \item \textbf{Fat-Tree}: \textit{Datacenter} with k=4 (16 servers, 20 switches, 36 nodes)
+    \item \textbf{Waxman-16}: Random network with 16 nodes and 500 links
+\end{itemize}
+
+Figure~\ref{fig:topologies-comparison} presents visualization of the Tree and Fat-Tree topologies used in the simulations, showing their distinct hierarchical structures:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\columnwidth]{topologies_comparison}
+    \caption{Topology Comparison: Tree (Binary Hierarchical) and Fat-Tree (\textit{Datacenter}). The Tree topology presents a traditional hierarchical structure with hosts at the base and switches at successive levels. The Fat-Tree presents a \textit{datacenter} structure with k=4, characterized by multiple paths and greater redundancy.}
+    \label{fig:topologies-comparison}
+\end{figure}
+
+Figure~\ref{fig:waxman-topology} presents the third topology used in the simulations, Waxman-16, which represents a random network with characteristics distinct from the previous structured topologies:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\columnwidth]{waxman_16_topology}
+    \caption{Waxman-16 Topology: Random Network with 16 Nodes. Unlike structured topologies (Tree and Fat-Tree), Waxman represents a random network generated with geographic dispersion parameters ($\alpha$=0.5, $\beta$=0.2), simulating characteristics of real large-scale networks, with multiple isolated nodes and variable connected groups.}
+    \label{fig:waxman-topology}
+\end{figure}
+
+\textbf{VNE Algorithms}: MIP, GA-Meta, PSO-Meta, SA-Meta, MCTS, PL-Rank, RW-Rank-BFS, D-Round.
+
+Simulations were configured with homogeneous resources (CPU and memory) uniformly distributed on physical nodes. VNRs were generated with variable size (uniform distribution between 2 and 10 virtual nodes), 50\% connectivity between virtual nodes, and resource demands following realistic distributions. The system simulates sequential VNR arrivals with arrival rate according to Poisson distribution, where each request has a stochastic lifetime. Virne automatically evaluates the feasibility of each solution proposed by the algorithms, verifying node and link capacity constraints, and calculates standardized performance metrics (RAC, LRC, LAR, AST) for each execution.
+
+For each combination of algorithm and topology, ten repetitions were executed with different random seeds, totaling approximately 8,000 unique VNRs after deduplication. This approach ensures statistical robustness and captures the variability inherent to stochastic algorithms and dynamic characteristics of virtual network requests.
+
+\subsection{Feature Engineering}
+
+A set of 27 features was carefully selected, divided into categories:
+
+\textbf{VNR Characteristics} (9 features): number of nodes, number of links, size ratio, average demand per node, average demand per link, connectivity, total demand, node/link ratio, expected lifetime.
+
+\textbf{Physical Network State} (4 features): available resources, node utilization, link utilization, overall utilization.
+
+\textbf{System State} (3 features): number of active VNRs, system load, active physical nodes.
+
+\textbf{Heterogeneity and Fragmentation} (10 engineered features): Gini indices for resource distribution, memory fragmentation, topological diversity indices.
+
+\textbf{Context} (1 feature): topology type.
+
+\subsection{Multi-Objective Architecture}
+
+Instead of a single classification model, we employ \textbf{three specialized models}, each optimized for a specific objective:
+
+\begin{itemize}
+    \item \textbf{RAC}: Maximize virtual network request acceptance rate
+    \item \textbf{LRC}: Maximize long-term revenue-cost ratio
+    \item \textbf{LAR}: Maximize long-term average revenue
+\end{itemize}
+
+Each model is a decision tree trained independently on historical simulation data. During \textit{online} operation, the operator (or automatic policy) selects which objective to prioritize, and the corresponding model predicts the best algorithm.
+
+\subsection{Model Training}
+
+The training process was performed independently for each objective (RAC, LRC, LAR), allowing each model to specialize in optimizing its specific metric. Data division was stratified by algorithm class to ensure balanced distribution between training (70\%), validation (15\%), and test (15\%) sets. This stratification is crucial to maintain representativeness of all classes in each partition, especially considering the severe imbalance observed in the data.
+
+Models use \texttt{DecisionTreeClassifier} from scikit-learn with the following optimized hyperparameters:
+
+\begin{itemize}
+    \item \textbf{Maximum depth}: 10 (balancing expressiveness and interpretability)
+    \item \textbf{Minimum samples per leaf}: 3 (reduced to allow capture of minority classes)
+    \item \textbf{Minimum samples for split}: 6 (allows splits with fewer samples)
+    \item \textbf{Splitting criterion}: Gini (Gini impurity for \textit{feature} selection)
+\end{itemize}
+
+As shown in Table~\ref{tab:algorithm-summary}, no algorithm is universally optimal, evidencing the need for contextual selection. This observation justifies the dynamic algorithm selection approach proposed in this work.
+
+\begin{table}[H]
+\centering
+\caption{VNE Algorithm Performance Summary}
+\label{tab:algorithm-summary}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Algorithm} & \textbf{Acceptance Rate} & \textbf{Revenue} & \textbf{R2C Ratio} & \textbf{Time (s)} \\
+\midrule
+MIP & 36.8\% & \$186.808 & 115.6 & 1.026 \\
+PL\_RANK & 29.5\% & \$388.387 & 127.4 & 0.661 \\
+GA\_META & 27.9\% & \$400.628 & 139.8 & 0.603 \\
+RW\_RANK\_BFS & 25.8\% & \$373.937 & 120.4 & 0.558 \\
+SA\_META & 24.6\% & \$372.569 & 133.5 & 0.534 \\
+MCTS & 23.9\% & \$379.748 & 167.0 & 0.468 \\
+D\_ROUND & 20.4\% & \$365.430 & 246.0 & 0.357 \\
+PSO\_META & 20.1\% & \$352.103 & 120.0 & 0.309 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Multi-Metric Comparison of VNE Algorithms}
+
+VNE algorithm selection cannot be based on a single performance metric. Different operational contexts (high load, limited resources, latency requirements) require different \textit{trade-offs}. Figure~\ref{fig:algorithm-comparison} presents a comprehensive analysis of four complementary metrics for the eight evaluated algorithms:
+
+\begin{figure*}[h]
+    \centering
+    \includegraphics[width=1.0\textwidth]{../machine_learning/models/algorithm_comparison_all_metrics}
+    \caption{Multi-Metric Comparison: Acceptance Rate, Total Revenue, Revenue-Cost Ratio, and Average Time per VNR. The graphs show distribution of results in five simulated executions per algorithm across topologies (Tree, Fat-Tree, Waxman-16). No single algorithm is optimal in all dimensions.}
+    \label{fig:algorithm-comparison}
+\end{figure*}
+
+
+\subsubsection{Class Balancing Techniques}
+
+To reduce dataset imbalance, class balancing techniques were applied:
+
+\textbf{Custom Class Weights}: Instead of scikit-learn's default balancing, weights calculated as $w_i = 1/\sqrt{f_i}$ were used, where $f_i$ is the relative frequency of class $i$. This strategy assigns significantly larger weights to rare classes:
+
+\begin{itemize}
+    \item Rare classes (\texttt{pso\_meta}, 17 samples): weight 10.0$\times$
+    \item Intermediate classes (\texttt{rw\_rank\_bfs}, 39 samples): weight 6.6$\times$
+    \item Majority classes (\texttt{ga\_meta}, 987 samples): weight 1.3$\times$
+\end{itemize}
+
+\textbf{Evaluation}: Weighted F1-Score and F1-Macro (arithmetic mean of F1 of all classes, treating them equally) metrics were used to evaluate balanced performance between classes.
+
+\subsection{Detailed F1-Score Analysis per Class}
+
+Table~\ref{tab:f1-per-class} presents the F1-Score per class for the RAC objective, showing that balancing techniques allow capturing patterns from all classes. Results indicate that even minority classes, such as PSO\_Meta and RW\_Rank\_BFS, present F1-Score above 0.33, demonstrating the effectiveness of the employed balancing techniques:
+
+\section{Experimental Results}
+\label{sec:Results}
+
+\subsection{Classification Performance}
+
+Table~\ref{tab:classification-metrics} presents the classification metrics obtained for the three considered objectives (RAC, LRC, and LAR):
+
+\begin{table}[H]
+\centering
+\caption{Classification Metrics by Objective (Balanced Models)}
+\label{tab:classification-metrics}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Objective} & \textbf{Accuracy} & \textbf{F1-Score} & \textbf{Top-2} & \textbf{Top-3} \\
+\midrule
+RAC (Acceptance Rate) & 67.26\% & 0.68 & 82.66\% & 85.90\% \\
+LRC (Revenue-Cost Ratio) & 54.46\% & 0.55 & 74.55\% & 83.95\% \\
+LAR (Average Revenue) & 48.14\% & 0.48 & 67.59\% & 79.09\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Results presented in Table~\ref{tab:classification-metrics} indicate that the RAC objective presents better performance in all metrics, with accuracy of 67.26\% and top-3 accuracy of 85.90\%. The LRC objective presents intermediate performance, while LAR presents lower accuracy (48.14\%), but still with top-3 accuracy of 79.09\%, indicating that the model frequently identifies the best algorithm among the top three options. The performance difference between objectives reflects the distinct complexity of each metric and the inherent variability of algorithms in different contexts.
+
+\subsection{Comparison with \textit{Baseline}}
+
+Classification accuracy was measured for each objective, comparing decision tree performance with the fixed algorithm \textit{baseline}. Figure~\ref{fig:baseline-comparison} presents the results. It is possible to observe that accuracy depends significantly on the chosen fixed algorithm, evidencing the need for contextual selection.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\columnwidth]{baseline_comparison_chart}
+\caption{Accuracy Comparison: Baseline vs Decision Tree by Optimization Objective}
+\label{fig:baseline-comparison}
+\end{figure}
+
+Figure~\ref{fig:baseline-comparison} reveals that contextual selection via decision trees significantly outperforms the use of fixed algorithms. For the RAC objective, the improvement is +32.90 percentage points (+95.8\% relative), while for LRC and LAR the improvements are even more expressive in relative terms (+100.0\% and +110.7\%, respectively). These results confirm that adaptive algorithm selection based on contextual characteristics is fundamental to optimizing system performance.
+
+To validate that gains in classification accuracy translate into real operational performance improvement, performance was evaluated when decision trees are used for algorithm selection in simulated executions. 
+Figure~\ref{fig:real-performance-improvement} presents the comparison of real performance (using individual values per VNR) between tree-based selection and fixed algorithm \textit{baseline}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\columnwidth]{real_performance_chart}
+\caption{Real Performance: Tree vs Baseline by Optimization Objective}
+\label{fig:real-performance-improvement}
+\end{figure}
+
+Figure~\ref{fig:real-performance-improvement} presents the results of real operational performance when decision trees are used for algorithm selection. Results show that contextual selection via decision trees produces \textbf{substantial improvements in real operational performance} in all objectives:
+
+\begin{itemize}
+    \item \textbf{RAC}: Acceptance rate increases from 43.17\% (fixed algorithm) to 81.95\% (contextual selection), representing an improvement of \textbf{+89.83\%}
+    \item \textbf{LRC}: Revenue-cost ratio increases from 0.4574 to 0.7262, with an improvement of \textbf{+58.76\%}
+    \item \textbf{LAR}: Average revenue increases from 70.29 to 113.45 per VNR, with an improvement of \textbf{+61.40\%}
+\end{itemize}
+
+Results show that contextual selection via decision trees is significantly superior to using a fixed algorithm, with substantial improvements in all evaluated objectives. The approach captures important patterns of algorithm selection based on contextual characteristics of VNRs, allowing dynamic adaptation to different network conditions and resource requirements.
+
+The analysis reveals important patterns:
+
+\textbf{No Algorithm is Universally Optimal}: MIP maximizes acceptance rate (36.8\%), GA\_META maximizes revenue (400.628), D\_ROUND offers best cost-benefit ratio (246.0), and PSO\_META is fastest (0.31s). Each algorithm excels in a different dimension.
+
+\textbf{Explicit Trade-offs}: MIP offers high acceptance but with elevated processing time (1.03s). D\_ROUND is very fast but with reduced acceptance (20.4\%). GA\_META offers adequate balance between revenue and processing time.
+
+\textbf{Justification for Multi-Objective Approach}: This performance variation empirically evidences that:
+\begin{itemize}
+    \item A single fixed algorithm cannot serve all operational contexts
+    \item Contextual selection based on network state and VNR characteristics is essential
+    \item Multi-objective decision trees learn to map context $\rightarrow$ appropriate algorithm
+    \item System can adapt priorities at runtime (acceptance vs revenue vs processing time)
+\end{itemize}
+
+Table~\ref{tab:algorithm-summary} synthesizes aggregated metrics for reference.
+
+\begin{table}[H]
+\centering
+\caption{F1-Score per Class - RAC Objective (Balanced Models)}
+\label{tab:f1-per-class}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Algorithm} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} \\
+\midrule
+GA\_Meta & 0.73 & 0.74 & 0.73 \\
+MCTS & 0.78 & 0.72 & 0.75 \\
+PL\_Rank & 0.77 & 0.66 & 0.71 \\
+D\_Round & 0.61 & 0.59 & 0.60 \\
+MIP & 0.49 & 0.57 & 0.53 \\
+SA\_Meta & 0.43 & 0.56 & 0.49 \\
+RW\_Rank\_BFS & 0.67 & 0.25 & 0.36 \\
+PSO\_Meta & 0.22 & 0.67 & 0.33 \\
+\midrule
+\textbf{F1-Macro} & \multicolumn{3}{c}{\textbf{0.56}} \\
+\textbf{F1-Weighted} & \multicolumn{3}{c}{\textbf{0.68}} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The detailed analysis presented in Table~\ref{tab:f1-per-class} reveals that balancing techniques allow capturing patterns even from minority classes. Algorithms such as GA\_Meta, MCTS, and PL\_Rank present F1-Score above 0.70, indicating good prediction capability. Minority classes such as PSO\_Meta and RW\_Rank\_BFS present lower F1-Score (0.33 and 0.36, respectively), but still above zero, demonstrating that the model can identify patterns even for these classes. F1-Macro of 0.56 and F1-Weighted of 0.68 indicate that the model presents balanced performance across all classes, with greater weight on more frequent classes.
+
+\subsection{Interpretability Analysis}
+
+One of the main advantages of the approach is that each decision can be traced through the decision tree. Figure~\ref{fig:decision-tree-example} shows a simplified fragment of a tree, illustrating how the model classifies VNRs:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\columnwidth]{tree_visualization_example}
+    \caption{Example of Decision Path in Tree}
+    \label{fig:decision-tree-example}
+\end{figure}
+
+Unlike deep neural networks (black box), operators can understand \textbf{exactly why} an algorithm was selected:
+
+\textit{``If VNR size $<$ 30\% of physical network AND node utilization $>$ 70\%, then select MIP (exact, accepts in congestion). Otherwise, if connectivity $>$ 0.5, select GA-Meta.''}
+
+Additionally, \textit{feature} importance analysis reveals which characteristics are most relevant for each objective. For RAC (Request Acceptance Rate) and LRC (Long-Term Revenue-to-Cost), resource efficiency ($resource\_efficiency$) is the most critical \textit{feature}, with importance of 0.13 and 0.11 respectively. In the case of LAR (Long-Term Average Revenue), VNR link demand ($v\_net\_demand\_per\_link$) and total demand ($v\_net\_total\_demand$) are the dominant \textit{features}. These findings confirm that different objectives prioritize distinct characteristics of VNRs and physical network state. Figure~\ref{fig:feature-importance-rac} exemplifies \textit{feature} importance for the RAC objective, while Figures~\ref{fig:feature-importance-lrc} and~\ref{fig:feature-importance-lar} present results for the remaining objectives.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\columnwidth]{per_objective_rac}
+    \caption{Feature Importance - RAC (Request Acceptance Rate). The top 15 most important features (average across topologies) for the RAC objective. Resource efficiency ($resource\_efficiency$) is the most critical feature with importance of 0.134, followed by VNR link demand ($v\_net\_demand\_per\_link$) with 0.096.}
+    \label{fig:feature-importance-rac}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\columnwidth]{per_objective_lrc}
+    \caption{Feature Importance - LRC (Long-Term Revenue-to-Cost). The top 15 most important features (average across topologies) for the LRC objective. Resource efficiency ($resource\_efficiency$) is the most critical feature with importance of 0.113, followed by physical network health score ($p\_net\_health\_score$) with 0.097.}
+    \label{fig:feature-importance-lrc}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\columnwidth]{per_objective_lar}
+    \caption{Feature Importance - LAR (Long-Term Average Revenue). The top 15 most important features (average across topologies) for the LAR objective. VNR link demand ($v\_net\_demand\_per\_link$) is the most important feature with 0.090, followed by total demand ($v\_net\_total\_demand$) with 0.068.}
+    \label{fig:feature-importance-lar}
+\end{figure}
+
+
+This interpretability is critical, as it allows regulators to perform audits by verifying decisions made by the system, facilitates debugging work by enabling operators to understand system behavior, and increases confidence and acceptance of \textit{zero-touch} automation.
+
+\subsection{Inference Latency}
+
+Prediction latency measurements for each model (based on benchmark with 10,000 iterations):
+
+\begin{itemize}
+    \item \textbf{Average time}: 0.034\,ms per prediction
+    \item \textbf{Percentile p99}: 0.055\,ms (worst case: 0.119\,ms)
+    \item \textbf{RL Comparison}: FlagVNE requires 50-200\,ms per decision~\cite{ijcai-2024-flagvne}
+\end{itemize}
+
+Figure~\ref{fig:inference-latency-cdf} presents the cumulative distribution function (CDF) of inference latency, comparing the proposed approach with FlagVNE. Results show that more than 99\% of predictions are performed in less than 0.06\,ms, demonstrating consistency in sub-millisecond latency.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\columnwidth]{inference_latency_cdf}
+\caption{Inference Latency CDF: Decision Trees vs FlagVNE. The proposed approach presents latency consistently below 0.1\,ms, while FlagVNE requires 50-200\,ms per decision (different scale on secondary axis).}
+\label{fig:inference-latency-cdf}
+\end{figure}
+
+Sub-ms latency enables \textit{online} real-time decision making, critical for \textit{zero-touch} operation.
+
+\section{Conclusion}
+\label{sec:Conclusion}
+
+This work proposed an approach for \textit{zero-touch} selection of \textit{Virtual Network Embedding} algorithms using multi-objective decision trees, considering virtual network request characteristics and physical infrastructure state.
+The approach differentiates itself from deep learning-based alternatives by offering complete interpretability through explicit decision paths and inference latency below 1\,ms, enabling real-time \textit{online} operation.
+
+Specifically, experimental results show that the foundations of the proposed approach (decision trees, multi-objective optimization, and interpretability) are potential candidates to achieve \textit{zero-touch} network control according to the ETSI ZSM standard.
+The experimental analysis, based on three \textit{datacenter} topologies (Tree, Fat-Tree, and Waxman-16) with 8,000 virtual network requests, showed that contextual algorithm selection can reduce processing time and improve acceptance rate in various scenarios, without requiring software updates at infrastructure endpoints.
+
+Results show that the proposed approach, operating in conjunction with traditional VNE algorithms such as MIP, GA-Meta, and PL-Rank, can significantly improve operational performance:
+\begin{itemize}
+    \item \textbf{Acceptance Rate Improvement}: Increase of +89.83\% compared to fixed algorithm \textit{baseline} (from 43.17\% to 81.95\%)
+    \item \textbf{Top-3 Accuracy}: Between 79.1\% and 85.9\%, showing robustness in predicting the best algorithm
+    \item \textbf{Revenue-Cost Ratio Improvement}: Increase of +58.76\% (from 0.4574 to 0.7262)
+    \item \textbf{Average Revenue Improvement}: Increase of +61.40\% (from 70.29 to 113.45 per VNR)
+\end{itemize}
+
+The class balancing techniques employed (custom weights $1/\sqrt{f}$ and hyperparameter tuning) were essential to capture patterns from minority classes, resulting in F1-Macro of 0.56 for the RAC objective.
+Additionally, experimental results empirically confirmed that no VNE algorithm is universally optimal, validating the need for contextual selection based on request characteristics and network state.
+
+As limitations, the model was trained on three simulated topologies and the characteristics capture instantaneous network state.
+As future work, promising directions include \textit{transfer learning} between topologies, incorporation of temporal history of requests, and validation in production environments with real \textit{datacenter} workloads.
+
+%===================================================================
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
+

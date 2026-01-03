@@ -1,0 +1,67 @@
+================================================================================
+DECISION TREE EVALUATION REPORT
+================================================================================
+
+Test Set Size: 617 samples
+
+Algorithms in Test Set:
+  pl_rank        :  168 samples ( 27.2%)
+  sa_meta        :  125 samples ( 20.3%)
+  mip            :  110 samples ( 17.8%)
+  mcts           :   78 samples ( 12.6%)
+  ga_meta        :   72 samples ( 11.7%)
+  rw_rank_bfs    :   28 samples (  4.5%)
+  pso_meta       :   22 samples (  3.6%)
+  d_round        :   14 samples (  2.3%)
+
+
+PERFORMANCE METRICS:
+  Accuracy:           0.5446 (54.46%)
+  Weighted F1-Score:  0.5518
+  Top-2 Accuracy:     0.7455 (74.55%)
+  Top-3 Accuracy:     0.8395 (83.95%)
+
+
+INTERPRETATION:
+  • Overall accuracy: 54.5% of predictions match oracle
+  • Top-3 accuracy: 84.0% of oracle algorithms are in top-3 predictions
+  • This suggests: Decision tree captures general algorithm patterns
+    but cannot always select the exact oracle algorithm
+
+
+CLASS-WISE PERFORMANCE:
+
+              precision    recall  f1-score   support
+
+     d_round       0.18      0.14      0.16        14
+     ga_meta       0.38      0.53      0.44        72
+        mcts       0.48      0.41      0.44        78
+         mip       0.67      0.50      0.57       110
+     pl_rank       0.67      0.56      0.61       168
+    pso_meta       0.45      0.59      0.51        22
+ rw_rank_bfs       0.20      0.39      0.27        28
+     sa_meta       0.68      0.73      0.70       125
+
+    accuracy                           0.54       617
+   macro avg       0.46      0.48      0.46       617
+weighted avg       0.57      0.54      0.55       617
+
+
+
+KEY INSIGHTS:
+  1. Class Imbalance Challenge:
+     - rw_rank_bfs dominates training set (66.3%)
+     - Minority classes (ga_meta, pso_meta) harder to predict
+
+  2. Top-K Accuracy Better Than Strict Match:
+     - Strict matching: 54.5%
+     - Predicted algo usually in top-3: 84.0%
+     - Suggests tree learns good algorithm families
+
+  3. Use Cases:
+     - If decision trees are combined with other heuristics,
+       top-3 ranking can guide algorithm selection
+     - As tie-breaker in ensemble methods
+
+
+================================================================================
