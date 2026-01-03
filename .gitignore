@@ -31,3 +31,8 @@ benchmark
 docs/build/
 docs/source/_autosummary/
 docs/source/generated/
+
+# Large dataset CSV files
+apresentacao/machine_learning/datasets/vnr_features.csv
+apresentacao/machine_learning/datasets/waxman_16_raw_data.csv
+vnr_aggregated_data.csv
