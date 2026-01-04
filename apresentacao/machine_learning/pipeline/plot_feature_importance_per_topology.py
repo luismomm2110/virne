@@ -27,9 +27,9 @@ def get_top_features(model, features, top_n=10):
     
     return feat_imp[:top_n]
 
-def plot_features_horizontal(features, importances, title, filename, top_n=10):
+def plot_features_horizontal(features, importances, title, filename, top_n=10, ylabel_fontsize=13):
     """Plota gráfico de barras horizontal das features mais importantes."""
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(10, 7.5))
     
     # Selecionar top N
     indices = np.arange(min(top_n, len(features)))
@@ -39,9 +39,9 @@ def plot_features_horizontal(features, importances, title, filename, top_n=10):
     
     # Configurar labels
     ax.set_yticks(indices)
-    ax.set_yticklabels([f[:45] for f in features[:top_n]], fontsize=9)
-    ax.set_xlabel('Importance', fontweight='bold', fontsize=11)
-    ax.set_title(title, fontweight='bold', fontsize=12, pad=10)
+    ax.set_yticklabels([f[:45] for f in features[:top_n]], fontsize=ylabel_fontsize)
+    ax.set_xlabel('Importance', fontweight='bold', fontsize=12)
+    ax.set_title(title, fontweight='bold', fontsize=13, pad=10)
     
     # Inverter eixo Y para mostrar maior no topo
     ax.invert_yaxis()
@@ -143,10 +143,12 @@ def main():
             feat_names = [f[0] for f in obj_sorted]
             feat_imps = [f[1] for f in obj_sorted]
             
-            title = f'Top Features - {objectives[obj_key].upper()} (Média entre Topologias)'
+            title = f'Top Features - {objectives[obj_key].upper()} (Average across Topologies)'
             filename = f'{output_dir}/per_objective_{obj_key}.png'
             
-            plot_features_horizontal(feat_names, feat_imps, title, filename, top_n=15)
+            # Increase y-axis label size for figures 9, 10, 11 (RAC, LRC, LAR)
+            ylabel_size = 16 if obj_key in ['rac', 'lrc', 'lar'] else 13
+            plot_features_horizontal(feat_names, feat_imps, title, filename, top_n=15, ylabel_fontsize=ylabel_size)
     
     # ========================================================================
     # Gráficos por Topologia (média entre objetivos) - 3 gráficos

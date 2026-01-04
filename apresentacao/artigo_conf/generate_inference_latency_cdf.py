@@ -56,7 +56,7 @@ def create_inference_latency_cdf():
     
     # Plotar CDF principal
     ax.plot(cdf_values, percentiles, 
-            linewidth=3, color='#2ecc71', label='Árvores de Decisão (Este Trabalho)', zorder=3)
+            linewidth=3, color='#2ecc71', label='Decision Trees (This Work)', zorder=3)
     
     # Adicionar linhas de referência
     p50_idx = np.argmin(np.abs(percentiles - 50))
@@ -65,18 +65,18 @@ def create_inference_latency_cdf():
     
     # Linha vertical para p50 (mediana)
     ax.axvline(cdf_values[p50_idx], color='gray', linestyle=':', linewidth=1.5, alpha=0.7, zorder=1)
-    ax.text(cdf_values[p50_idx] + 0.005, 52, f'p50: {cdf_values[p50_idx]:.3f} ms',
-            fontsize=10, rotation=90, va='bottom', fontweight='bold')
+    ax.text(cdf_values[p50_idx] * 1.3, 45, f'p50: {cdf_values[p50_idx]:.3f} ms',
+            fontsize=9, rotation=90, va='bottom', fontweight='bold', color='gray')
     
     # Linha vertical para p99
     ax.axvline(cdf_values[p99_idx], color='gray', linestyle=':', linewidth=1.5, alpha=0.7, zorder=1)
-    ax.text(cdf_values[p99_idx] + 0.005, 99.5, f'p99: {cdf_values[p99_idx]:.3f} ms',
-            fontsize=10, rotation=90, va='top', fontweight='bold')
+    ax.text(cdf_values[p99_idx] * 1.5, 85, f'p99: {cdf_values[p99_idx]:.3f} ms',
+            fontsize=9, rotation=90, va='top', fontweight='bold', color='gray')
     
     # Linha vertical para média
     ax.axvline(mean_latency, color='blue', linestyle='--', linewidth=2, alpha=0.8, zorder=2)
-    ax.text(mean_latency + 0.005, 30, f'Média: {mean_latency:.3f} ms',
-            fontsize=10, rotation=90, va='bottom', color='blue', fontweight='bold')
+    ax.text(mean_latency * 1.7, 65, f'Mean: {mean_latency:.3f} ms',
+            fontsize=9, rotation=90, va='center', color='blue', fontweight='bold')
     
     # Adicionar região de FlagVNE para comparação
     flagvne_min = 50
@@ -84,9 +84,9 @@ def create_inference_latency_cdf():
     ax.axvspan(flagvne_min, flagvne_max, alpha=0.2, color='red', label='FlagVNE: 50-200 ms', zorder=0)
     
     # Customização
-    ax.set_xlabel('Latência de Inferência (ms)', fontsize=12, fontweight='bold')
-    ax.set_ylabel('Percentil Cumulativo (%)', fontsize=12, fontweight='bold')
-    ax.set_title('CDF de Latência de Inferência: Árvores de Decisão vs FlagVNE\n(Benchmark com 10.000 iterações)',
+    ax.set_xlabel('Inference Latency (ms)', fontsize=12, fontweight='bold')
+    ax.set_ylabel('Cumulative Percentile (%)', fontsize=12, fontweight='bold')
+    ax.set_title('Inference Latency CDF: Decision Trees vs FlagVNE\n(Benchmark with 10,000 iterations)',
                 fontsize=13, fontweight='bold', pad=15)
     
     # Usar escala logarítmica para mostrar ambas as abordagens
@@ -96,17 +96,17 @@ def create_inference_latency_cdf():
     
     ax.grid(axis='both', alpha=0.3, linestyle='--', which='both', zorder=0)
     ax.set_axisbelow(True)
-    ax.legend(loc='lower right', fontsize=11, framealpha=0.9)
+    ax.legend(loc='upper right', fontsize=11, framealpha=0.9)
     
-    # Adicionar texto informativo
-    info_text = f'Tempo médio: {mean_latency:.3f} ms\np99: {cdf_values[p99_idx]:.3f} ms\nMáximo: {max_latency:.3f} ms\n\n99% das predições < 0,1 ms'
-    ax.text(0.015, 15, info_text,
+    # Adicionar texto informativo - posicionado para evitar sobreposição
+    info_text = f'Average time: {mean_latency:.3f} ms\np99: {cdf_values[p99_idx]:.3f} ms\nMaximum: {max_latency:.3f} ms\n\n99% of predictions < 0.1 ms'
+    ax.text(0.015, 25, info_text,
             fontsize=10, bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.8, edgecolor='green', linewidth=2),
-            verticalalignment='top', fontweight='bold')
+            verticalalignment='top', fontweight='bold', zorder=4)
     
-    ax.text(80, 15, f'FlagVNE requer\n50-200 ms por decisão\n(100-1000× mais lento)',
+    ax.text(100, 30, f'FlagVNE requires\n50-200 ms per decision\n(100-1000× slower)',
             fontsize=10, bbox=dict(boxstyle='round', facecolor='lightcoral', alpha=0.8, edgecolor='red', linewidth=2),
-            verticalalignment='top', fontweight='bold')
+            verticalalignment='top', fontweight='bold', zorder=4)
     
     plt.tight_layout()
     plt.savefig('/Users/luismomm/PycharmProjects/virne/apresentacao/artigo_conf/inference_latency_cdf.png',

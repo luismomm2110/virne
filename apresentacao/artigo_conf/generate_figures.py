@@ -257,7 +257,7 @@ def create_tree_visualization_example():
                                      boxstyle="round,pad=0.05",
                                      edgecolor='navy', facecolor=node_color, linewidth=1.5)
         ax.add_patch(box)
-        ax.text(x, y, text, ha='center', va='center', fontsize=9, weight='bold')
+        ax.text(x, y, text, ha='center', va='center', fontsize=14, weight='bold')
 
     # Função para desenhar seta
     def draw_arrow_simple(x1, y1, x2, y2, label=''):
@@ -267,7 +267,7 @@ def create_tree_visualization_example():
         ax.add_patch(arrow)
         if label:
             mx, my = (x1+x2)/2, (y1+y2)/2
-            ax.text(mx+0.2, my, label, fontsize=8, style='italic')
+            ax.text(mx+0.2, my, label, fontsize=12, style='italic')
 
     # Árvore simplificada (3 níveis)
     # Nível 0
@@ -303,16 +303,16 @@ def create_tree_visualization_example():
 
     # Título e descrição
     ax.text(5, 2.8, 'Árvore de Decisão Treinada para Seleção de Algoritmo VNE',
-           ha='center', fontsize=12, weight='bold')
+           ha='center', fontsize=16, weight='bold')
 
     ax.text(5, 2.2, 'Exemplo: Árvore com 3 níveis, 1024 nós totais de dados particionados recursivamente',
-           ha='center', fontsize=10, style='italic')
+           ha='center', fontsize=14, style='italic')
 
     ax.text(5, 1.6, 'Cada caminho raiz→folha representa uma regra de decisão automaticamente aprendida',
-           ha='center', fontsize=9)
+           ha='center', fontsize=12)
 
     ax.text(5, 1.0, 'Números entre parênteses indicam quantidade de VNRs em cada partição durante treinamento',
-           ha='center', fontsize=8, color='gray')
+           ha='center', fontsize=11, color='gray')
 
     plt.tight_layout()
     plt.savefig('/Users/luismomm/PycharmProjects/virne/apresentacao/artigo_conf/tree_visualization_example.png',
@@ -368,27 +368,27 @@ def create_tree_example_path_english():
 
     # Left side: YES (selected)
     draw_node(x_left1, y_level1, 'node_utilization\n≤ 60%\nYES ✓',
-             selected_color, width=2, height=0.7, selected=True)
+             selected_color, width=2.4, height=0.7, selected=True)
 
     # Right side: NO (not selected)
     draw_node(x_right1, y_level1, 'node_utilization\n> 60%\n(NO)',
-             unselected_color, width=2, height=0.7, selected=False)
+             unselected_color, width=2.4, height=0.7, selected=False)
 
     draw_arrow(5, y_level0-0.4, x_left1, y_level1+0.35, 'Yes', selected=True)
     draw_arrow(5, y_level0-0.4, x_right1, y_level1+0.35, 'No', selected=False)
 
     # Level 2: Second Split - Shows selected path
     y_level2 = 6
-    x_left2a = 1
+    x_left2a = 1.2
     x_left2b = 4
 
     # Left side YES (selected)
     draw_node(x_left2a, y_level2, 'vnr_size\n≤ 5 nodes\nYES ✓',
-             selected_color, width=1.8, height=0.7, selected=True)
+             selected_color, width=2.0, height=0.7, selected=True)
 
     # Left side NO (not selected)
     draw_node(x_left2b, y_level2, 'vnr_size\n> 5 nodes\n(NO)',
-             unselected_color, width=1.8, height=0.7, selected=False)
+             unselected_color, width=2.0, height=0.7, selected=False)
 
     draw_arrow(x_left1, y_level1-0.35, x_left2a, y_level2+0.35, 'Yes', selected=True)
     draw_arrow(x_left1, y_level1-0.35, x_left2b, y_level2+0.35, 'No', selected=False)
@@ -399,34 +399,34 @@ def create_tree_example_path_english():
 
     # Level 3: Third Split - Shows selected path
     y_level3 = 4.5
-    x_left3a = 0.3
-    x_left3b = 1.7
+    x_left3a = 1.1
+    x_left3b = 3.0
 
     # Left side YES (selected)
     draw_node(x_left3a, y_level3, 'node_utilization\n> 70%\nYES ✓',
-             selected_color, width=1.6, height=0.7, selected=True)
+             selected_color, width=2.0, height=0.7, selected=True)
 
     # Left side NO (not selected)
     draw_node(x_left3b, y_level3, 'node_utilization\n≤ 70%\n(NO)',
-             unselected_color, width=1.6, height=0.7, selected=False)
+             unselected_color, width=2.0, height=0.7, selected=False)
 
     draw_arrow(x_left2a, y_level2-0.35, x_left3a, y_level3+0.35, 'Yes', selected=True)
     draw_arrow(x_left2a, y_level2-0.35, x_left3b, y_level3+0.35, 'No', selected=False)
 
     # Final Result: LEAF
-    y_leaf = 2.8
+    y_leaf = 3.0
     draw_node(x_left3a, y_leaf, 'RESULT\nSelect: MIP\n(Exact, Optimal\nfor Congestion)',
-             leaf_selected, width=1.8, height=1.0, selected=True)
+             leaf_selected, width=2.0, height=1.0, selected=True)
 
     draw_arrow(x_left3a, y_level3-0.35, x_left3a, y_leaf+0.5, '', selected=True)
 
-    # Summary rule
-    ax.text(5, 1.2, 'EXTRACTED RULE:', fontsize=16, weight='bold', ha='center')
-    ax.text(5, 0.7,
+    # Summary rule - moved closer to tree
+    ax.text(5, 1.9, 'EXTRACTED RULE:', fontsize=16, weight='bold', ha='center')
+    ax.text(5, 1.3,
            'IF (node_utilization ≤ 60%) AND\n(vnr_size ≤ 5 nodes) AND\n(node_utilization > 70%)',
            fontsize=14, ha='center',
            bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.9))
-    ax.text(5, -0.3,
+    ax.text(5, 0.5,
            'THEN select MIP\n(guaranteed optimal in congestion scenario)',
            fontsize=14, ha='center', style='italic',
            bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.9))
@@ -444,15 +444,98 @@ def create_tree_example_path_english():
     plt.close()
 
 
+def create_tree_visualization_example_english():
+        """Creates figure with simplified tree visualization example - English version."""
+        fig, ax = plt.subplots(figsize=(14, 10))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 10)
+        ax.axis('off')
+
+        # Colors
+        node_color = '#E8F4F8'
+        leaf_color = '#FFE5E5'
+
+        # Function to draw simplified node
+        def draw_simple_node(x, y, text, width=1.8, height=0.8):
+            box = mpatches.FancyBboxPatch((x-width/2, y-height/2), width, height,
+                                         boxstyle="round,pad=0.05",
+                                         edgecolor='navy', facecolor=node_color, linewidth=2.0)
+            ax.add_patch(box)
+            ax.text(x, y, text, ha='center', va='center', fontsize=18, weight='bold')
+
+        # Function to draw arrow
+        def draw_arrow_simple(x1, y1, x2, y2, label=''):
+            arrow = mpatches.FancyArrowPatch((x1, y1), (x2, y2),
+                                            arrowstyle='->', mutation_scale=15,
+                                            linewidth=1.5, color='navy')
+            ax.add_patch(arrow)
+            if label:
+                mx, my = (x1+x2)/2, (y1+y2)/2
+                ax.text(mx+0.2, my, label, fontsize=12, style='italic')
+
+        # Simplified tree (3 levels)
+        # Level 0
+        draw_simple_node(5, 9, 'root\n8000 samples', width=2.0, height=0.8)
+
+        # Level 1
+        draw_simple_node(2, 7.5, 'feature_4\nvalue < 0.5', width=1.8, height=0.8)
+        draw_simple_node(8, 7.5, 'feature_2\nvalue > 0.3', width=1.8, height=0.8)
+
+        draw_arrow_simple(4.2, 8.7, 2.7, 7.8)
+        draw_arrow_simple(5.8, 8.7, 7.3, 7.8)
+
+        # Level 2 (left)
+        draw_simple_node(0.5, 6, 'class: MIP\n2100', width=1.8, height=0.8)
+        draw_simple_node(3.5, 6, 'feature_7\nvalue < 0.8', width=1.8, height=0.8)
+
+        draw_arrow_simple(1.2, 7.2, 0.8, 6.3)
+        draw_arrow_simple(2.3, 7.2, 3.2, 6.3)
+
+        # Level 2 (right)
+        draw_simple_node(6.5, 6, 'class: GA\n1800', width=1.8, height=0.8)
+        draw_simple_node(9.5, 6, 'class: PSO\n2200', width=1.8, height=0.8)
+
+        draw_arrow_simple(7.6, 7.2, 7.2, 6.3)
+        draw_arrow_simple(8.4, 7.2, 9.2, 6.3)
+
+        # Level 3 (leaves)
+        draw_simple_node(2.5, 4.5, 'class: GA-Meta\n950', width=1.8, height=0.8)
+        draw_simple_node(4.5, 4.5, 'class: SA-Meta\n650', width=1.8, height=0.8)
+
+        draw_arrow_simple(3.2, 5.7, 2.8, 4.8)
+        draw_arrow_simple(3.8, 5.7, 4.2, 4.8)
+
+        # Title and description
+        ax.text(5, 2.8, 'Trained Decision Tree for VNE Algorithm Selection',
+               ha='center', fontsize=30, weight='bold')
+
+        ax.text(5, 2.2, 'Example: Tree with 3 levels, 1024 total data nodes recursively partitioned',
+               ha='center', fontsize=26, style='italic')
+
+        ax.text(5, 1.6, 'Each root→leaf path represents an automatically learned decision rule',
+               ha='center', fontsize=28)
+
+        ax.text(5, 1.0, 'Numbers in parentheses indicate quantity of VNRs in each partition during training',
+               ha='center', fontsize=26, color='gray')
+
+        plt.tight_layout()
+        plt.savefig('/Users/luismomm/PycharmProjects/virne/apresentacao/artigo_conf/tree_visualization_example_en.png',
+                   dpi=300, bbox_inches='tight', facecolor='white')
+        print("✅ Created: tree_visualization_example_en.png")
+        plt.close()
+
+
 if __name__ == '__main__':
     print("Gerando figuras de árvore de decisão...")
     create_tree_structure()
     create_tree_example_path()
     create_tree_example_path_english()
     create_tree_visualization_example()
+    create_tree_visualization_example_english()
     print("\n✅ Todas as figuras foram criadas com sucesso!")
     print("\nArquivos gerados:")
     print("  - tree_structure.png")
     print("  - tree_example_path.png")
     print("  - tree_example_path_en.png")
     print("  - tree_visualization_example.png")
+    print("  - tree_visualization_example_en.png")

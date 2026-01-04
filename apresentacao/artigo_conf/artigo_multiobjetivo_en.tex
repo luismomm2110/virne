@@ -113,12 +113,14 @@ At each internal node, the tree selects a \textit{feature} and a \textit{thresho
 
 Figure~\ref{fig:tree-example-path} illustrates an example of a decision path, showing how each intermediate decision in the tree progressively reduces the solution space until reaching a final recommendation.
 
-\begin{figure}[H]
+\begin{figure*}[t]
     \centering
-    \includegraphics[width=0.95\columnwidth]{tree_example_path}
+    \includegraphics[width=\textwidth]{tree_example_path_en}
     \caption{Example of decision path (root to leaf) in tree for VNE algorithm selection.}
     \label{fig:tree-example-path}
-\end{figure}
+\end{figure*}
+
+The decision tree demonstrates an automated algorithm selection process by evaluating the current state of both the Physical Network (PN) and Virtual Network Request (VNR) through a series of decision nodes. The highlighted path (shown in green) illustrates a concrete example where the tree recommends the MIP algorithm. Starting from the root node containing all training data, the tree first evaluates whether the physical network's node utilization is below or equal to 60\%. Following the affirmative branch, the second decision examines whether the VNR size contains 5 nodes or fewer. For small-scale requests in low-utilization networks, a third decision evaluates whether node utilization exceeds 70\%, identifying a congestion-prone scenario. This specific combination of conditions leads to the recommendation of MIP (Mixed Integer Programming), an exact algorithm guaranteed to find optimal solutions in congestion scenarios. The extracted rule can be formalized as: \textit{IF} (node\_utilization $\leq$ 60\%) \textit{AND} (vnr\_size $\leq$ 5 nodes) \textit{AND} (node\_utilization $>$ 70\%) \textit{THEN} select MIP. This automated decision-making process eliminates the need for manual algorithm selection by encoding expert knowledge about when different VNE algorithms perform optimally based on measurable network and request characteristics.
 
 Unlike deep neural networks or \textit{reinforcement learning} models, each step is comprehensible and auditable by human operators.
 Decision trees are particularly suitable for the VNE algorithm selection problem due to the following characteristics:
@@ -184,11 +186,12 @@ Table~\ref{tab:related-work} synthesizes a comparative analysis between related 
 
 \begin{table*}[t]
 \centering
+\small
 \caption{Comparative Analysis: Related Work vs Proposed Approach (six critical dimensions)}
 \label{tab:related-work}
 \begin{tabular}{lcccccc}
 \toprule
-\textbf{Work} & \textbf{ML Type} & \textbf{Adaptive per VNR} & \textbf{Multiple Objectives} & \textbf{Interpretable} & \textbf{Inference Latency} & \textbf{Production Ready} \\
+\textbf{Work} & \textbf{ML Type} & \textbf{Adaptive} & \textbf{Multi-Obj.} & \textbf{Interpretable} & \textbf{Latency} & \textbf{Prod. Ready} \\
 \midrule
 Fischer (VNE Survey) & Comparison & No & No & Yes & - & No \\
 Rice (Portfolio) & Algorithm & Yes & No & Yes & - & Conceptual \\
@@ -196,7 +199,7 @@ SATzilla & Trees & Yes & No & Yes & Low & Yes \\
 Cao et al. (DRL) & Deep RL & Yes & No & No & High (50ms+) & No \\
 FlagVNE (DRL) & Deep RL & Yes & No & No & Very High (100ms+) & No \\
 \midrule
-\textbf{This Work} & \textbf{Multi-Obj. Trees} & \textbf{Yes} & \textbf{Yes (3 objectives)} & \textbf{Yes} & \textbf{Very Low <1ms} & \textbf{Yes} \\
+\textbf{This Work} & \textbf{Multi-Obj. Trees} & \textbf{Yes} & \textbf{Yes (3 obj.)} & \textbf{Yes} & \textbf{$<$1ms} & \textbf{Yes} \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -224,7 +227,7 @@ The following section details the proposed methodology, describing the steps of 
 The methodology consists of four main steps:
 
 \begin{enumerate}
-    \item \textbf{Data Collection}: Execute eight VNE algorithms---\textit{MIP, GA-Meta, PSO-Meta, SA-Meta, MCTS, PL-Rank, RW-Rank-BFS, D-Round}---on three distinct topologies---\textit{Tree, Fat-Tree (k=4) and Waxman-16}---and collect detailed performance data in each scenario for model training, validation, and testing.
+    \item \textbf{Data Collection}: Execute eight VNE algorithms implemented in the Virne simulator~\cite{wang2024virne}---representing three algorithm classes: exact methods (\textit{MIP}), meta-heuristics (\textit{GA-Meta, PSO-Meta, SA-Meta, MCTS}), and heuristics (\textit{PL-Rank, RW-Rank-BFS, D-Round})---on three distinct physical network topologies: two structured \textit{datacenter} topologies (\textit{Tree, Fat-Tree with k=4}) and one random topology (\textit{Waxman-16}~\cite{waxman1988routing}). This diversity of algorithms and topologies ensures the decision tree has sufficient variability to learn contextual patterns and generalize across different network scenarios. Detailed performance data are collected in each scenario for model training, validation, and testing.
     \item \textbf{Feature Engineering}: Extract 27 relevant characteristics from VNRs, network state, and topological context.
     \item \textbf{Multi-Objective Training}: Create three specialized models---RAC (\textit{Request Acceptance Rate}), LRC (\textit{Long-term Revenue-to-Cost Ratio}) and LAR (\textit{Long-term Average Revenue})---, each optimizing specific performance criteria.
     \item \textbf{Online Prediction}: For each new VNR, use the extracted context to dynamically select the most appropriate VNE algorithm through the model that optimizes the desired criterion.
@@ -310,20 +313,21 @@ As shown in Table~\ref{tab:algorithm-summary}, no algorithm is universally optim
 
 \begin{table}[H]
 \centering
+\small
 \caption{VNE Algorithm Performance Summary}
 \label{tab:algorithm-summary}
 \begin{tabular}{lcccc}
 \toprule
-\textbf{Algorithm} & \textbf{Acceptance Rate} & \textbf{Revenue} & \textbf{R2C Ratio} & \textbf{Time (s)} \\
+\textbf{Algorithm} & \textbf{Acc. Rate} & \textbf{Revenue} & \textbf{R2C} & \textbf{Time (s)} \\
 \midrule
-MIP & 36.8\% & \$186.808 & 115.6 & 1.026 \\
-PL\_RANK & 29.5\% & \$388.387 & 127.4 & 0.661 \\
-GA\_META & 27.9\% & \$400.628 & 139.8 & 0.603 \\
-RW\_RANK\_BFS & 25.8\% & \$373.937 & 120.4 & 0.558 \\
-SA\_META & 24.6\% & \$372.569 & 133.5 & 0.534 \\
-MCTS & 23.9\% & \$379.748 & 167.0 & 0.468 \\
-D\_ROUND & 20.4\% & \$365.430 & 246.0 & 0.357 \\
-PSO\_META & 20.1\% & \$352.103 & 120.0 & 0.309 \\
+MIP & 36.8\% & \$186.8 & 115.6 & 1.026 \\
+PL\_RANK & 29.5\% & \$388.4 & 127.4 & 0.661 \\
+GA\_META & 27.9\% & \$400.6 & 139.8 & 0.603 \\
+RW\_RANK\_BFS & 25.8\% & \$373.9 & 120.4 & 0.558 \\
+SA\_META & 24.6\% & \$372.6 & 133.5 & 0.534 \\
+MCTS & 23.9\% & \$379.7 & 167.0 & 0.468 \\
+D\_ROUND & 20.4\% & \$365.4 & 246.0 & 0.357 \\
+PSO\_META & 20.1\% & \$352.1 & 120.0 & 0.309 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -367,15 +371,16 @@ Table~\ref{tab:classification-metrics} presents the classification metrics obtai
 
 \begin{table}[H]
 \centering
+\small
 \caption{Classification Metrics by Objective (Balanced Models)}
 \label{tab:classification-metrics}
 \begin{tabular}{lcccc}
 \toprule
-\textbf{Objective} & \textbf{Accuracy} & \textbf{F1-Score} & \textbf{Top-2} & \textbf{Top-3} \\
+\textbf{Objective} & \textbf{Acc.} & \textbf{F1} & \textbf{Top-2} & \textbf{Top-3} \\
 \midrule
-RAC (Acceptance Rate) & 67.26\% & 0.68 & 82.66\% & 85.90\% \\
-LRC (Revenue-Cost Ratio) & 54.46\% & 0.55 & 74.55\% & 83.95\% \\
-LAR (Average Revenue) & 48.14\% & 0.48 & 67.59\% & 79.09\% \\
+RAC (Acc. Rate) & 67.26\% & 0.68 & 82.66\% & 85.90\% \\
+LRC (Rev-Cost) & 54.46\% & 0.55 & 74.55\% & 83.95\% \\
+LAR (Avg Rev) & 48.14\% & 0.48 & 67.59\% & 79.09\% \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -462,7 +467,7 @@ One of the main advantages of the approach is that each decision can be traced t
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\columnwidth]{tree_visualization_example}
+    \includegraphics[width=0.8\columnwidth]{tree_visualization_example_en}
     \caption{Example of Decision Path in Tree}
     \label{fig:decision-tree-example}
 \end{figure}
