@@ -26,7 +26,7 @@ def create_tree_structure():
                             boxstyle="round,pad=0.1",
                             edgecolor='black', facecolor=color, linewidth=2)
         ax.add_patch(box)
-        ax.text(x, y, text, ha='center', va='center', fontsize=10, weight='bold')
+        ax.text(x, y, text, ha='center', va='center', fontsize=19, weight='bold')
 
     # Função para desenhar seta
     def draw_arrow(x1, y1, x2, y2, label=''):
@@ -36,69 +36,69 @@ def create_tree_structure():
         ax.add_patch(arrow)
         if label:
             mx, my = (x1+x2)/2, (y1+y2)/2
-            ax.text(mx+0.3, my, label, fontsize=9, style='italic',
+            ax.text(mx+0.3, my, label, fontsize=16, style='italic',
                    bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
 
     # Nível 0: Raiz
     y_level0 = 9
     draw_node(5, y_level0,
-             'Todos os Dados (N)\nTodas as Classes Mistas',
-             internal_color, width=2.5, height=0.8)
+             'All Data (N)\nAll Mixed Classes',
+             internal_color, width=3.0, height=1.0)
 
     # Nível 1: Primeiro Split
     y_level1 = 7.5
     x_left1, x_right1 = 2.5, 7.5
 
     draw_node(x_left1, y_level1,
-             'utilização_nodes ≤ 60%\nN/2 dados',
-             split_color, width=2, height=0.7)
+             'node_utilization ≤ 60%\nN/2 data',
+             split_color, width=2.5, height=0.9)
     draw_node(x_right1, y_level1,
-             'utilização_nodes > 60%\nN/2 dados',
-             split_color, width=2, height=0.7)
+             'node_utilization > 60%\nN/2 data',
+             split_color, width=2.5, height=0.9)
 
-    draw_arrow(5, y_level0-0.4, x_left1, y_level1+0.35, 'Sim')
-    draw_arrow(5, y_level0-0.4, x_right1, y_level1+0.35, 'Não')
+    draw_arrow(5, y_level0-0.4, x_left1, y_level1+0.35, 'Yes')
+    draw_arrow(5, y_level0-0.4, x_right1, y_level1+0.35, 'No')
 
     # Nível 2: Segundo Split (lado esquerdo)
     y_level2 = 6
     x_left2a, x_left2b = 1, 4
 
     draw_node(x_left2a, y_level2,
-             'tamanho_vnr ≤ 5 nós\n250 dados',
-             split_color, width=1.8, height=0.7)
+             'vnr_size ≤ 5 nodes\n250 data',
+             split_color, width=2.3, height=0.9)
     draw_node(x_left2b, y_level2,
-             'tamanho_vnr > 5 nós\n250 dados',
-             split_color, width=1.8, height=0.7)
+             'vnr_size > 5 nodes\n250 data',
+             split_color, width=2.3, height=0.9)
 
-    draw_arrow(x_left1, y_level1-0.35, x_left2a, y_level2+0.35, 'Sim')
-    draw_arrow(x_left1, y_level1-0.35, x_left2b, y_level2+0.35, 'Não')
+    draw_arrow(x_left1, y_level1-0.35, x_left2a, y_level2+0.35, 'Yes')
+    draw_arrow(x_left1, y_level1-0.35, x_left2b, y_level2+0.35, 'No')
 
     # Nível 2: Segundo Split (lado direito)
     x_right2a, x_right2b = 6, 9
 
     draw_node(x_right2a, y_level2,
-             'conectividade > 0.5\n300 dados',
-             split_color, width=1.8, height=0.7)
+             'connectivity > 0.5\n300 data',
+             split_color, width=2.3, height=0.9)
     draw_node(x_right2b, y_level2,
-             'conectividade ≤ 0.5\n200 dados',
-             split_color, width=1.8, height=0.7)
+             'connectivity ≤ 0.5\n200 data',
+             split_color, width=2.3, height=0.9)
 
-    draw_arrow(x_right1, y_level1-0.35, x_right2a, y_level2+0.35, 'Sim')
-    draw_arrow(x_right1, y_level1-0.35, x_right2b, y_level2+0.35, 'Não')
+    draw_arrow(x_right1, y_level1-0.35, x_right2a, y_level2+0.35, 'Yes')
+    draw_arrow(x_right1, y_level1-0.35, x_right2b, y_level2+0.35, 'No')
 
     # Nível 3: Folhas (Leafs)
     y_level3 = 4.2
 
     # Folhas lado esquerdo
-    draw_node(0.3, y_level3, 'MIP\n(Exato)', leaf_color, width=1.3, height=0.6)
-    draw_node(1.7, y_level3, 'GA-Meta\n(Meta)', leaf_color, width=1.3, height=0.6)
-    draw_node(3.2, y_level3, 'PSO-Meta\n(Meta)', leaf_color, width=1.3, height=0.6)
-    draw_node(4.8, y_level3, 'GA-Meta\n(Meta)', leaf_color, width=1.3, height=0.6)
+    draw_node(0.3, y_level3, 'MIP\n(Exact)', leaf_color, width=1.6, height=0.8)
+    draw_node(1.7, y_level3, 'GA-Meta\n(Meta)', leaf_color, width=1.6, height=0.8)
+    draw_node(3.2, y_level3, 'PSO-Meta\n(Meta)', leaf_color, width=1.6, height=0.8)
+    draw_node(4.8, y_level3, 'GA-Meta\n(Meta)', leaf_color, width=1.6, height=0.8)
 
     # Folhas lado direito
-    draw_node(6, y_level3, 'GA-Meta\n(Meta)', leaf_color, width=1.3, height=0.6)
-    draw_node(7.5, y_level3, 'PL-Rank\n(Heurística)', leaf_color, width=1.3, height=0.6)
-    draw_node(9, y_level3, 'MIP\n(Exato)', leaf_color, width=1.3, height=0.6)
+    draw_node(6, y_level3, 'GA-Meta\n(Meta)', leaf_color, width=1.6, height=0.8)
+    draw_node(7.5, y_level3, 'PL-Rank\n(Heuristic)', leaf_color, width=1.6, height=0.8)
+    draw_node(9, y_level3, 'MIP\n(Exact)', leaf_color, width=1.6, height=0.8)
 
     # Setas para folhas
     draw_arrow(x_left2a, y_level2-0.35, 0.3, y_level3+0.3)
@@ -109,18 +109,6 @@ def create_tree_structure():
     draw_arrow(x_right2a, y_level2-0.35, 6, y_level3+0.3)
     draw_arrow(x_right2a, y_level2-0.35, 7.5, y_level3+0.3)
     draw_arrow(x_right2b, y_level2-0.35, 9, y_level3+0.3)
-
-    # Legenda e título
-    ax.text(5, 2.5, 'Como Funciona: Particionamento Recursivo',
-           ha='center', fontsize=14, weight='bold')
-
-    legend_y = 1.5
-    ax.text(0.5, legend_y, '1. Raiz: Todos os dados mistos', fontsize=10)
-    ax.text(0.5, legend_y-0.4, '2. Em cada nó: divide por feature + threshold', fontsize=10)
-    ax.text(0.5, legend_y-0.8, '3. Critério: Maximiza Gini ou Ganho de Informação', fontsize=10)
-    ax.text(5.5, legend_y, '4. Recursivo: continua até folhas puras', fontsize=10)
-    ax.text(5.5, legend_y-0.4, '5. Folhas: cada uma prediz um algoritmo', fontsize=10)
-    ax.text(5.5, legend_y-0.8, '6. Caminho raiz→folha = regra IF-THEN', fontsize=10)
 
     plt.tight_layout()
     plt.savefig('/Users/luismomm/PycharmProjects/virne/apresentacao/artigo_conf/tree_structure.png',
@@ -333,13 +321,138 @@ def create_tree_visualization_example():
     plt.close()
 
 
+def create_tree_example_path_english():
+    """Creates figure with concrete example of decision path - English version."""
+    fig, ax = plt.subplots(figsize=(20, 16))
+    ax.set_xlim(0, 10)
+    ax.set_ylim(0, 10)
+    ax.axis('off')
+
+    # Colors
+    selected_color = '#FFD700'    # Gold (selected path)
+    unselected_color = '#E8E8E8'  # Light gray (not selected)
+    leaf_selected = '#90EE90'     # Light green (result leaf)
+
+    # Function to draw node
+    def draw_node(x, y, text, color, width=1.2, height=0.6, selected=False, linewidth=2):
+        lw = 4 if selected else linewidth
+        box = FancyBboxPatch((x-width/2, y-height/2), width, height,
+                            boxstyle="round,pad=0.1",
+                            edgecolor='darkgreen' if selected else 'black',
+                            facecolor=color, linewidth=lw)
+        ax.add_patch(box)
+        ax.text(x, y, text, ha='center', va='center', fontsize=14, weight='bold')
+
+    # Function to draw arrow
+    def draw_arrow(x1, y1, x2, y2, label='', selected=False):
+        color = 'darkgreen' if selected else 'gray'
+        lw = 4 if selected else 2
+        arrow = FancyArrowPatch((x1, y1), (x2, y2),
+                              arrowstyle='->', mutation_scale=25,
+                              linewidth=lw, color=color)
+        ax.add_patch(arrow)
+        if label:
+            mx, my = (x1+x2)/2, (y1+y2)/2
+            ax.text(mx+0.3, my, label, fontsize=14, style='italic', weight='bold' if selected else 'normal',
+                   bbox=dict(boxstyle='round', facecolor='yellow' if selected else 'white', alpha=0.9))
+
+    # Level 0: Root
+    y_level0 = 9
+    draw_node(5, y_level0, 'ROOT\nAll Data', selected_color,
+             width=2.5, height=0.8, selected=True)
+
+    # Level 1: First Split - Shows selected path
+    y_level1 = 7.5
+    x_left1 = 2.5
+    x_right1 = 7.5
+
+    # Left side: YES (selected)
+    draw_node(x_left1, y_level1, 'node_utilization\n≤ 60%\nYES ✓',
+             selected_color, width=2, height=0.7, selected=True)
+
+    # Right side: NO (not selected)
+    draw_node(x_right1, y_level1, 'node_utilization\n> 60%\n(NO)',
+             unselected_color, width=2, height=0.7, selected=False)
+
+    draw_arrow(5, y_level0-0.4, x_left1, y_level1+0.35, 'Yes', selected=True)
+    draw_arrow(5, y_level0-0.4, x_right1, y_level1+0.35, 'No', selected=False)
+
+    # Level 2: Second Split - Shows selected path
+    y_level2 = 6
+    x_left2a = 1
+    x_left2b = 4
+
+    # Left side YES (selected)
+    draw_node(x_left2a, y_level2, 'vnr_size\n≤ 5 nodes\nYES ✓',
+             selected_color, width=1.8, height=0.7, selected=True)
+
+    # Left side NO (not selected)
+    draw_node(x_left2b, y_level2, 'vnr_size\n> 5 nodes\n(NO)',
+             unselected_color, width=1.8, height=0.7, selected=False)
+
+    draw_arrow(x_left1, y_level1-0.35, x_left2a, y_level2+0.35, 'Yes', selected=True)
+    draw_arrow(x_left1, y_level1-0.35, x_left2b, y_level2+0.35, 'No', selected=False)
+
+    # Right side (not selected - show in gray)
+    draw_node(5.5, y_level2, '(...)', unselected_color, width=1.5, height=0.5, selected=False)
+    draw_arrow(x_right1, y_level1-0.35, 5.5, y_level2+0.25, '', selected=False)
+
+    # Level 3: Third Split - Shows selected path
+    y_level3 = 4.5
+    x_left3a = 0.3
+    x_left3b = 1.7
+
+    # Left side YES (selected)
+    draw_node(x_left3a, y_level3, 'node_utilization\n> 70%\nYES ✓',
+             selected_color, width=1.6, height=0.7, selected=True)
+
+    # Left side NO (not selected)
+    draw_node(x_left3b, y_level3, 'node_utilization\n≤ 70%\n(NO)',
+             unselected_color, width=1.6, height=0.7, selected=False)
+
+    draw_arrow(x_left2a, y_level2-0.35, x_left3a, y_level3+0.35, 'Yes', selected=True)
+    draw_arrow(x_left2a, y_level2-0.35, x_left3b, y_level3+0.35, 'No', selected=False)
+
+    # Final Result: LEAF
+    y_leaf = 2.8
+    draw_node(x_left3a, y_leaf, 'RESULT\nSelect: MIP\n(Exact, Optimal\nfor Congestion)',
+             leaf_selected, width=1.8, height=1.0, selected=True)
+
+    draw_arrow(x_left3a, y_level3-0.35, x_left3a, y_leaf+0.5, '', selected=True)
+
+    # Summary rule
+    ax.text(5, 1.2, 'EXTRACTED RULE:', fontsize=16, weight='bold', ha='center')
+    ax.text(5, 0.7,
+           'IF (node_utilization ≤ 60%) AND\n(vnr_size ≤ 5 nodes) AND\n(node_utilization > 70%)',
+           fontsize=14, ha='center',
+           bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.9))
+    ax.text(5, -0.3,
+           'THEN select MIP\n(guaranteed optimal in congestion scenario)',
+           fontsize=14, ha='center', style='italic',
+           bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.9))
+
+    # Legend
+    ax.text(0.3, 9.8, '━━━ Selected Path (GREEN)',
+           fontsize=14, weight='bold', color='darkgreen')
+    ax.text(4, 9.8, '━━━ Non-Selected Paths (GRAY)',
+           fontsize=14, weight='bold', color='gray')
+
+    plt.tight_layout()
+    plt.savefig('/Users/luismomm/PycharmProjects/virne/apresentacao/artigo_conf/tree_example_path_en.png',
+               dpi=300, bbox_inches='tight', facecolor='white')
+    print("✅ Created: tree_example_path_en.png")
+    plt.close()
+
+
 if __name__ == '__main__':
     print("Gerando figuras de árvore de decisão...")
     create_tree_structure()
     create_tree_example_path()
+    create_tree_example_path_english()
     create_tree_visualization_example()
     print("\n✅ Todas as figuras foram criadas com sucesso!")
     print("\nArquivos gerados:")
     print("  - tree_structure.png")
     print("  - tree_example_path.png")
+    print("  - tree_example_path_en.png")
     print("  - tree_visualization_example.png")
