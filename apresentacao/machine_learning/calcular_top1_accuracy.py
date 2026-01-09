@@ -157,3 +157,5 @@ print(f"\n💡 Observação: Top-3 accuracy é {avg_model + (np.mean([json_data[
 print(f"   (muito maior que Top-1, mas Top-1 é a métrica de treinamento)")
 
 
+
+

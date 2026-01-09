@@ -169,3 +169,5 @@ with open('models/dynamic_vs_fixed_comparison.json', 'w') as f:
 print("\n✅ JSON atualizado com valores corretos!")
 
 
+
+

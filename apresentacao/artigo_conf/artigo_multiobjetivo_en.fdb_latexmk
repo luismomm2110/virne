@@ -1,15 +1,15 @@
 # Fdb version 4
-["bibtex artigo_multiobjetivo_en"] 1767555725.746 "artigo_multiobjetivo_en.aux" "artigo_multiobjetivo_en.bbl" "artigo_multiobjetivo_en" 1767556001.94553 0
+["bibtex artigo_multiobjetivo_en"] 1767558073.55171 "artigo_multiobjetivo_en.aux" "artigo_multiobjetivo_en.bbl" "artigo_multiobjetivo_en" 1767558079.57813 0
   "./references.bib" 1767319454.04166 6444 a81540844bbdb9381352d48d64a9a4a5 ""
   "/usr/local/texlive/2025/texmf-dist/bibtex/bst/ieeetran/IEEEtran.bst" 1440712899 57748 7c8250ecf02814ce6ddc0cdbb63df1dd ""
-  "artigo_multiobjetivo_en.aux" 1767556001.72419 13828 83d15c637a67b7ef97a4577f8496ac4f "pdflatex"
+  "artigo_multiobjetivo_en.aux" 1767558079.38218 13828 7a2114ced51429367d884a0d40679a4a "pdflatex"
   (generated)
   "artigo_multiobjetivo_en.bbl"
   "artigo_multiobjetivo_en.blg"
   (rewritten before read)
-["pdflatex"] 1767555996.134 "/Users/luismomm/PycharmProjects/virne/apresentacao/artigo_conf/artigo_multiobjetivo_en.tex" "artigo_multiobjetivo_en.pdf" "artigo_multiobjetivo_en" 1767556001.94567 0
+["pdflatex"] 1767558073.63217 "/Users/luismomm/PycharmProjects/virne/apresentacao/artigo_conf/artigo_multiobjetivo_en.tex" "artigo_multiobjetivo_en.pdf" "artigo_multiobjetivo_en" 1767558079.57825 0
   "../machine_learning/models/algorithm_comparison_all_metrics.png" 1767008207.92897 505744 e6871832884ac306729b7f0fbddc11a0 ""
-  "/Users/luismomm/PycharmProjects/virne/apresentacao/artigo_conf/artigo_multiobjetivo_en.tex" 1767555995.88695 43774 ad1fb21ed151069f378d074636021d30 ""
+  "/Users/luismomm/PycharmProjects/virne/apresentacao/artigo_conf/artigo_multiobjetivo_en.tex" 1767558066.451 44621 df36a36d4c2c30ad22e139284d70c9ad ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm" 1136768653 960 379cc0019370a9e0208a0a3f949f847a ""
@@ -46,7 +46,6 @@
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb" 1248133631 36299 5f9df58c2139e7edcf37c8fca4bd384d ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb" 1248133631 36281 c355509802a035cadc5f15869451dcee ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb" 1248133631 35469 70d41d2b9ea31d5d813066df7c99281c ""
-  "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb" 1248133631 36094 798f80770b3b148ceedd006d487db67c ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1248133631 35752 024fb6c41858982481f6968b5fc26508 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1248133631 32569 5e5ddc8df908dea60932f3c484a54c0d ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb" 1248133631 32716 08e384dc442464e7285e891af9f45947 ""
@@ -198,10 +197,10 @@
   "/usr/local/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1761178362 5467155 19efa205003f9ecad95fbbaa6ff24da1 ""
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1761178350 3345739 ddb0f7644d31f5efca39dec54f1b3c7b ""
   "/usr/local/texlive/2025/texmf.cnf" 1741450484 577 418a7058ec8e006d8704f60ecd22c938 ""
-  "artigo_multiobjetivo_en.aux" 1767556001.72419 13828 83d15c637a67b7ef97a4577f8496ac4f "pdflatex"
-  "artigo_multiobjetivo_en.bbl" 1767555725.81956 4071 bdf966d8bdf62af3a3d3c53caabf7bea "bibtex artigo_multiobjetivo_en"
-  "artigo_multiobjetivo_en.out" 1767556001.72519 4746 2fe0cccd902bd56910346b4048fbc46f "pdflatex"
-  "artigo_multiobjetivo_en.tex" 1767555995.88695 43774 ad1fb21ed151069f378d074636021d30 ""
+  "artigo_multiobjetivo_en.aux" 1767558079.38218 13828 7a2114ced51429367d884a0d40679a4a "pdflatex"
+  "artigo_multiobjetivo_en.bbl" 1767558073.62997 4071 bdf966d8bdf62af3a3d3c53caabf7bea "bibtex artigo_multiobjetivo_en"
+  "artigo_multiobjetivo_en.out" 1767558079.38299 4746 2fe0cccd902bd56910346b4048fbc46f "pdflatex"
+  "artigo_multiobjetivo_en.tex" 1767558066.451 44621 df36a36d4c2c30ad22e139284d70c9ad ""
   "baseline_comparison_chart.png" 1767351933.8362 182687 affe008b1726075af622bc8022923b72 ""
   "inference_latency_cdf.png" 1767555633.92101 290531 dbdb287390f68b344e00c8f8fab1b6ac ""
   "per_objective_lar.png" 1767554998.47073 284621 a8e7371ebbf34f00985d64efa1a6585d ""

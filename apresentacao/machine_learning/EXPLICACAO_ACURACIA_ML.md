@@ -75,3 +75,5 @@ O problema era um **bug no código** que não decodificava as predições antes 
 **A correção foi aplicada!** Agora o cálculo está correto.
 
 
+
+

@@ -80,3 +80,5 @@ for obj in objectives:
         print(f"⚠️ JSON não corresponde a nenhum cálculo")
 
 
+
+

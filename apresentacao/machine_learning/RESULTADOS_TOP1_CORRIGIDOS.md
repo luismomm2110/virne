@@ -166,3 +166,5 @@ python3 calcular_top1_correto.py
 **Conclusão**: O modelo provavelmente é similar ao baseline em Top-1, mas MUITO melhor em Top-3 (métrica prática).
 
 
+
+

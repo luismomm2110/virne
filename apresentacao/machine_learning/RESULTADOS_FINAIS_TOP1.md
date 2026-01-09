@@ -164,3 +164,5 @@ Um teste anterior reportou:
 - ✅ Top-3: Modelo muito melhor que baseline (valida a abordagem)
 
 
+
+
