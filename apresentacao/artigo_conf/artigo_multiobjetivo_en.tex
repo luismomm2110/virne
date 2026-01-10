@@ -15,6 +15,8 @@
 \usepackage{balance}
 \usepackage{booktabs}
 \usepackage{color}
+\usepackage{xcolor}
+\definecolor{stronggreen}{RGB}{0,150,0}
 
 \begin{document}
 
@@ -52,6 +54,10 @@ Industry research indicates that autonomous networks can significantly reduce op
 However, the gap between research and deployment remains: while deep Reinforcement Learning (RL) and optimization systems achieve high performance, they lack interpretability and suffer from decision latency inadequate for real-time systems~\cite{white2024zerotough}.
 Therefore, systems that perform automatic VNE algorithm selection without operator intervention are fundamental to achieving truly autonomous operation.
 
+\textcolor{stronggreen}{In many computational domains, the problem of automatically selecting algorithms has been extensively studied~\cite{rice1976algorithm}, showing that different instances benefit from different methods and that portfolio-based selectors often outperform single fixed algorithms~\cite{xu2012satzilla}. Surveys on automated algorithm selection~\cite{kotthoff2012algorithm,kerschke2019comprehensive} and meta-learning~\cite{vanschoren2018meta} report that data-driven selectors and portfolio methods are effective at adapting to heterogeneous instances, but typically rely on complex or black-box models whose internal decision logic is hard to interpret. Recent knowledge-based schedulers for HPC data centers~\cite{koslowski2025knowledge-based} follow a similar philosophy, learning from historical scheduling decisions to combine existing policies and improve performance metrics such as bounded slowdown and waiting time. However, these approaches focus primarily on aggregate performance indicators and rarely provide explicit, human-readable rules that explain \textit{why} a particular algorithm or policy is selected under a given contextual state. In the context of Virtual Network Embedding and Zero-Touch administration, this lack of interpretability is a critical limitation~\cite{white2024zerotough}, since operators and regulators require auditable decision rules rather than opaque recommendations.}
+
+\textcolor{stronggreen}{Against this background, this work can be seen as bringing together two lines of research: automatic algorithm selection and interpretable network automation. Similar to portfolio and knowledge-based schedulers, we learn from historical executions of existing VNE algorithms to build a selector that adapts to request characteristics and network state. At the same time, by using decision trees we obtain explicit decision paths that can be inspected, audited, and translated into natural-language rules. This combination directly addresses the gap in current automatic selection approaches, which improve performance but do not explain \textit{why} decisions are made, and aligns with ZSM requirements for transparent, accountable automation.}
+
 In this context, the present work proposes an approach based on multi-objective decision trees to automatically select the most appropriate VNE algorithm for each request, considering the network state and request characteristics.
 Unlike a single model, the method employs three specialized models, each optimized for a specific objective (acceptance rate, revenue-cost ratio, average revenue), allowing adaptation to operational priorities at runtime, with inference latency below 1\,ms enabling online operation.
 
@@ -83,16 +89,10 @@ Given that different VNE algorithms present variable performance depending on co
 \label{subsec:trees}
 
 Decision trees are supervised learning models that recursively partition the feature space to create homogeneous prediction regions.
-Figure~\ref{fig:tree-structure} illustrates the general structure of a decision tree: the tree starts at a root node containing all training data.
+The tree starts at a root node containing all training data.
 Progressively, at each level, the tree subdivides the feature space using binary decisions, creating specialized branches.
 Each leaf (terminal node) represents a final prediction, in this context, which VNE algorithm is most appropriate.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\columnwidth]{tree_structure}
-    \caption{Structure of a decision tree: recursive partitioning of the feature space.}
-    \label{fig:tree-structure}
-\end{figure}
 
 
 At each internal node, the tree selects a feature and a threshold, dividing data into two subsets. The splitting criterion uses Gini index or information gain, maximizing class isolation. Each path from root to leaf represents an interpretable decision rule.
@@ -104,20 +104,17 @@ Figure~\ref{fig:tree-example-path} illustrates an example of a decision path, sh
 
 \begin{figure*}[t]
     \centering
-    \includegraphics[width=0.95\linewidth]{tree_example_path}
+    \includegraphics[width=0.665\linewidth]{tree_example_path_en}
     \caption{Example of decision path (root to leaf) in tree for VNE algorithm selection.}
     \label{fig:tree-example-path}
 \end{figure*}
 
-Unlike deep neural networks or reinforcement learning models, each step is comprehensible and auditable by human operators.
-Decision trees are particularly suitable for the VNE algorithm selection problem due to the following characteristics:
 
-\begin{itemize}
-    \item Interpretability: Each decision can be traced through an explicit logical path in the tree.
-    \item Scale Invariance: Work adequately with features at different scales (CPU in units, utilization in percentage).
-    \item Low Latency: Inference has $O(\log n)$ complexity in depth, typically below 1\,ms.
-    \item Explainability: Operators understand exactly which features determined the decision.
-\end{itemize}
+\subsubsection{\textcolor{stronggreen}{Why Decision Trees for VNE Selection}}
+
+\textcolor{stronggreen}{Decision trees are chosen in this work not only for their simplicity, but because they directly address the limitations observed in prior automatic algorithm selection approaches. Similar to portfolio-based selectors~\cite{xu2012satzilla} and knowledge-based schedulers for HPC data centers~\cite{koslowski2025knowledge-based}, our method learns from historical executions of existing algorithms, consolidating algorithmic expertise into a data-driven selector. Unlike regression-based scoring functions and deep reinforcement learning policies~\cite{cao2018nfv-deeprl,ijcai-2024-flagvne}, however, each prediction produced by a decision tree corresponds to an explicit rule that can be written as a human-readable conditional statement linking measurable network and request characteristics to a specific algorithm recommendation. This property enables per-topology and per-context analysis of the learned selection policy, which is essential for ZSM-compliant operation~\cite{white2024zerotough} and regulatory audits.}
+
+\textcolor{stronggreen}{In addition to interpretability, decision trees provide low inference latency and modest training requirements. In these experiments, prediction latency remains in the sub-millisecond range, making the approach suitable for online VNE decisions without introducing additional bottlenecks. Trees can also be trained with relatively small datasets and limited hyperparameter tuning when compared to deep learning and ensemble methods. Alternative models such as random forests, gradient-boosted trees, or deep RL may achieve marginally higher predictive accuracy in some scenarios, but they reintroduce black-box behavior and make the extraction of concise decision rules substantially more difficult. Given the emphasis on explainability, auditability, and zero-touch operation in this work, decision trees offer a favorable trade-off between performance, latency, and transparency.}
 
 \subsection{Multi-Objective Optimization}
 \label{subsec:multiobj}
@@ -136,6 +133,9 @@ Table~\ref{tab:related-work} synthesizes the comparative analysis between relate
 The algorithm selection problem was formalized by Rice~\cite{rice1976algorithm}, who established the conceptual \textit{framework}: given a problem space, a set of algorithms, a descriptive \textit{feature} space, and performance metrics, determine which algorithm is most appropriate for each problem. This \textit{framework} underlies the approach proposed in this work.
 %
 Thw work~\cite{xu2012satzilla} develop SATzilla, a portfolio-based selector for satisfiability (SAT) problems, showing that dynamic selection produces significant gains over single algorithms. Similarly, \cite{koslowski2025knowledge-based} apply machine learning techniques for the adaptive selection of scheduling policies in high-performance computing (HPC) infrastructures, showing that the consolidation of multiple strategies offers superior adaptability. This paradigm applies equally to the VNE domain.
+
+\textcolor{stronggreen}{Prior work on automatic algorithm selection and portfolio-based methods~\cite{rice1976algorithm,xu2012satzilla} provides strong evidence that data-driven selectors can improve robustness and average performance across heterogeneous instances. Surveys on automated algorithm selection~\cite{kotthoff2012algorithm,kerschke2019comprehensive} and automatic choice of machine learning algorithms and hyperparameters~\cite{feurer2019automated,vanschoren2018meta} show that selector models and meta-learning frameworks consistently outperform fixed baselines by adapting decisions to instance-level features. In the HPC context, knowledge-based schedulers~\cite{koslowski2025knowledge-based} learn from historical traces using regression and classification to score scheduling policies and define execution orders, improving indicators such as bounded slowdown, waiting time, and turnaround time. These works demonstrate that learning from past decisions is a powerful strategy.}
+
 
 \subsection{Multi-Objective Optimization in Networks}
 \label{subsec:multiobj-networks}
@@ -163,6 +163,8 @@ However, the gap between research and production remains: RL systems achieve hig
 
 RSCAT~\cite{diel2023rscat} proposes zero-touch automation for congestion control in networks using actor-critic reinforcement learning and software defined networking.
 RSCAT shows that combining machine learning and classical techniques can enable autonomous operation, similarly to the approach proposed in this work for contextual selection of VNE algorithms.
+
+\textcolor{stronggreen}{In the context of zero-touch operation, high predictive accuracy alone is not sufficient: automated controllers must also provide transparent and auditable decisions~\cite{white2024zerotough}. Existing learning-based automation solutions, including deep reinforcement learning controllers~\cite{cao2018nfv-deeprl,ijcai-2024-flagvne} and knowledge-based schedulers~\cite{koslowski2025knowledge-based,diel2023rscat}, predominantly expose aggregate performance indicators and policy-selection frequencies, but do not reveal the internal reasoning that leads to each decision. This misalignment between opaque decision processes and the need for accountable, explainable automation in ZSM scenarios motivates the use of models that can both adapt to context and expose their decision logic. Our proposal is designed with this requirement in mind, using multi-objective decision trees that learn from historical data while producing explicit decision paths that operators and regulators can inspect and validate.}
 
 \subsection{Discussion}
 
@@ -297,7 +299,7 @@ PSO\_META & 20.1\% & 352.1 & 120.0 & 0.309 \\
 
 \subsection{Multi-Metric Comparison of VNE Algorithms}
 
-VNE algorithm selection cannot be based on a single performance metric. Different operational contexts (high load, limited resources, latency requirements) require different trade-offs. Figure~\ref{fig:algorithm-comparison} presents a comprehensive analysis of four complementary metrics for the eight evaluated algorithms:
+Different operational contexts (high load, limited resources, latency requirements) require different trade-offs. Figure~\ref{fig:algorithm-comparison} presents a comprehensive analysis of four complementary metrics for the eight evaluated algorithms:
 
 \begin{figure*}[h]
     \centering
@@ -320,10 +322,6 @@ Instead of scikit-learn's default balancing, weights calculated as $w_i = 1/\sqr
 \end{itemize}
 
 For evaluation, weighted F1-Score and F1-Macro (arithmetic mean of F1 of all classes, treating them equally) metrics were used to evaluate balanced performance between classes.
-
-\subsection{Detailed F1-Score Analysis per Class}
-
-Table~\ref{tab:f1-per-class} presents the F1-Score per class for the RAC objective, showing that balancing techniques allow capturing patterns from all classes. Results indicate that even minority classes, such as PSO\_Meta and RW\_Rank\_BFS, present F1-Score above 0.33, demonstrating the effectiveness of the employed balancing techniques:
 
 \section{Experimental Results}
 \label{sec:Results}
@@ -374,7 +372,7 @@ Figure~\ref{fig:real-performance-improvement} presents the comparison of real pe
 \label{fig:real-performance-improvement}
 \end{figure}
 
-Figure~\ref{fig:real-performance-improvement} presents the results of real operational performance when decision trees are used for algorithm selection. Results show that contextual selection via decision trees produces substantial improvements in real operational performance in all objectives:
+Results show that contextual selection via decision trees produces substantial improvements in real operational performance in all objectives:
 
 \begin{itemize}
     \item RAC: Acceptance rate increases from 43.17\% (fixed algorithm) to 81.95\% (contextual selection), representing an improvement of +89.83\%.
@@ -383,22 +381,6 @@ Figure~\ref{fig:real-performance-improvement} presents the results of real opera
 \end{itemize}
 
 Results show that contextual selection via decision trees is significantly superior to using a fixed algorithm, with substantial improvements in all evaluated objectives. The approach captures important patterns of algorithm selection based on contextual characteristics of VNRs, allowing dynamic adaptation to different network conditions and resource requirements.
-
-The analysis reveals important patterns:
-
-\textit{No Algorithm is Universally Optimal}: MIP maximizes acceptance rate (36.8\%), GA\_META maximizes revenue (400.628), D\_ROUND offers best cost-benefit ratio (246.0), and PSO\_META is fastest (0.31s). Each algorithm excels in a different dimension.
-
-\textit{Explicit Trade-offs}: MIP offers high acceptance but with elevated processing time (1.03s). D\_ROUND is very fast but with reduced acceptance (20.4\%). GA\_META offers adequate balance between revenue and processing time.
-
-\textit{Justification for Multi-Objective Approach}: This performance variation empirically evidences that:
-\begin{itemize}
-    \item A single fixed algorithm cannot serve all operational contexts
-    \item Contextual selection based on network state and VNR characteristics is essential
-    \item Multi-objective decision trees learn to map context $\rightarrow$ appropriate algorithm
-    \item System can adapt priorities at runtime (acceptance vs revenue vs processing time)
-\end{itemize}
-
-Table~\ref{tab:algorithm-summary} synthesizes aggregated metrics for reference.
 
 \begin{table}[H]
 \centering
@@ -435,12 +417,16 @@ Unlike deep neural networks (black box), operators can understand \textbf{exactl
 
 Additionally, \textit{feature} importance analysis reveals which characteristics are most relevant for each objective. For RAC (Request Acceptance Rate) and LRC (Long-Term Revenue-to-Cost), resource efficiency ($resource\_efficiency$) is the most critical \textit{feature}, with importance of 0.13 and 0.11 respectively. In the case of LAR (Long-Term Average Revenue), VNR link demand ($v\_net\_demand\_per\_link$) and total demand ($v\_net\_total\_demand$) are the dominant \textit{features}. These findings confirm that different objectives prioritize distinct characteristics of VNRs and physical network state. Figure~\ref{fig:feature-importance-rac} exemplifies \textit{feature} importance for the RAC objective, while Figures~\ref{fig:feature-importance-lrc} and~\ref{fig:feature-importance-lar} present results for the remaining objectives.
 
-\begin{figure}[H]
+\setlength{\floatsep}{5pt}
+\setlength{\intextsep}{5pt}
+\setlength{\textfloatsep}{5pt}
+\begin{figure}[!htb]
     \centering
     \includegraphics[width=0.95\columnwidth]{per_objective_rac}
     \caption{Feature Importance - RAC (Request Acceptance Rate). The top 15 most important features (average across topologies) for the RAC objective. Resource efficiency ($resource\_efficiency$) is the most critical feature with importance of 0.134, followed by VNR link demand ($v\_net\_demand\_per\_link$) with 0.096.}
     \label{fig:feature-importance-rac}
 \end{figure}
+\vspace{-2cm}
 
 \begin{figure}[H]
     \centering
@@ -479,23 +465,6 @@ Figure~\ref{fig:inference-latency-cdf} presents the cumulative distribution func
 \end{figure}
 
 Sub-millisecond latency enables online real-time decision making, critical for zero-touch operation.
-
-\subsection{Key Observations}
-
-This work proposed an approach for zero-touch selection of Virtual Network Embedding algorithms using multi-objective decision trees, considering virtual network request characteristics and physical infrastructure state.
-The approach differentiates itself from the alternatives based on deep learning by offering complete interpretability through explicit decision paths and inference latency below 1 \,ms, allowing real-time online operation.
-
-The results show that the proposed approach, operating in conjunction with traditional VNE algorithms such as MIP, GA-Meta, and PL-Rank, can significantly improve operational performance:
-\begin{itemize}
-    \item Acceptance Rate Improvement: Increase of +89.83\% compared to fixed algorithm baseline (from 43.17\% to 81.95\%)
-    \item Top-3 Accuracy: Between 79.1\% and 85.9\%, showing robustness in predicting the best algorithm
-    \item Revenue-Cost Ratio Improvement: Increase of +58.76\% (from 0.4574 to 0.7262)
-    \item Average Revenue Improvement: Increase of +61.40\% (from 70.29 to 113.45 per VNR)
-\end{itemize}
-
-The class balancing techniques used (custom weights $1/\sqrt{f}$ and hyperparameter tuning) were essential to capture the patterns of minority classes, resulting in an F1-Macro of 0.56 for the RAC objective.
-Additionally, experimental results empirically confirmed that no VNE algorithm is universally optimal, validating the need for contextual selection based on request characteristics and network state.
-
 
 \section{Conclusion}
 \label{sec:Conclusion}
