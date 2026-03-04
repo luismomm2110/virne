@@ -341,7 +341,7 @@ def create_tree_example_path_english():
                             edgecolor='darkgreen' if selected else 'black',
                             facecolor=color, linewidth=lw)
         ax.add_patch(box)
-        ax.text(x, y, text, ha='center', va='center', fontsize=14, weight='bold')
+        ax.text(x, y, text, ha='center', va='center', fontsize=18, weight='bold')
 
     # Function to draw arrow
     def draw_arrow(x1, y1, x2, y2, label='', selected=False):
@@ -353,7 +353,7 @@ def create_tree_example_path_english():
         ax.add_patch(arrow)
         if label:
             mx, my = (x1+x2)/2, (y1+y2)/2
-            ax.text(mx+0.3, my, label, fontsize=14, style='italic', weight='bold' if selected else 'normal',
+            ax.text(mx+0.3, my, label, fontsize=18, style='italic', weight='bold' if selected else 'normal',
                    bbox=dict(boxstyle='round', facecolor='yellow' if selected else 'white', alpha=0.9))
 
     # Level 0: Root
@@ -421,21 +421,21 @@ def create_tree_example_path_english():
     draw_arrow(x_left3a, y_level3-0.35, x_left3a, y_leaf+0.5, '', selected=True)
 
     # Summary rule - moved closer to tree
-    ax.text(5, 1.9, 'EXTRACTED RULE:', fontsize=16, weight='bold', ha='center')
+    ax.text(5, 1.9, 'EXTRACTED RULE:', fontsize=20, weight='bold', ha='center')
     ax.text(5, 1.3,
            'IF (node_utilization ≤ 60%) AND\n(vnr_size ≤ 5 nodes) AND\n(node_utilization > 70%)',
-           fontsize=14, ha='center',
+           fontsize=18, ha='center',
            bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.9))
     ax.text(5, 0.5,
            'THEN select MIP\n(guaranteed optimal in congestion scenario)',
-           fontsize=14, ha='center', style='italic',
+           fontsize=18, ha='center', style='italic',
            bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.9))
 
     # Legend
     ax.text(0.3, 9.8, '━━━ Selected Path (GREEN)',
-           fontsize=14, weight='bold', color='darkgreen')
+           fontsize=18, weight='bold', color='darkgreen')
     ax.text(4, 9.8, '━━━ Non-Selected Paths (GRAY)',
-           fontsize=14, weight='bold', color='gray')
+           fontsize=18, weight='bold', color='gray')
 
     plt.tight_layout()
     plt.savefig('/Users/luismomm/PycharmProjects/virne/apresentacao/artigo_conf/tree_example_path_en.png',
