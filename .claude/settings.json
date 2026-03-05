@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/luismomm/PycharmProjects/virne/.claude/hooks/compile-tex.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
