@@ -1,5 +1,6 @@
 # Melhorias e Cortes Pendentes para Caber em 8 Páginas
 
+
 > Itens já realizados não estão listados aqui.
 > Já feito: remoção da CDF figure (inference latency), condensação do Related Work (5→2 subseções), remoção da Discussion, remoção da regra formalizada (linha 109).
 
@@ -76,6 +77,11 @@
 **Problema:** Apenas 4 linhas de conteúdo. É curta demais para ser uma subseção standalone.
 
 **Ação:** Mover o conteúdo para a Seção 4.3 (Multi-Objective Architecture), onde o mesmo conceito é descrito com mais detalhe.
+
+## 8 corrigir essa citacao
+
+2017). Etsi zsm - zero-touch network and service
+management
 
 ---
 

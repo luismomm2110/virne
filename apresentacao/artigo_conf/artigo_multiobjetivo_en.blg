@@ -4,47 +4,47 @@ The top-level auxiliary file: artigo_multiobjetivo_en.aux
 The style file: apalike.bst
 Database file #1: references.bib
 Warning--entry type for "etsi-zsm" isn't style-file defined
---line 117 of file references.bib
+--line 57 of file references.bib
 Warning--to sort, need author or key in etsi-zsm
-You've used 17 entries,
+You've used 13 entries,
             1935 wiz_defined-function locations,
-            576 strings with 6830 characters,
-and the built_in function-call counts, 6759 in all, are:
-= -- 663
-> -- 285
-< -- 12
-+ -- 103
-- -- 96
-* -- 559
-:= -- 1177
-add.period$ -- 52
-call.type$ -- 17
-change.case$ -- 131
-chr.to.int$ -- 16
-cite$ -- 19
-duplicate$ -- 260
-empty$ -- 458
-format.name$ -- 120
-if$ -- 1319
+            555 strings with 6211 characters,
+and the built_in function-call counts, 5259 in all, are:
+= -- 507
+> -- 245
+< -- 6
++ -- 91
+- -- 84
+* -- 458
+:= -- 927
+add.period$ -- 39
+call.type$ -- 13
+change.case$ -- 105
+chr.to.int$ -- 12
+cite$ -- 15
+duplicate$ -- 188
+empty$ -- 346
+format.name$ -- 100
+if$ -- 1007
 int.to.chr$ -- 2
 int.to.str$ -- 0
-missing$ -- 16
-newline$ -- 88
-num.names$ -- 48
-pop$ -- 112
+missing$ -- 12
+newline$ -- 68
+num.names$ -- 36
+pop$ -- 87
 preamble$ -- 1
-purify$ -- 131
+purify$ -- 105
 quote$ -- 0
-skip$ -- 206
+skip$ -- 145
 stack$ -- 0
-substring$ -- 449
-swap$ -- 40
-text.length$ -- 4
+substring$ -- 350
+swap$ -- 22
+text.length$ -- 2
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 102
+type$ -- 78
 warning$ -- 1
-while$ -- 54
+while$ -- 40
 width$ -- 0
-write$ -- 218
+write$ -- 167
 (There were 2 warnings)

@@ -17,12 +17,6 @@ Cao, Z. and Li, Y. (2021).
 \newblock {\em IEEE Transactions on Network and Service Management},
   18(1):873--886.
 
-\bibitem[Cook and Varnell, 1997]{cook1997comparison}
-Cook, D.~J. and Varnell, R.~C. (1997).
-\newblock Maximizing the benefits of parallel search using machine learning.
-\newblock In {\em Proceedings of the Fourteenth National Conference on
-  Artificial Intelligence (AAAI-97)}, pages 559--564. AAAI Press.
-
 \bibitem[Diel et~al., 2023]{diel2023rscat}
 Diel, G., Miers, C.~C., Pillon, M.~A., and Koslovski, G.~P. (2023).
 \newblock Rscat: Towards zero touch congestion control based on actor--critic
@@ -33,12 +27,6 @@ Diel, G., Miers, C.~C., Pillon, M.~A., and Koslovski, G.~P. (2023).
 Diel, G., Nascimento~Kraus, A., and Piêgas~Koslovski, G. (2025).
 \newblock Knowledge-based job scheduling for hpc.
 \newblock {\em Cluster Computing}, 28:153.
-
-\bibitem[Feurer and Hutter, 2019]{feurer2019automated}
-Feurer, M. and Hutter, F. (2019).
-\newblock Automated machine learning: Methods, systems, challenges.
-\newblock {\em The Springer Series on Challenges in Machine Learning}, pages
-  3--33.
 
 \bibitem[Fischer et~al., 2013]{fischer2013vne-survey}
 Fischer, A., Botero, J.~F., Till~Beck, M., Figuerola, S., and Sahasrabuddhe, V.
@@ -51,11 +39,6 @@ Kerschke, P., Hoos, H.~H., Neumann, F., and Trautmann, H. (2019).
 \newblock Automated algorithm selection: Survey and perspectives.
 \newblock {\em Evolutionary Computation}, 27(1):3--45.
 
-\bibitem[Kotthoff, 2012]{kotthoff2012algorithm}
-Kotthoff, L. (2012).
-\newblock Algorithm selection for combinatorial search problems: A survey.
-\newblock {\em arXiv preprint arXiv:1210.7959}.
-
 \bibitem[Rice, 1976]{rice1976algorithm}
 Rice, J.~R. (1976).
 \newblock The algorithm selection problem.
@@ -66,11 +49,6 @@ Song, A. et~al. (2020).
 \newblock A constructive particle swarm optimizer for virtual network
   embedding.
 \newblock {\em IEEE Transactions on Network and Service Management}.
-
-\bibitem[Vanschoren, 2018]{vanschoren2018meta}
-Vanschoren, J. (2018).
-\newblock Meta-learning: A survey.
-\newblock {\em arXiv preprint arXiv:1810.03548}.
 
 \bibitem[Wang et~al., 2024a]{ijcai-2024-flagvne}
 Wang, H., Zhang, C., and Wang, R. (2024a).

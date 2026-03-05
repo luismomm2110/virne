@@ -55,14 +55,6 @@ Industry research indicates that autonomous networks can significantly reduce op
 However, the gap between research and deployment remains: while deep Reinforcement Learning (RL) and optimization systems achieve high performance, they lack interpretability and suffer from decision latency inadequate for real-time systems~\cite{white2024zerotough}.
 Therefore, systems that perform automatic VNE algorithm selection without operator intervention are fundamental to achieving truly autonomous operation.
 
-In many computational domains, the problem of automatically selecting algorithms has been extensively studied~\cite{rice1976algorithm}, showing that different instances benefit from different methods and that portfolio-based selectors often outperform single fixed algorithms~\cite{xu2012satzilla}. Surveys on automated algorithm selection~\cite{kotthoff2012algorithm,kerschke2019comprehensive} and meta-learning~\cite{vanschoren2018meta} report that data-driven selectors and portfolio methods are effective at adapting to heterogeneous instances, but typically rely on complex or black-box models whose internal decision logic is hard to interpret.
-
-Recent knowledge-based schedulers for HPC data centers~\cite{koslowski2025knowledge-based} follow a similar philosophy, learning from historical scheduling decisions to combine existing policies and improve performance metrics such as bounded slowdown and waiting time. However, these approaches focus primarily on aggregate performance indicators and rarely provide explicit, human-readable rules that explain \textit{why} a particular algorithm or policy is selected under a given contextual state. In the context of Virtual Network Embedding and Zero-Touch administration, this lack of interpretability is a critical limitation~\cite{white2024zerotough}, since operators and regulators require auditable decision rules rather than opaque recommendations.
-
-Against this background, this work can be seen as bringing together two lines of research: automatic algorithm selection and interpretable network automation. Similar to portfolio and knowledge-based schedulers, the proposed method learns from historical executions of existing VNE algorithms to build a selector that adapts to request characteristics and network state.
-
-At the same time, by using decision trees the approach obtains explicit decision paths that can be inspected, audited, and translated into natural-language rules. This combination directly addresses the gap in current automatic selection approaches, which improve performance but do not explain \textit{why} decisions are made, and aligns with ZSM requirements for transparent, accountable automation.
-
 In this context, the present work proposes an approach based on multi-objective decision trees to automatically select the most appropriate VNE algorithm for each request, considering the network state and request characteristics.
 Unlike a single model, the method employs three specialized models, each optimized for a specific objective (acceptance rate, revenue-cost ratio, average revenue), allowing adaptation to operational priorities at runtime, with inference latency below 1\,ms enabling online operation.
 
@@ -102,24 +94,13 @@ Each leaf (terminal node) represents a final prediction, in this context, which 
 
 At each internal node, the tree selects a feature and a threshold, dividing data into two subsets. The splitting criterion uses Gini index or information gain, maximizing class isolation. Each path from root to leaf represents an interpretable decision rule.
 %
-Figure~\ref{fig:tree-example-path} illustrates an example of a decision path, showing how each intermediate decision in the tree progressively reduces the solution space until reaching a final recommendation. The tree evaluates the current state of both the Physical Network (PN) and the Virtual Network Request (VNR) through a series of decision nodes.
-
-The highlighted path (shown in green) illustrates a concrete example where the tree recommends the MIP algorithm. Starting from the root node containing all training data, the tree first evaluates whether the physical network's node utilization is below or equal to 60\%. Following the affirmative branch, the second decision examines whether the VNR size contains 5 nodes or fewer. For small-scale requests in low-utilization networks, a third decision evaluates whether node utilization exceeds 70\%, identifying a congestion-prone scenario. This specific combination of conditions leads to the recommendation of MIP (Mixed Integer Programming), an exact algorithm guaranteed to find optimal solutions in congestion scenarios.
-
-%
-
-\begin{figure*}[t]
-    \centering
-    \includegraphics[width=0.665\linewidth]{tree_example_path_en}
-    \caption{Example of decision path (root to leaf) in tree for VNE algorithm selection.}
-    \label{fig:tree-example-path}
-\end{figure*}
+For example, a concrete decision path might evaluate whether the physical network's node utilization is below 60\%, whether the VNR contains 5 nodes or fewer, and whether utilization exceeds 70\%, ultimately recommending MIP for small requests in congestion-prone scenarios.
 
 Decision trees are chosen in this work not only for their simplicity, but because they directly address the limitations observed in prior automatic algorithm selection approaches. Similar to portfolio-based selectors~\cite{xu2012satzilla} and knowledge-based schedulers for HPC data centers~\cite{koslowski2025knowledge-based}, the proposed method learns from historical executions of existing algorithms, consolidating algorithmic expertise into a data-driven selector.
 
 Unlike regression-based scoring functions and deep reinforcement learning policies~\cite{cao2018nfv-deeprl,ijcai-2024-flagvne}, however, each prediction produced by a decision tree corresponds to an explicit rule that can be written as a human-readable conditional statement linking measurable network and request characteristics to a specific algorithm recommendation. This property enables per-topology and per-context analysis of the learned selection policy, which is essential for ZSM-compliant operation~\cite{white2024zerotough} and regulatory audits.
 
-In addition to interpretability, decision trees provide low inference latency and modest training requirements. In these experiments, prediction latency remains in the sub-millisecond range, making the approach suitable for online VNE decisions without introducing additional bottlenecks. Trees can also be trained with relatively small datasets and limited hyperparameter tuning when compared to deep learning and ensemble methods. This aligns with prior work comparing decision tree learners, Bayesian classifiers, nearest neighbor approaches, and neural networks, where C4.5 decision trees were chosen for their interpretability even when neural networks might achieve higher performance~\cite{cook1997comparison}.
+In addition to interpretability, decision trees provide low inference latency and modest training requirements. In these experiments, prediction latency remains in the sub-millisecond range, making the approach suitable for online VNE decisions without introducing additional bottlenecks. Trees can also be trained with relatively small datasets and limited hyperparameter tuning when compared to deep learning and ensemble methods..
 
 Alternative models such as random forests, gradient-boosted trees, or deep RL may achieve marginally higher predictive accuracy in some scenarios, but they reintroduce black-box behavior and make the extraction of concise decision rules substantially more difficult. Given the emphasis on explainability, auditability, and zero-touch operation in this work, decision trees offer a favorable trade-off between performance, latency, and transparency.
 
@@ -135,7 +116,7 @@ The selection of which algorithm to use should not consider only a single perfor
 \label{subsec:alg-selection}
 
 The algorithm selection problem was formalized by Rice~\cite{rice1976algorithm}, who established the conceptual \textit{framework}: given a problem space, a set of algorithms, a descriptive \textit{feature} space, and performance metrics, determine which algorithm is most appropriate for each instance.
-Portfolio-based selectors such as SATzilla~\cite{xu2012satzilla} demonstrate that dynamic selection produces significant gains over fixed algorithms, while surveys on automated algorithm selection~\cite{kotthoff2012algorithm,kerschke2019comprehensive} and meta-learning~\cite{feurer2019automated,vanschoren2018meta} confirm that data-driven selectors consistently outperform single baselines by adapting decisions to instance-level features.
+Portfolio-based selectors such as SATzilla~\cite{xu2012satzilla} demonstrate that dynamic selection produces significant gains over fixed algorithms, while surveys on automated algorithm selection~\cite{kerschke2019comprehensive} confirm that data-driven selectors consistently outperform single baselines by adapting decisions to instance-level features.
 In the HPC context, knowledge-based schedulers~\cite{koslowski2025knowledge-based} learn from historical traces to score scheduling policies, improving indicators such as bounded slowdown and waiting time.
 
 Regarding multi-objective optimization, the works~\cite{song2020multiobjective} and~\cite{belgacem2016multiobjective} explore multi-objective VNE and resource allocation in virtualized networks using evolutionary algorithms or dynamic integer programming, which suffer from computational complexity during \textit{online} operation.
