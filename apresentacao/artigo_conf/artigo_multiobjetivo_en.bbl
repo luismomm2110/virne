@@ -9,7 +9,6 @@ Belgacem, A. et~al. (2016).
 \newblock A multi-objective approach for vne problems using multiple ilp
   formulations.
 \newblock {\em CLEI Electronic Journal}, 19(2):1--15.
-\newblock Verificar autores completos e DOI se disponível.
 
 \bibitem[Cao and Li, 2021]{cao2018nfv-deeprl}
 Cao, Z. and Li, Y. (2021).
@@ -67,8 +66,6 @@ Song, A. et~al. (2020).
 \newblock A constructive particle swarm optimizer for virtual network
   embedding.
 \newblock {\em IEEE Transactions on Network and Service Management}.
-\newblock Verificar se este trabalho aborda especificamente multi-objetivo ou
-  apenas PSO para VNE.
 
 \bibitem[Vanschoren, 2018]{vanschoren2018meta}
 Vanschoren, J. (2018).

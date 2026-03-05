@@ -323,9 +323,9 @@ def create_tree_visualization_example():
 
 def create_tree_example_path_english():
     """Creates figure with concrete example of decision path - English version."""
-    fig, ax = plt.subplots(figsize=(20, 16))
+    fig, ax = plt.subplots(figsize=(20, 12))
     ax.set_xlim(0, 10)
-    ax.set_ylim(0, 10)
+    ax.set_ylim(2.5, 10.5)
     ax.axis('off')
 
     # Colors
@@ -419,17 +419,6 @@ def create_tree_example_path_english():
              leaf_selected, width=2.0, height=1.0, selected=True)
 
     draw_arrow(x_left3a, y_level3-0.35, x_left3a, y_leaf+0.5, '', selected=True)
-
-    # Summary rule - moved closer to tree
-    ax.text(5, 1.9, 'EXTRACTED RULE:', fontsize=20, weight='bold', ha='center')
-    ax.text(5, 1.3,
-           'IF (node_utilization ≤ 60%) AND\n(vnr_size ≤ 5 nodes) AND\n(node_utilization > 70%)',
-           fontsize=18, ha='center',
-           bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.9))
-    ax.text(5, 0.5,
-           'THEN select MIP\n(guaranteed optimal in congestion scenario)',
-           fontsize=18, ha='center', style='italic',
-           bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.9))
 
     # Legend
     ax.text(0.3, 9.8, '━━━ Selected Path (GREEN)',

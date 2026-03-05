@@ -8,16 +8,16 @@ Warning--entry type for "etsi-zsm" isn't style-file defined
 Warning--to sort, need author or key in etsi-zsm
 You've used 17 entries,
             1935 wiz_defined-function locations,
-            578 strings with 6965 characters,
-and the built_in function-call counts, 6777 in all, are:
-= -- 667
+            576 strings with 6830 characters,
+and the built_in function-call counts, 6759 in all, are:
+= -- 663
 > -- 285
 < -- 12
 + -- 103
 - -- 96
 * -- 559
-:= -- 1181
-add.period$ -- 54
+:= -- 1177
+add.period$ -- 52
 call.type$ -- 17
 change.case$ -- 131
 chr.to.int$ -- 16
@@ -25,13 +25,13 @@ cite$ -- 19
 duplicate$ -- 260
 empty$ -- 458
 format.name$ -- 120
-if$ -- 1323
+if$ -- 1319
 int.to.chr$ -- 2
 int.to.str$ -- 0
 missing$ -- 16
-newline$ -- 90
+newline$ -- 88
 num.names$ -- 48
-pop$ -- 110
+pop$ -- 112
 preamble$ -- 1
 purify$ -- 131
 quote$ -- 0
@@ -46,5 +46,5 @@ type$ -- 102
 warning$ -- 1
 while$ -- 54
 width$ -- 0
-write$ -- 222
+write$ -- 218
 (There were 2 warnings)

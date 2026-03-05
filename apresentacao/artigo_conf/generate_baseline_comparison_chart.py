@@ -25,11 +25,11 @@ def create_baseline_comparison_chart():
     width = 0.35
     
     # Criar barras
-    bars1 = ax.bar(x - width/2, baseline_accuracy, width, 
-                   label='Baseline (Algoritmo Fixo)', 
+    bars1 = ax.bar(x - width/2, baseline_accuracy, width,
+                   label='Baseline (Fixed Algorithm)',
                    color='#e74c3c', alpha=0.8, edgecolor='black', linewidth=1.5)
     bars2 = ax.bar(x + width/2, tree_accuracy, width,
-                   label='Árvore de Decisão',
+                   label='Decision Tree',
                    color='#2ecc71', alpha=0.8, edgecolor='black', linewidth=1.5)
     
     # Adicionar valores nas barras
@@ -52,9 +52,9 @@ def create_baseline_comparison_chart():
                bbox=dict(boxstyle='round,pad=0.3', facecolor='yellow', alpha=0.7))
     
     # Customização
-    ax.set_xlabel('Objetivo de Otimização', fontsize=12, fontweight='bold')
-    ax.set_ylabel('Acurácia (%)', fontsize=12, fontweight='bold')
-    ax.set_title('Comparação de Acurácia: Baseline vs Árvore de Decisão\npor Objetivo de Otimização',
+    ax.set_xlabel('Optimization Objective', fontsize=12, fontweight='bold')
+    ax.set_ylabel('Accuracy (%)', fontsize=12, fontweight='bold')
+    ax.set_title('Accuracy Comparison: Baseline vs Decision Tree\nby Optimization Objective',
                 fontsize=13, fontweight='bold', pad=15)
     ax.set_xticks(x)
     ax.set_xticklabels(objectives, fontsize=11, fontweight='bold')

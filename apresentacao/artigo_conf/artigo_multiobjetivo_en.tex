@@ -22,6 +22,7 @@
 
 \title{Zero-Touch Selection of Virtual Network Embedding Algorithms using Multi-Objective Decision Trees}
 
+
 \author{\authorname{Blind Review\sup{1}\orcidAuthor{0000-0000-0000-0000} and Blind Review\sup{1}\orcidAuthor{0000-0000-0000-0000}}
 \affiliation{\sup{1}Blind Review}
 \email{\{first\_author, second\_author\}@blind.review}
@@ -31,7 +32,7 @@
 Virtual Network Embedding, Decision Trees, Multi-Objective Optimization, Zero-Touch Administration, Interpretable Machine Learning}
 
 \abstract{
-The \textit{Virtual Network Embedding} (VNE) problem is fundamental in cloud infrastructures where providers share physical resources among multiple tenants. Mapping virtual network requests onto the physical infrastructure, satisfying capacity constraints and optimizing objectives such as acceptance rate and resource consumption, is NP-hard, motivating the development of various algorithms ranging from exact methods based on Mixed Integer Programming (MIP) to heuristics and meta-heuristics. However, no algorithm presents superior performance in all scenarios. This work proposes an approach based on multi-objective decision trees to automatically select the most appropriate VNE algorithm for each request, considering the physical network state and request characteristics. The method employs three specialized models, each optimized for a specific objective (acceptance rate, revenue-cost ratio, and average revenue), allowing adaptation to operational priorities at runtime. Experimental validation on three datacenter topologies with 8,000 requests presents top-3 accuracy between 79.1\% and 85.9\% in predicting the best algorithm, with an improvement of +32.9 percentage points in acceptance rate compared to the fixed baseline algorithm. The approach offers interpretability through explicit decision paths, inference latency below 1\,ms enabling online operation, and autonomous operation capability aligned with zero-touch administration requirements.}
+The \textit{Virtual Network Embedding} (VNE) problem addresses the NP-hard challenge of mapping virtual network requests onto shared physical infrastructures while optimizing competing objectives. Since no single algorithm performs best in all scenarios, this work proposes multi-objective decision trees to automatically select the most appropriate VNE algorithm for each request based on network state and request characteristics. Three specialized models, each optimized for a specific objective (acceptance rate, revenue-cost ratio, and average revenue), allow adaptation to operational priorities at runtime. Experiments on three \textit{datacenter} topologies with 8,000 requests show top-3 accuracy between 79.1\% and 85.9\%, with an improvement of +32.9 percentage points in acceptance rate over the fixed \textit{baseline}. The approach provides interpretability through explicit decision paths and inference latency below 1\,ms, aligned with zero-touch administration requirements.}
 
 \onecolumn \maketitle \normalsize \setcounter{footnote}{0} \vfill
 
@@ -54,9 +55,13 @@ Industry research indicates that autonomous networks can significantly reduce op
 However, the gap between research and deployment remains: while deep Reinforcement Learning (RL) and optimization systems achieve high performance, they lack interpretability and suffer from decision latency inadequate for real-time systems~\cite{white2024zerotough}.
 Therefore, systems that perform automatic VNE algorithm selection without operator intervention are fundamental to achieving truly autonomous operation.
 
-In many computational domains, the problem of automatically selecting algorithms has been extensively studied~\cite{rice1976algorithm}, showing that different instances benefit from different methods and that portfolio-based selectors often outperform single fixed algorithms~\cite{xu2012satzilla}. Surveys on automated algorithm selection~\cite{kotthoff2012algorithm,kerschke2019comprehensive} and meta-learning~\cite{vanschoren2018meta} report that data-driven selectors and portfolio methods are effective at adapting to heterogeneous instances, but typically rely on complex or black-box models whose internal decision logic is hard to interpret. Recent knowledge-based schedulers for HPC data centers~\cite{koslowski2025knowledge-based} follow a similar philosophy, learning from historical scheduling decisions to combine existing policies and improve performance metrics such as bounded slowdown and waiting time. However, these approaches focus primarily on aggregate performance indicators and rarely provide explicit, human-readable rules that explain \textit{why} a particular algorithm or policy is selected under a given contextual state. In the context of Virtual Network Embedding and Zero-Touch administration, this lack of interpretability is a critical limitation~\cite{white2024zerotough}, since operators and regulators require auditable decision rules rather than opaque recommendations.
+In many computational domains, the problem of automatically selecting algorithms has been extensively studied~\cite{rice1976algorithm}, showing that different instances benefit from different methods and that portfolio-based selectors often outperform single fixed algorithms~\cite{xu2012satzilla}. Surveys on automated algorithm selection~\cite{kotthoff2012algorithm,kerschke2019comprehensive} and meta-learning~\cite{vanschoren2018meta} report that data-driven selectors and portfolio methods are effective at adapting to heterogeneous instances, but typically rely on complex or black-box models whose internal decision logic is hard to interpret.
 
-Against this background, this work can be seen as bringing together two lines of research: automatic algorithm selection and interpretable network automation. Similar to portfolio and knowledge-based schedulers, we learn from historical executions of existing VNE algorithms to build a selector that adapts to request characteristics and network state. At the same time, by using decision trees we obtain explicit decision paths that can be inspected, audited, and translated into natural-language rules. This combination directly addresses the gap in current automatic selection approaches, which improve performance but do not explain \textit{why} decisions are made, and aligns with ZSM requirements for transparent, accountable automation.
+Recent knowledge-based schedulers for HPC data centers~\cite{koslowski2025knowledge-based} follow a similar philosophy, learning from historical scheduling decisions to combine existing policies and improve performance metrics such as bounded slowdown and waiting time. However, these approaches focus primarily on aggregate performance indicators and rarely provide explicit, human-readable rules that explain \textit{why} a particular algorithm or policy is selected under a given contextual state. In the context of Virtual Network Embedding and Zero-Touch administration, this lack of interpretability is a critical limitation~\cite{white2024zerotough}, since operators and regulators require auditable decision rules rather than opaque recommendations.
+
+Against this background, this work can be seen as bringing together two lines of research: automatic algorithm selection and interpretable network automation. Similar to portfolio and knowledge-based schedulers, the proposed method learns from historical executions of existing VNE algorithms to build a selector that adapts to request characteristics and network state.
+
+At the same time, by using decision trees the approach obtains explicit decision paths that can be inspected, audited, and translated into natural-language rules. This combination directly addresses the gap in current automatic selection approaches, which improve performance but do not explain \textit{why} decisions are made, and aligns with ZSM requirements for transparent, accountable automation.
 
 In this context, the present work proposes an approach based on multi-objective decision trees to automatically select the most appropriate VNE algorithm for each request, considering the network state and request characteristics.
 Unlike a single model, the method employs three specialized models, each optimized for a specific objective (acceptance rate, revenue-cost ratio, average revenue), allowing adaptation to operational priorities at runtime, with inference latency below 1\,ms enabling online operation.
@@ -97,7 +102,10 @@ Each leaf (terminal node) represents a final prediction, in this context, which 
 
 At each internal node, the tree selects a feature and a threshold, dividing data into two subsets. The splitting criterion uses Gini index or information gain, maximizing class isolation. Each path from root to leaf represents an interpretable decision rule.
 %
-Figure~\ref{fig:tree-example-path} illustrates an example of a decision path, showing how each intermediate decision in the tree progressively reduces the solution space until reaching a final recommendation by evaluating the current state of both the Physical Network (PN) and Virtual Network Request (VNR) through a series of decision nodes. The highlighted path (shown in green) illustrates a concrete example where the tree recommends the MIP algorithm. Starting from the root node containing all training data, the tree first evaluates whether the physical network's node utilization is below or equal to 60\%. Following the affirmative branch, the second decision examines whether the VNR size contains 5 nodes or fewer. For small-scale requests in low-utilization networks, a third decision evaluates whether node utilization exceeds 70\%, identifying a congestion-prone scenario. This specific combination of conditions leads to the recommendation of MIP (Mixed Integer Programming), an exact algorithm guaranteed to find optimal solutions in congestion scenarios. The extracted rule can be formalized as: \textit{IF} (node\_utilization $\leq$ 60\%) \textit{AND} (vnr\_size $\leq$ 5 nodes) \textit{AND} (node\_utilization $>$ 70\%) \textit{THEN} select MIP. This automated decision-making process eliminates the need for manual algorithm selection by encoding expert knowledge about when different VNE algorithms perform optimally based on measurable network and request characteristics.
+Figure~\ref{fig:tree-example-path} illustrates an example of a decision path, showing how each intermediate decision in the tree progressively reduces the solution space until reaching a final recommendation. The tree evaluates the current state of both the Physical Network (PN) and the Virtual Network Request (VNR) through a series of decision nodes.
+
+The highlighted path (shown in green) illustrates a concrete example where the tree recommends the MIP algorithm. Starting from the root node containing all training data, the tree first evaluates whether the physical network's node utilization is below or equal to 60\%. Following the affirmative branch, the second decision examines whether the VNR size contains 5 nodes or fewer. For small-scale requests in low-utilization networks, a third decision evaluates whether node utilization exceeds 70\%, identifying a congestion-prone scenario. This specific combination of conditions leads to the recommendation of MIP (Mixed Integer Programming), an exact algorithm guaranteed to find optimal solutions in congestion scenarios.
+
 %
 
 \begin{figure*}[t]
@@ -107,9 +115,13 @@ Figure~\ref{fig:tree-example-path} illustrates an example of a decision path, sh
     \label{fig:tree-example-path}
 \end{figure*}
 
-Decision trees are chosen in this work not only for their simplicity, but because they directly address the limitations observed in prior automatic algorithm selection approaches. Similar to portfolio-based selectors~\cite{xu2012satzilla} and knowledge-based schedulers for HPC data centers~\cite{koslowski2025knowledge-based}, our method learns from historical executions of existing algorithms, consolidating algorithmic expertise into a data-driven selector. Unlike regression-based scoring functions and deep reinforcement learning policies~\cite{cao2018nfv-deeprl,ijcai-2024-flagvne}, however, each prediction produced by a decision tree corresponds to an explicit rule that can be written as a human-readable conditional statement linking measurable network and request characteristics to a specific algorithm recommendation. This property enables per-topology and per-context analysis of the learned selection policy, which is essential for ZSM-compliant operation~\cite{white2024zerotough} and regulatory audits.
+Decision trees are chosen in this work not only for their simplicity, but because they directly address the limitations observed in prior automatic algorithm selection approaches. Similar to portfolio-based selectors~\cite{xu2012satzilla} and knowledge-based schedulers for HPC data centers~\cite{koslowski2025knowledge-based}, the proposed method learns from historical executions of existing algorithms, consolidating algorithmic expertise into a data-driven selector.
 
-In addition to interpretability, decision trees provide low inference latency and modest training requirements. In these experiments, prediction latency remains in the sub-millisecond range, making the approach suitable for online VNE decisions without introducing additional bottlenecks. Trees can also be trained with relatively small datasets and limited hyperparameter tuning when compared to deep learning and ensemble methods. This aligns with prior work comparing decision tree learners, Bayesian classifiers, nearest neighbor approaches, and neural networks, where C4.5 decision trees were chosen for their interpretability even when neural networks might achieve higher performance~\cite{cook1997comparison}. Alternative models such as random forests, gradient-boosted trees, or deep RL may achieve marginally higher predictive accuracy in some scenarios, but they reintroduce black-box behavior and make the extraction of concise decision rules substantially more difficult. Given the emphasis on explainability, auditability, and zero-touch operation in this work, decision trees offer a favorable trade-off between performance, latency, and transparency.
+Unlike regression-based scoring functions and deep reinforcement learning policies~\cite{cao2018nfv-deeprl,ijcai-2024-flagvne}, however, each prediction produced by a decision tree corresponds to an explicit rule that can be written as a human-readable conditional statement linking measurable network and request characteristics to a specific algorithm recommendation. This property enables per-topology and per-context analysis of the learned selection policy, which is essential for ZSM-compliant operation~\cite{white2024zerotough} and regulatory audits.
+
+In addition to interpretability, decision trees provide low inference latency and modest training requirements. In these experiments, prediction latency remains in the sub-millisecond range, making the approach suitable for online VNE decisions without introducing additional bottlenecks. Trees can also be trained with relatively small datasets and limited hyperparameter tuning when compared to deep learning and ensemble methods. This aligns with prior work comparing decision tree learners, Bayesian classifiers, nearest neighbor approaches, and neural networks, where C4.5 decision trees were chosen for their interpretability even when neural networks might achieve higher performance~\cite{cook1997comparison}.
+
+Alternative models such as random forests, gradient-boosted trees, or deep RL may achieve marginally higher predictive accuracy in some scenarios, but they reintroduce black-box behavior and make the extraction of concise decision rules substantially more difficult. Given the emphasis on explainability, auditability, and zero-touch operation in this work, decision trees offer a favorable trade-off between performance, latency, and transparency.
 
 \subsection{Multi-Objective Optimization}
 \label{subsec:multiobj}
@@ -119,83 +131,26 @@ The selection of which algorithm to use should not consider only a single perfor
 \section{Related Work}
 \label{sec:RelatedWork}
 
-This section positions the work in relation to existing literature in VNE, algorithm selection, and network automation.
-Table~\ref{tab:related-work} synthesizes the comparative analysis between related work and the proposed approach.
-
-\subsection{Algorithm Selection}
+\subsection{Algorithm Selection and Meta-Learning}
 \label{subsec:alg-selection}
 
-The algorithm selection problem was formalized by Rice~\cite{rice1976algorithm}, who established the conceptual \textit{framework}: given a problem space, a set of algorithms, a descriptive \textit{feature} space, and performance metrics, determine which algorithm is most appropriate for each problem. This \textit{framework} underlies the approach proposed in this work.
-%
-Thw work~\cite{xu2012satzilla} develop SATzilla, a portfolio-based selector for satisfiability (SAT) problems, showing that dynamic selection produces significant gains over single algorithms. Similarly, \cite{koslowski2025knowledge-based} apply machine learning techniques for the adaptive selection of scheduling policies in high-performance computing (HPC) infrastructures, showing that the consolidation of multiple strategies offers superior adaptability. This paradigm applies equally to the VNE domain.
+The algorithm selection problem was formalized by Rice~\cite{rice1976algorithm}, who established the conceptual \textit{framework}: given a problem space, a set of algorithms, a descriptive \textit{feature} space, and performance metrics, determine which algorithm is most appropriate for each instance.
+Portfolio-based selectors such as SATzilla~\cite{xu2012satzilla} demonstrate that dynamic selection produces significant gains over fixed algorithms, while surveys on automated algorithm selection~\cite{kotthoff2012algorithm,kerschke2019comprehensive} and meta-learning~\cite{feurer2019automated,vanschoren2018meta} confirm that data-driven selectors consistently outperform single baselines by adapting decisions to instance-level features.
+In the HPC context, knowledge-based schedulers~\cite{koslowski2025knowledge-based} learn from historical traces to score scheduling policies, improving indicators such as bounded slowdown and waiting time.
 
-Prior work on automatic algorithm selection and portfolio-based methods~\cite{rice1976algorithm,xu2012satzilla} provides strong evidence that data-driven selectors can improve robustness and average performance across heterogeneous instances. Surveys on automated algorithm selection~\cite{kotthoff2012algorithm,kerschke2019comprehensive} and automatic choice of machine learning algorithms and hyperparameters~\cite{feurer2019automated,vanschoren2018meta} show that selector models and meta-learning frameworks consistently outperform fixed baselines by adapting decisions to instance-level features. In the HPC context, knowledge-based schedulers~\cite{koslowski2025knowledge-based} learn from historical traces using regression and classification to score scheduling policies and define execution orders, improving indicators such as bounded slowdown, waiting time, and turnaround time. These works demonstrate that learning from past decisions is a powerful strategy.
+Regarding multi-objective optimization, the works~\cite{song2020multiobjective} and~\cite{belgacem2016multiobjective} explore multi-objective VNE and resource allocation in virtualized networks using evolutionary algorithms or dynamic integer programming, which suffer from computational complexity during \textit{online} operation.
+The proposed approach differentiates itself by employing independent models for each objective, allowing operators to select at runtime which priority to optimize.
 
+\subsection{ML-based Network Automation and Zero-Touch}
+\label{subsec:ml-zerotouchj}
 
-\subsection{Multi-Objective Optimization in Networks}
-\label{subsec:multiobj-networks}
+\textit{Deep Reinforcement Learning} (DRL) has been applied to network automation: \cite{cao2018nfv-deeprl} address dynamic resource allocation in NFV, while FlagVNE~\cite{ijcai-2024-flagvne} proposes a flexible RL \textit{framework} for VNE with multiple policies.
+Although DRL offers adaptability, it faces critical challenges for production: long training time, lack of interpretability, unstable convergence, and high inference latency~\cite{white2024zerotough}.
+Similarly, RSCAT~\cite{diel2023rscat} proposes zero-touch congestion control using actor-critic RL and software-defined networking, showing that combining \textit{machine learning} and classical techniques can enable autonomous operation.
 
-The operational realities of modern networks require simultaneous optimization of multiple objectives: acceptance rate, revenue-cost ratio, average revenue, and processing time. Classical approaches in VNE typically optimize a single objective, neglecting trade-offs with others.
-
-The works~\cite{song2020multiobjective} and~\cite{belgacem2016multiobjective} explore multi-objective optimization for VNE and resource allocation in virtualized networks. However, these approaches frequently use evolutionary algorithms or dynamic integer programming, which suffer from computational complexity during online operation. The proposed approach differentiates itself by employing independent models for each objective, allowing operators to select at runtime which priority to optimize.
-
-\subsection{\textit{Machine Learning} and Reinforcement Learning in Networks}
-\label{subsec:ml-networks}
-
-Machine learning has become an important tool for network automation. Initially,~\cite{cao2018nfv-deeprl} apply \textit{Deep Reinforcement Learning} (DRL) for dynamic resource allocation in Network Function Virtualization (NFV).
-In turn,~\cite{ijcai-2024-flagvne} propose FlagVNE, a flexible RL framework for VNE with multiple policies.
-
-Although DRL offers adaptability, it faces critical challenges for production: long training time (millions of episodes for convergence), lack of interpretability (decisions function as black box), unstable convergence in dynamic environments, and high inference latency (inadequate for real-time decisions).
-Recent work on autonomous network systems recognizes that interpretability is a critical requirement for regulated environments~\cite{white2024zerotough}.
-
-\subsection{Zero-Touch Automation}
-\label{subsec:zerotouchj}
-
-The concept of Zero-Touch Network and Service Management (ZSM) was formalized by ETSI since 2017, referring to the operation of network systems with minimal human intervention, through programmable control, virtualization, and closed-loop feedback.
-%
-Industry research indicates that reducing manual intervention can decrease operational costs by up to 40\%.
-However, the gap between research and production remains: RL systems achieve high performance, but lack adequate interpretability for critical operations.
-
-RSCAT~\cite{diel2023rscat} proposes zero-touch automation for congestion control in networks using actor-critic reinforcement learning and software defined networking.
-RSCAT shows that combining machine learning and classical techniques can enable autonomous operation, similarly to the approach proposed in this work for contextual selection of VNE algorithms.
-
-In the context of zero-touch operation, high predictive accuracy alone is not sufficient: automated controllers must also provide transparent and auditable decisions~\cite{white2024zerotough}. Existing learning-based automation solutions, including deep reinforcement learning controllers~\cite{cao2018nfv-deeprl,ijcai-2024-flagvne} and knowledge-based schedulers~\cite{koslowski2025knowledge-based,diel2023rscat}, predominantly expose aggregate performance indicators and policy-selection frequencies, but do not reveal the internal reasoning that leads to each decision. This misalignment between opaque decision processes and the need for accountable, explainable automation in ZSM scenarios motivates the use of models that can both adapt to context and expose their decision logic. Our proposal is designed with this requirement in mind, using multi-objective decision trees that learn from historical data while producing explicit decision paths that operators and regulators can inspect and validate.
-
-\subsection{Discussion}
-
-Table~\ref{tab:related-work} synthesizes a comparative analysis between related work and the proposed approach according to six critical dimensions for production systems.
-This work differentiates itself by combining established concepts---algorithm selection, decision trees, and multi-objective optimization---applied to VNE to create a practical and operational solution. The main distinctive contributions include:
-\begin{itemize}
-    \item Multi-Objectivity: Three specialized models, not just acceptance optimization. Operators can adapt priorities at runtime as operational conditions change.
-
-    \item Contextual Adaptability: Selection based on real network state (utilization, fragmentation) and request characteristics (size, connectivity), not just VNR characteristics.
-
-    \item Complete Interpretability: Unlike RL/DL approaches (black box), each decision can be explained to operators through explicit paths in the decision tree.
-
-    \item Computational Efficiency: Training in seconds (not millions of episodes), inference in sub-milliseconds ($<$1ms), enabling real-time \textit{online} operation.
-
-    \item Practical Validation: Presents real improvement in acceptance rate (+5.73pp) in a realistic simulated environment with 8,000 virtual network requests in three topologies.
-\end{itemize}
-
-\begin{table*}[t]
-\centering
-\scriptsize
-\caption{Comparative Analysis: Related Work vs Proposed Approach (six critical dimensions)}
-\label{tab:related-work}
-\begin{tabular}{lcccccc}
-\toprule
-\textbf{Work} & \textbf{ML Type} & \textbf{Adaptive} & \textbf{Multi-Obj.} & \textbf{Interpretable} & \textbf{Latency} & \textbf{Prod. Ready} \\
-\midrule
-Fischer (VNE Survey) & Comparison & No & No & Yes & - & No \\
-Rice (Portfolio) & Algorithm & Yes & No & Yes & - & Conceptual \\
-SATzilla & Trees & Yes & No & Yes & Low & Yes \\
-Cao et al. (DRL) & Deep RL & Yes & No & No & High (50ms+) & No \\
-FlagVNE (DRL) & Deep RL & Yes & No & No & Very High (100ms+) & No \\
-\midrule
-\textbf{This Work} & \textbf{Multi-Obj. Trees} & \textbf{Yes} & \textbf{Yes (3 obj.)} & \textbf{Yes} & \textbf{$<$1ms} & \textbf{Yes} \\
-\bottomrule
-\end{tabular}
-\end{table*}
+However, existing learning-based solutions, including DRL controllers~\cite{cao2018nfv-deeprl,ijcai-2024-flagvne} and knowledge-based schedulers~\cite{koslowski2025knowledge-based,diel2023rscat}, predominantly expose aggregate performance indicators without revealing the internal reasoning behind each decision.
+In the context of Zero-Touch Network and Service Management (ZSM), high predictive accuracy alone is not sufficient: automated controllers must also provide transparent and auditable decisions~\cite{white2024zerotough}.
+This gap between opaque decision processes and the need for accountable automation motivates the use of decision trees, which learn from historical data while producing explicit decision paths that operators and regulators can inspect and validate.
 
 
 \section{Methodology}
@@ -348,7 +303,7 @@ Results presented in Table~\ref{tab:classification-metrics} indicate that the RA
 
 Classification accuracy was measured for each objective, comparing decision tree performance with the fixed algorithm \textit{baseline}. Figure~\ref{fig:baseline-comparison} presents the results. It is possible to observe that accuracy depends significantly on the chosen fixed algorithm, evidencing the need for contextual selection.
 
-\begin{figure}[H]
+\begin{figure}[!htb]
 \centering
 \includegraphics[width=0.95\columnwidth]{baseline_comparison_chart}
 \caption{Accuracy Comparison: Baseline vs Decision Tree by Optimization Objective}
@@ -360,7 +315,7 @@ Figure~\ref{fig:baseline-comparison} reveals that contextual selection via decis
 To validate that gains in classification accuracy translate into real operational performance improvement, performance was evaluated when decision trees are used for algorithm selection in simulated executions.
 Figure~\ref{fig:real-performance-improvement} presents the comparison of real performance (using individual values per VNR) between tree-based selection and fixed algorithm baseline.
 
-\begin{figure}[H]
+\begin{figure}[!htb]
 \centering
 \includegraphics[width=0.95\columnwidth]{real_performance_chart}
 \caption{Real Performance: Tree vs Baseline by Optimization Objective}
@@ -376,31 +331,6 @@ Results show that contextual selection via decision trees produces substantial i
 \end{itemize}
 
 Results show that contextual selection via decision trees is significantly superior to using a fixed algorithm, with substantial improvements in all evaluated objectives. The approach captures important patterns of algorithm selection based on contextual characteristics of VNRs, allowing dynamic adaptation to different network conditions and resource requirements.
-
-\begin{table}[H]
-\centering
-\caption{F1-Score per Class - RAC Objective (Balanced Models)}
-\label{tab:f1-per-class}
-\begin{tabular}{lccc}
-\toprule
-\textbf{Algorithm} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} \\
-\midrule
-GA\_Meta & 0.73 & 0.74 & 0.73 \\
-MCTS & 0.78 & 0.72 & 0.75 \\
-PL\_Rank & 0.77 & 0.66 & 0.71 \\
-D\_Round & 0.61 & 0.59 & 0.60 \\
-MIP & 0.49 & 0.57 & 0.53 \\
-SA\_Meta & 0.43 & 0.56 & 0.49 \\
-RW\_Rank\_BFS & 0.67 & 0.25 & 0.36 \\
-PSO\_Meta & 0.22 & 0.67 & 0.33 \\
-\midrule
-F1-Macro & \multicolumn{3}{c}{0.56} \\
-F1-Weighted & \multicolumn{3}{c}{0.68} \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The detailed analysis presented in Table~\ref{tab:f1-per-class} reveals that balancing techniques allow capturing patterns even from minority classes. Algorithms such as GA\_Meta, MCTS, and PL\_Rank present F1-Score above 0.70, indicating good prediction capability. Minority classes such as PSO\_Meta and RW\_Rank\_BFS present lower F1-Score (0.33 and 0.36, respectively), but still above zero, demonstrating that the model can identify patterns even for these classes. F1-Macro of 0.56 and F1-Weighted of 0.68 indicate that the model presents balanced performance across all classes, with greater weight on more frequent classes.
 
 \subsection{Interpretability Analysis}
 
@@ -421,16 +351,15 @@ Additionally, \textit{feature} importance analysis reveals which characteristics
     \caption{Feature Importance - RAC (Request Acceptance Rate). The top 15 most important features (average across topologies) for the RAC objective. Resource efficiency ($resource\_efficiency$) is the most critical feature with importance of 0.134, followed by VNR link demand ($v\_net\_demand\_per\_link$) with 0.096.}
     \label{fig:feature-importance-rac}
 \end{figure}
-\vspace{-2cm}
 
-\begin{figure}[H]
+\begin{figure}[!htb]
     \centering
     \includegraphics[width=0.95\columnwidth]{per_objective_lrc}
     \caption{Feature Importance - LRC (Long-Term Revenue-to-Cost). The top 15 most important features (average across topologies) for the LRC objective. Resource efficiency ($resource\_efficiency$) is the most critical feature with importance of 0.113, followed by physical network health score ($p\_net\_health\_score$) with 0.097.}
     \label{fig:feature-importance-lrc}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[!htb]
     \centering
     \includegraphics[width=0.95\columnwidth]{per_objective_lar}
     \caption{Feature Importance - LAR (Long-Term Average Revenue). The top 15 most important features (average across topologies) for the LAR objective. VNR link demand ($v\_net\_demand\_per\_link$) is the most important feature with 0.090, followed by total demand ($v\_net\_total\_demand$) with 0.068.}
@@ -442,24 +371,7 @@ This interpretability is critical, as it allows regulators to perform audits by 
 
 \subsection{Inference Latency}
 
-Prediction latency measurements for each model (based on a benchmark with 8,000 iterations):
-
-\begin{itemize}
-    \item Average time: 0.034\,ms per prediction
-    \item Percentile p99: 0.055\,ms (worst case: 0.119\,ms)
-    \item RL Comparison: FlagVNE requires 50-200\,ms per decision~\cite{ijcai-2024-flagvne}
-\end{itemize}
-
-Figure~\ref{fig:inference-latency-cdf} presents the cumulative distribution function (CDF) of inference latency, comparing the proposed approach with FlagVNE. The results show that more than 99\% of predictions are performed in less than 0.06\,ms, demonstrating consistency in sub-millisecond latency.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.95\columnwidth]{inference_latency_cdf}
-\caption{Inference Latency CDF: Decision Trees vs FlagVNE. The proposed approach presents latency consistently below 0.1\,ms, while FlagVNE requires 50-200\,ms per decision (different scale on secondary axis).}
-\label{fig:inference-latency-cdf}
-\end{figure}
-
-Sub-millisecond latency enables online real-time decision making, critical for zero-touch operation.
+Prediction latency was measured over 8,000 iterations, yielding an average of 0.034\,ms per prediction, with p99 at 0.055\,ms and worst case at 0.119\,ms. More than 99\% of predictions complete in less than 0.06\,ms, confirming consistent sub-millisecond latency. By comparison, FlagVNE requires 50--200\,ms per decision~\cite{ijcai-2024-flagvne}, representing a difference of three orders of magnitude. This low latency enables online real-time decision making, critical for zero-touch operation.
 
 \subsection{Key Observations}
 

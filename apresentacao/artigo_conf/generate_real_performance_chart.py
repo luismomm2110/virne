@@ -28,10 +28,10 @@ def create_real_performance_chart():
     
     # Criar barras
     bars1 = ax.bar(x - width/2, baseline_values, width,
-                   label='Baseline (Algoritmo Fixo)',
+                   label='Baseline (Fixed Algorithm)',
                    color='#e74c3c', alpha=0.8, edgecolor='black', linewidth=1.5)
     bars2 = ax.bar(x + width/2, tree_values, width,
-                   label='Árvore de Decisão',
+                   label='Decision Tree',
                    color='#2ecc71', alpha=0.8, edgecolor='black', linewidth=1.5)
     
     # Adicionar valores nas barras
@@ -70,9 +70,9 @@ def create_real_performance_chart():
                bbox=dict(boxstyle='round,pad=0.3', facecolor='yellow', alpha=0.7))
     
     # Customização
-    ax.set_xlabel('Objetivo de Otimização', fontsize=12, fontweight='bold')
-    ax.set_ylabel('Valor', fontsize=12, fontweight='bold')
-    ax.set_title('Desempenho Real: Baseline vs Árvore de Decisão\nComparação por Objetivo de Otimização',
+    ax.set_xlabel('Optimization Objective', fontsize=12, fontweight='bold')
+    ax.set_ylabel('Value', fontsize=12, fontweight='bold')
+    ax.set_title('Real Performance: Baseline vs Decision Tree\nComparison by Optimization Objective',
                 fontsize=13, fontweight='bold', pad=15)
     ax.set_xticks(x)
     ax.set_xticklabels(objectives, fontsize=11, fontweight='bold')
@@ -86,9 +86,10 @@ def create_real_performance_chart():
     ax.set_axisbelow(True)
     
     # Adicionar nota sobre unidades
-    ax.text(0.02, 0.98, 'Nota: RAC em %, LRC em razão, LAR em valor absoluto',
+    ax.text(0.98, 0.98, 'Note: RAC in %, LRC as ratio, LAR in absolute value',
            transform=ax.transAxes, fontsize=8, style='italic',
-           verticalalignment='top', bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
+           ha='right', verticalalignment='top',
+           bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
     
     plt.tight_layout()
     plt.savefig('/Users/luismomm/PycharmProjects/virne/apresentacao/artigo_conf/real_performance_chart.png',
