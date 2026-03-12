@@ -23,9 +23,9 @@
 \title{Zero-Touch Selection of Virtual Network Embedding Algorithms using Multi-Objective Decision Trees}
 
 
-\author{\authorname{Blind Review\sup{1}\orcidAuthor{0000-0000-0000-0000} and Blind Review\sup{1}\orcidAuthor{0000-0000-0000-0000}}
-\affiliation{\sup{1}Blind Review}
-\email{\{first\_author, second\_author\}@blind.review}
+\author{\authorname{Luis Antonio Momm Duarte and Guilherme Piêgas Koslovski\sup{1}}
+\affiliation{\sup{1}Graduate Program in Applied Computing, Santa Catarina State University (UDESC), Joinville, SC, Brazil}
+\email{luis.duarte@edu.udesc.br, guilherme.koslovski@udesc.br}
 }
 
 \keywords{
@@ -100,7 +100,7 @@ Decision trees are chosen in this work not only for their simplicity, but becaus
 
 Unlike regression-based scoring functions and deep reinforcement learning policies~\cite{cao2018nfv-deeprl,ijcai-2024-flagvne}, however, each prediction produced by a decision tree corresponds to an explicit rule that can be written as a human-readable conditional statement linking measurable network and request characteristics to a specific algorithm recommendation. This property enables per-topology and per-context analysis of the learned selection policy, which is essential for ZSM-compliant operation~\cite{white2024zerotough} and regulatory audits.
 
-In addition to interpretability, decision trees provide low inference latency and modest training requirements. In these experiments, prediction latency remains in the sub-millisecond range, making the approach suitable for online VNE decisions without introducing additional bottlenecks. Trees can also be trained with relatively small datasets and limited hyperparameter tuning when compared to deep learning and ensemble methods..
+In addition to interpretability, decision trees provide low inference latency and modest training requirements. In these experiments, prediction latency remains in the sub-millisecond range, making the approach suitable for online VNE decisions without introducing additional bottlenecks. Trees can also be trained with relatively small datasets and limited hyperparameter tuning when compared to deep learning and ensemble methods.
 
 Alternative models such as random forests, gradient-boosted trees, or deep RL may achieve marginally higher predictive accuracy in some scenarios, but they reintroduce black-box behavior and make the extraction of concise decision rules substantially more difficult. Given the emphasis on explainability, auditability, and zero-touch operation in this work, decision trees offer a favorable trade-off between performance, latency, and transparency.
 
@@ -228,21 +228,10 @@ PSO\_META & 20.1\% & 352.1 & 120.0 & 0.309 \\
 \end{table}
 
 
-\subsection{Multi-Metric Comparison of VNE Algorithms}
-
-Different operational contexts (high load, limited resources, latency requirements) require different trade-offs. Figure~\ref{fig:algorithm-comparison} presents a comprehensive analysis of four complementary metrics for the eight evaluated algorithms:
-
-\begin{figure*}[h]
-    \centering
-    \includegraphics[width=1.0\textwidth]{algorithm_comparison_all_metrics}
-    \caption{Multi-Metric Comparison: Acceptance Rate, Total Revenue, Revenue-Cost Ratio, and Average Time per VNR. The graphs show distribution of results in five simulated executions per algorithm across topologies (Tree, Fat-Tree, Waxman-16). No single algorithm is optimal in all dimensions.}
-    \label{fig:algorithm-comparison}
-\end{figure*}
-
 
 \subsubsection{Class Balancing Techniques}
 
-To reduce dataset imbalance, a class balancing techniques was applied.
+To reduce dataset imbalance, a class balancing technique was applied.
 %
 Instead of scikit-learn's default balancing, weights calculated as $w_i = 1/\sqrt{f_i}$ were used, where $f_i$ is the relative frequency of class $i$. This strategy assigns significantly larger weights to rare classes:
 
@@ -364,7 +353,7 @@ The proposed approach achieves acceptance rate improvements of +89.83\% (from 43
 The Virtual Network Embedding (VNE) problem is fundamental in modern cloud infrastructures, where mapping virtual network requests onto physical networks while optimizing multiple objectives is NP-hard. A fundamental challenge in this domain is that no single algorithm presents consistently superior performance in all scenarios, and different VNR characteristics and physical network states require distinct algorithmic approaches. Additionally, modern infrastructures demand zero-touch administration capabilities, requiring systems that can operate autonomously with interpretability and low latency for real-time decision-making.
 
 To address this challenge, this work proposed an approach for zero-touch selection of Virtual Network Embedding algorithms using multi-objective decision trees, considering virtual network request characteristics and physical infrastructure state.
-Experimental results show that the foundations of the proposed approach (decision trees, multi-objective optimization, and interpretability) are potential candidates to achieve zero-touch network control according to the ETSI ZSM standard.
+Experimental results show that the foundations of the proposed approach (decision trees, multi-objective optimization, and interpretability) show potential for achieving zero-touch network control according to the ETSI ZSM standard.
 The experimental analysis, based on three datacenter topologies (Tree, Fat-Tree, and Waxman-16) with 8,000 virtual network requests, showed that contextual algorithm selection can reduce processing time and improve acceptance rate in various scenarios, without requiring software updates at infrastructure endpoints.
 
 As limitations, the model was trained on three simulated topologies, and the characteristics capture instantaneous network state.
@@ -374,7 +363,7 @@ As future work, promising directions include transfer learning between topologie
 
 \section*{\uppercase{Acknowledgements}}
 
-Blind review.
+This work was funded by the National Council for Scientific and Technological Development (CNPq), the Santa Catarina State Research and Innovation Support Foundation (FAPESC), Santa Catarina State University (UDESC), and developed at Laboratory of Parallel and Distributed Processing (LabP2D).
 
 \bibliographystyle{apalike}
 {\small

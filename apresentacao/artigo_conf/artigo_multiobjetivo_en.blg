@@ -3,48 +3,44 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: artigo_multiobjetivo_en.aux
 The style file: apalike.bst
 Database file #1: references.bib
-Warning--entry type for "etsi-zsm" isn't style-file defined
---line 57 of file references.bib
-Warning--to sort, need author or key in etsi-zsm
 You've used 13 entries,
             1935 wiz_defined-function locations,
-            555 strings with 6211 characters,
-and the built_in function-call counts, 5259 in all, are:
-= -- 507
-> -- 245
-< -- 6
-+ -- 91
-- -- 84
-* -- 458
-:= -- 927
-add.period$ -- 39
+            556 strings with 6331 characters,
+and the built_in function-call counts, 5339 in all, are:
+= -- 517
+> -- 252
+< -- 7
++ -- 93
+- -- 86
+* -- 459
+:= -- 952
+add.period$ -- 41
 call.type$ -- 13
-change.case$ -- 105
+change.case$ -- 107
 chr.to.int$ -- 12
-cite$ -- 15
-duplicate$ -- 188
+cite$ -- 13
+duplicate$ -- 189
 empty$ -- 346
-format.name$ -- 100
-if$ -- 1007
+format.name$ -- 103
+if$ -- 1021
 int.to.chr$ -- 2
 int.to.str$ -- 0
 missing$ -- 12
-newline$ -- 68
-num.names$ -- 36
-pop$ -- 87
+newline$ -- 70
+num.names$ -- 39
+pop$ -- 85
 preamble$ -- 1
-purify$ -- 105
+purify$ -- 106
 quote$ -- 0
-skip$ -- 145
+skip$ -- 147
 stack$ -- 0
-substring$ -- 350
+substring$ -- 349
 swap$ -- 22
 text.length$ -- 2
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 78
-warning$ -- 1
-while$ -- 40
+warning$ -- 0
+while$ -- 42
 width$ -- 0
-write$ -- 167
-(There were 2 warnings)
+write$ -- 173

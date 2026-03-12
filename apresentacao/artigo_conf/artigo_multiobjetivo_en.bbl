@@ -1,9 +1,5 @@
 \begin{thebibliography}{}
 
-\bibitem[ets, 2017]{etsi-zsm}
- (2017).
-\newblock Etsi zsm - zero-touch network and service management.
-
 \bibitem[Belgacem et~al., 2016]{belgacem2016multiobjective}
 Belgacem, A. et~al. (2016).
 \newblock A multi-objective approach for vne problems using multiple ilp
@@ -27,6 +23,13 @@ Diel, G., Miers, C.~C., Pillon, M.~A., and Koslovski, G.~P. (2023).
 Diel, G., Nascimento~Kraus, A., and Piêgas~Koslovski, G. (2025).
 \newblock Knowledge-based job scheduling for hpc.
 \newblock {\em Cluster Computing}, 28:153.
+
+\bibitem[{ETSI Industry Specification Group (ISG) ZSM}, 2019]{etsi-zsm}
+{ETSI Industry Specification Group (ISG) ZSM} (2019).
+\newblock {ETSI GS ZSM 002 V1.1.1 -- Zero-touch network and Service Management
+  (ZSM); Reference Architecture}.
+\newblock Technical report, European Telecommunications Standards Institute.
+\newblock ISG established in December 2017.
 
 \bibitem[Fischer et~al., 2013]{fischer2013vne-survey}
 Fischer, A., Botero, J.~F., Till~Beck, M., Figuerola, S., and Sahasrabuddhe, V.
