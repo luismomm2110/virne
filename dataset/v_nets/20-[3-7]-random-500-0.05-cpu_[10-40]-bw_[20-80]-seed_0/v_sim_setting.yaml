@@ -1,0 +1,43 @@
+arrival_rate:
+  distribution: poisson
+  dtype: float
+  lam: 0.05
+  reciprocal: true
+graph_attrs_setting: null
+lifetime:
+  distribution: exponential
+  dtype: float
+  scale: 500
+link_attrs_setting:
+- distribution: uniform
+  dtype: int
+  generative: true
+  high: 80
+  low: 20
+  name: bw
+  owner: link
+  type: resource
+node_attrs_setting:
+- distribution: uniform
+  dtype: int
+  generative: true
+  high: 40
+  low: 10
+  name: cpu
+  owner: node
+  type: resource
+num_v_nets: 20
+output:
+  events_file_name: events.yaml
+  save_dir: dataset/v_nets
+  setting_file_name: v_sim_setting.yaml
+  v_nets_file_name: v_net.gml
+  v_nets_save_dir: v_nets
+topology:
+  random_prob: 0.5
+  type: random
+v_net_size:
+  distribution: uniform
+  dtype: int
+  high: 7
+  low: 3
