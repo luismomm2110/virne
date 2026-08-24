@@ -25,6 +25,14 @@ Multi-Objective Decision Trees}
 
 \textcolor{red}{Mudar legenda figuras 2 e 6 e 7 e 9 e 10  11 e 12. Double check fontes}
 
+\textcolor{red}{[R: sao exatamente as figuras cuja legenda termina em ``Source: authors' own...''. Verificacao fonte a fonte no repositorio:
+\textbf{Fig.~2} (\texttt{tree\_example\_path}): fonte confere, e modelo proprio.
+\textbf{Fig.~6} (\texttt{baseline\_comparison\_chart}): valores \emph{hardcoded} em \texttt{apresentacao/artigo\_conf/generate\_baseline\_comparison\_chart.py:15-18}. O baseline (34,36/27,23/22,85) e calculado sobre o conjunto de \emph{teste} (\texttt{calculate\_baseline\_comparison.py:48-59}), mas o top-3 registrado em \texttt{models/baseline\_comparison.json} vem da \emph{validacao} e do modelo \emph{per-topology} (\texttt{pipeline/7\_evaluate\_with\_ranking.py:73}) --- splits e modelos diferentes misturados no mesmo grafico.
+\textbf{Fig.~7} (\texttt{real\_performance\_chart}): tambem \emph{hardcoded} (\texttt{generate\_real\_performance\_chart.py:15-17}) e medida sobre apenas 410 VNRs de 2 topologias (ver anotacao da Secao~\ref{sec:Results}).
+\textbf{Figs.~9--11} (\texttt{per\_objective\_*}): geradas a partir de \texttt{decision\_trees\_per\_topology.pkl}, que usa \textbf{34} features, nao 27 como afirma o texto.
+\textbf{Fig.~12} (\texttt{inference\_latency\_cdf}): o \emph{benchmark} roda sobre features \textbf{aleatorias} (\texttt{benchmark\_inference\_latency.py:46}, \texttt{np.random.rand}) e sobre \texttt{decision\_trees\_per\_topology.pkl} --- nao sobre os modelos balanceados cujos resultados o artigo reporta; alem disso \texttt{n\_iterations=10000} (linha 159), e nao 8.000 como diz o texto.
+\textbf{Fig.~5} (\texttt{algorithm\_comparison\_all\_metrics}, nao listada mas afetada): os \emph{box-plots} sao ruido gaussiano sintetico de 5\% sobre 5 pontos (\texttt{12\_algorithm\_comparison\_metrics.py:78-119}), enquanto a legenda afirma ``ten random-seed repetitions''.]}
+
 % Titulo curto para o cabecalho (o titulo completo nao cabe)
 \titlerunning{Zero-Touch Selection of VNE Algorithms}
 
